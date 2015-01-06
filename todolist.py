@@ -1,11 +1,10 @@
-from flask import Flask
+from flask import Flask, request, url_for, redirect, g, session, flash, \
+     abort, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext import restless
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config.from_pyfile('config.cfg')
 db = SQLAlchemy(app)
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -23,6 +22,7 @@ class User(db.Model):
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(140))
+    is_completed = db.Column(db.Boolean, nullable=False, default=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     creator = db.relationship('User',
         backref=db.backref('todo', lazy='dynamic'))
@@ -35,16 +35,7 @@ class Todo(db.Model):
         return '<ToDo: %r>' % self.description
 
 
-# Create the database tables.
-db.create_all()
-
-# Create the Flask-Restless API manager.
-manager = restless.APIManager(app, flask_sqlalchemy_db=db)
-
-# Create API endpoints, which will be available at /api/<tablename> by
-# default. Allowed HTTP methods can be specified as well.
-manager.create_api(User, methods=['GET', 'POST', 'DELETE'])
-manager.create_api(Todo, methods=['GET', 'POST', 'DELETE'])
-
-# start the flask loop
-app.run()
+@app.route('/<int:todo_id>')
+def show_todo(todo_id):
+    todo = Todo.query.get_or_404(todo_id)
+    return render_template('index.html', todo=todo)
