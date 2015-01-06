@@ -1,5 +1,8 @@
-flask-restless-todo-app
+flask-todolist
 =======================
 
-#### Goal
-Using the flask-restless extension, I'm going to implement a simple ToDo App.
+### Goal
+Building a Todolist App using flask and skeleton.
+
+#### TBD
+Using some flask extension, like flask-api, flask-restless or flask-restful to build an API.
