@@ -32,3 +32,15 @@ def test_no_user(client):
 def test_no_todo(client):
     todo_resp = client.get('/todo/1')
     assert b'No ToDo here' in todo_resp.data
+
+
+def test_first_user(client):
+    tony = todolist.User("Tony" "tony@email.me")
+    client.db.session.commit(tony)
+    user_resp = client.get('/user/1')
+    assert b'Tony' in user_resp.data
+
+
+def test_first_todo(client):
+    tony = todolist.User("Tony" "tony@email.me")
+    todo = todolist.Todo("Read all the emails.", tony)
