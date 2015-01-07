@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask.ext.script import Manager
 from todolist import app, db
 

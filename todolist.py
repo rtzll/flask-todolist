@@ -1,5 +1,6 @@
-from flask import Flask, request, url_for, redirect, g, session, flash, \
-     abort, render_template
+# -*- coding: utf-8 -*-
+
+from flask import Flask, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
