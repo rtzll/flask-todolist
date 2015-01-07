@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="one-half column" style="margin-top: 25%">
+        {% if todo %}
+          <h4>ToDo #{{ todo.id }}</h4>
+          <p>{{ todo.description }}</p>
+        {% else %}
+          <h4>No ToDo here</h4>
+          <p>How about adding one?</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
