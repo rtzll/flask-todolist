@@ -6,6 +6,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 db = SQLAlchemy(app)
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
@@ -37,5 +38,11 @@ class Todo(db.Model):
 
 @app.route('/todo/<int:todo_id>')
 def show_todo(todo_id):
-    todo = Todo.query.get_or_404(todo_id)
+    todo = Todo.query.get(todo_id)
     return render_template('show_todo.html', todo=todo)
+
+
+@app.route('/user/<int:user_id>')
+def show_user(user_id):
+    user = User.query.get(user_id)
+    return render_template('show_user.html', user=user)

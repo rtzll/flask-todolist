@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="one-half column" style="margin-top: 25%">
+        {% if user %}
+          <h4>User: #{{ user.id }}</h4>
+          <p>{{ user.username }}</p>
+        {% else %}
+          <h4>No user here</h4>
+          <p>How about adding one?</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
