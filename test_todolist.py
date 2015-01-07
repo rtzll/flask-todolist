@@ -23,9 +23,12 @@ def client(request):
 
     return client
 
-def test_empty_db(client):
+
+def test_no_user(client):
     user_resp = client.get('/user/1')
+    assert b'No user here' in user_resp.data
+
+
+def test_no_todo(client):
     todo_resp = client.get('/todo/1')
-    assert b'No user here' in user_resp
-    assert b'No todo here' in todo_resp
-    assert 0 == 1
+    assert b'No ToDo here' in todo_resp.data
