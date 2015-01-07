@@ -4,4 +4,6 @@
 *.db
 build
 dist
+results
+__pycache__
 .DS_Store
