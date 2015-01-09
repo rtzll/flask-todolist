@@ -13,7 +13,7 @@ from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 
 import logging
-logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+# logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 logging.getLogger().setLevel(logging.DEBUG)
 
 app = Flask(__name__)
@@ -140,26 +140,8 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/todo/<int:todo_id>')
-def show_todo(todo_id):
-    todo = Todo.query.get(todo_id)
-    return render_template('show_todo.html', todo=todo)
-
-
-@app.route('/user/<int:user_id>')
-def show_user(user_id):
-    user = User.query.get(user_id)
-    return render_template('show_user.html', user=user)
-
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    form = TodoForm()
-    if form.validate_on_submit():
-        todo = Todo(description=form.todo.data,
-                    creator=current_user._get_current_object())
-        db.session.add(todo)
-        return redirect(url_for('index.html'))
     return render_template('index.html')
 
 
