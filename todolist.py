@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from flask.ext.login import UserMixin, LoginManager
+from flask.ext.login import login_user, logout_user, login_required, \
+    current_user
 
 from flask.ext.wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
+from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 
 import logging
-# logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 logging.getLogger().setLevel(logging.DEBUG)
 
 app = Flask(__name__)
@@ -65,14 +68,13 @@ class Todo(db.Model):
         self.creator = creator
 
     def __repr__(self):
-        return '<ToDo: %r>' % self.description
+        return '<Todo: %r>' % self.description
 
 
 class LoginForm(Form):
     email = StringField('Email', validators=[Required(), Length(1, 64),
                                              Email()])
     password = PasswordField('Password', validators=[Required()])
-    remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
 
 
@@ -84,8 +86,11 @@ class RegistrationForm(Form):
                                           'Usernames must have only letters, '
                                           'numbers, dots or underscores')])
     password = PasswordField('Password', validators=[
-        Required(), EqualTo('password2', message='Passwords must match.')])
-    password2 = PasswordField('Confirm password', validators=[Required()])
+        Required(), EqualTo('password_confirmation', 
+        message='Passwords must match.')
+    ])
+    password_confirmation = PasswordField('Confirm password',
+                                          validators=[Required()])
     submit = SubmitField('Register')
 
     def validate_email(self, field):
@@ -98,7 +103,7 @@ class RegistrationForm(Form):
 
 
 class TodoForm(Form):
-    todo = StringField('Enter your ToDo', validators=[Required()])
+    todo = StringField('Enter your todo', validators=[Required()])
     submit = SubmitField('Submit')
 
 
@@ -113,7 +118,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
-            login_user(user, form.remember_me.data)
+            login_user(user)
             return redirect(request.args.get('next') or url_for('index'))
         flash('Invalid username or password.')
     return render_template('login.html', form=form)
