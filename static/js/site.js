@@ -7,15 +7,7 @@ $(document).ready(function() {
       $window = $(window),
       $popoverLink = $('[data-popover]'),
       navOffsetTop = $nav.offset().top,
-      $document = $(document),
-      entityMap = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
-      }
+      $document = $(document);
 
   function init() {
     $window.on('scroll', onScroll)
@@ -73,19 +65,6 @@ $(document).ready(function() {
     if(navOffsetTop > $window.scrollTop() && $body.hasClass('has-docked-nav')) {
       $body.removeClass('has-docked-nav')
     }
-  }
-
-  function escapeHtml(string) {
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
-      return entityMap[s];
-    });
-  }
-
-  function buildSnippets() {
-    $codeSnippets.each(function() {
-      var newContent = escapeHtml($(this).html())
-      $(this).html(newContent)
-    })
   }
 
 
