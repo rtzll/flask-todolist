@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <section class="header">
+    <h2 class="title">Login</h2>
+    {% if form.errors %}<p class=error><strong>Your form contains errors.</strong>{% endif %}
+    <form action="{{ url_for('login') }}" method=post>
+      {{ form.hidden_tag() }}
+      <dl>
+        <dt>{{ form.email.label }}
+        <dd>{{ form.email }}
+        <dt>{{ form.password.label }}
+        <dd>{{ form.password }}
+        <dt>{{ form.submit }}
+      </dl>
+    </form>
+    <p>New user? <a href="{{ url_for('register') }}">Click here to register</a>.</p>
+  </section>
+{% endblock %}
