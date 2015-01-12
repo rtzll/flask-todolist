@@ -19,8 +19,14 @@ import logging
 logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 logging.getLogger().setLevel(logging.DEBUG)
 
-app = Flask(__name__)
-app.config.from_pyfile('config.py')
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_pyfile('config.py')
+    return app
+
+
+app = create_app()
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -86,7 +92,7 @@ class RegistrationForm(Form):
                                           'Usernames must have only letters, '
                                           'numbers, dots or underscores')])
     password = PasswordField('Password', validators=[
-        Required(), EqualTo('password_confirmation', 
+        Required(), EqualTo('password_confirmation',
         message='Passwords must match.')
     ])
     password_confirmation = PasswordField('Confirm password',
@@ -124,6 +130,7 @@ def login():
     return render_template('login.html', form=form)
 
 
+@login_required
 @app.route('/logout')
 def logout():
     logout_user()
