@@ -4,6 +4,7 @@ import unittest
 from flask import url_for
 from todolist import create_app, db, User
 
+
 class FlaskClientTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
@@ -30,6 +31,9 @@ class FlaskClientTestCase(unittest.TestCase):
             'password_confirmation': 'cat'
         })
         self.assertTrue(response.status_code == 302)
+        self.assertTrue(
+            b'You successfully registered. Welcome!' in response.data
+        )
 
     def test_login(self):
         # login with the new account
@@ -37,8 +41,7 @@ class FlaskClientTestCase(unittest.TestCase):
             'email': 'john@example.com',
             'password': 'cat'
         }, follow_redirects=True)
-        self.assertTrue(
-            b'You have not confirmed your account yet' in response.data)
+        self.assertTrue(response.status_code == 200)
 
     def test_logout(self):
         # login with the new account
