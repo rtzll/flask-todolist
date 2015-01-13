@@ -69,12 +69,13 @@ class Todo(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, description, creator):
+    def __init__(self, description, creator_id):
         self.description = description
-        self.creator = creator
+        self.creator_id = creator_id
 
     def __repr__(self):
-        return '<Todo: %r>' % self.description
+        creator = User.query.filter_by(id=self.creator_id)
+        return '<Todo: %r from %r>' % (self.description, creator.username)
 
 
 class LoginForm(Form):
