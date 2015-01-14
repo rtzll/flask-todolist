@@ -2,7 +2,7 @@
 
 import unittest
 from flask import url_for
-from todolist import create_app, db, User
+from todolist import create_app, db, User, Todo
 
 
 class TodolistTestCase(unittest.TestCase):
@@ -26,7 +26,7 @@ class TodolistTestCase(unittest.TestCase):
         user = User(**user_data)
         db.session.add(user)
         db.session.commit()
-        return User.query.filter_by(username=username)
+        return User.query.filter_by(username=username).first()
 
     def add_todo(self, description, user):
         todo_data = {
@@ -36,7 +36,7 @@ class TodolistTestCase(unittest.TestCase):
         read_todo = Todo(**todo_data)
         db.session.add(read_todo)
         db.session.commit()
-        return Todo.query.filter_by(id=read_todo.id)
+        return Todo.query.filter_by(id=read_todo.id).first()
 
     def test_password_setter(self):
         u = User(password='correcthorsebatterystaple')
