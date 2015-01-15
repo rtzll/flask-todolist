@@ -65,7 +65,6 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_adding_new_todo(self):
         some_user = self.add_user('adam')
-        assert some_user is not None
         todo_description = 'Read a book about TDD'
         new_todo = self.add_todo(todo_description, some_user)
         self.assertTrue(new_todo.description == 'Read a book about TDD')
@@ -75,6 +74,7 @@ class TodolistTestCase(unittest.TestCase):
 class TodolistClientTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
+        self.app.testing = True
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
