@@ -163,3 +163,11 @@ def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     todos = user.todos.order_by(Todo.timestamp.desc())
     return render_template('user.html', user=user, todos=todos)
+
+@app.route('/todo/')
+def todo():
+    form = TodoForm()
+    if form.validate_on_submit():
+        return redirect(url_for('todo'))
+        flash('Todo added.')
+    return render_template('todo.html', form=form)
