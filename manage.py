@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.script import Manager
-from todolist import app, db
+from app import create_app, db
 
 
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
+
+@manager.command
+def test(coverage=False):
+    """Run the unit tests."""
+    import uniitest
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
 @manager.command
