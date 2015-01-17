@@ -12,9 +12,7 @@ from ..models import User
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    print 'ENTERING LOGIN'
     form = LoginForm()
-    print 'GOT FORM and now validata...'
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None:

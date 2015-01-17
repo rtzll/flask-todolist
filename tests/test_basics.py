@@ -7,6 +7,7 @@ from app.models import  User, Todo
 
 
 class TodolistTestCase(unittest.TestCase):
+
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
