@@ -7,6 +7,7 @@ from app.models import  User, Todo
 
 
 class TodolistClientTestCase(unittest.TestCase):
+
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
@@ -20,36 +21,33 @@ class TodolistClientTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_home_page(self):
-        response = self.client.get(url_for('index'))
+        response = self.client.get(url_for('main.index'))
         self.assertTrue(b'Todolists' in response.data)
 
     def test_register(self):
         # register a new account
-        response = self.client.post(url_for('register'), data={
+        response = self.client.post(url_for('auth.register'), data={
             'email': 'john@example.com',
             'username': 'john',
             'password': 'correcthorsebatterystaple',
             'password_confirmation': 'correcthorsebatterystaple'
         })
         self.assertTrue(response.status_code == 302)
-        self.assertTrue(
-            b'You successfully registered. Welcome!' in response.data
-        )
 
     def test_login(self):
         # login with the new account
-        response = self.client.post(url_for('login'), data={
+        response = self.client.post(url_for('auth.login'), data={
             'email': 'john@example.com',
             'password': 'correcthorsebatterystaple'
-        }, follow_redirects=True)
-        self.assertTrue(response.status_code == 200)
+        })
+        self.assertTrue(response.status_code == 302)
 
     def test_logout(self):
         # login with the new account
-        response = self.client.post(url_for('login'), data={
+        response = self.client.post(url_for('auth.login'), data={
             'email': 'john@example.com',
             'password': 'correcthorsebatterystaple'
         }, follow_redirects=True)
         # log out
-        response = self.client.get(url_for('logout'), follow_redirects=True)
+        response = self.client.get(url_for('auth.logout'), follow_redirects=True)
         self.assertTrue(b'You have been logged out' in response.data)

@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms import ValidationError
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 
+
 class LoginForm(Form):
     email = StringField('Email', validators=[Required(), Length(1, 64),
                                              Email()])
@@ -19,10 +20,10 @@ class RegistrationForm(Form):
         Required(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                                           'Usernames must have only letters, '
                                           'numbers, dots or underscores')])
-    password = PasswordField('Password', validators=[
-        Required(), EqualTo('password_confirmation',
-        message='Passwords must match.')
-    ])
+    password = PasswordField(
+      'Password', validators=[Required(), EqualTo('password_confirmation',
+                              message='Passwords must match.')]
+    )
     password_confirmation = PasswordField('Confirm password',
                                           validators=[Required()])
     submit = SubmitField('Register')

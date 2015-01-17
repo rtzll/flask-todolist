@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint
 
-main = Blueprint('api', __name__)
+api = Blueprint('api', __name__)
