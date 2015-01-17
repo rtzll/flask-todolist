@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.script import Manager
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.migrate import Migrate, MigrateCommand
+
 from app import create_app, db
 
 
 app = create_app('testing')
 manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
 
 
 @manager.command
@@ -14,18 +19,6 @@ def test(coverage=False):
     import unittest
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
-
-
-@manager.command
-def initdb():
-    """Creates all database tables."""
-    db.create_all()
-
-
-@manager.command
-def dropdb():
-    """Drops all database tables."""
-    db.drop_all()
 
 
 if __name__ == '__main__':
