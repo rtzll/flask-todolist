@@ -134,6 +134,8 @@
     position: relative;
     float: left;
     margin-bottom: 0; }
+  .navbar-item:last-child {
+    float: right; }
   .navbar-link {
     text-transform: uppercase;
     font-size: 11px;

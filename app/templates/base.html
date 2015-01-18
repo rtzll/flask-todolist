@@ -33,7 +33,7 @@
   <link rel="icon" type="image/png" href="../static/images/favicon.png" />
 
 </head>
-<body class="code-snippets-visible">
+<body>
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -45,21 +45,25 @@
     <nav class="navbar">
       <div class="container">
         <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="#">Flodolist</a></li>
-          <li class="navbar-item"><a class="navbar-link" href="#">Board</a></li>
-          <li class="navbar-item">
-            <a class="navbar-link" href="#" data-popover="#moreNavPopover">More</a>
+          <li class="navbar-item"><a class="navbar-link" href="{{ url_for('main.index' )}}">Flodolist</a></li>
+          {% if not user %}
+            <li class="navbar-item">
+              <a class="navbar-link" href="{{ url_for('auth.login' )}}">Login</a>
+          {% else %}
+            <li class="navbar-item">
+            <a class="navbar-link" href="{{ url_for('auth.login' )}}" data-popover="#moreNavPopover">{{user.username}}</a>
             <div id="moreNavPopover" class="popover">
               <ul class="popover-list">
                 <li class="popover-item">
-                  <a class="popover-link" href="https://github.com/dhg/Skeleton">first</a>
+                  <a class="popover-link" href="#">Profile</a>
                 </li>
                 <li class="popover-item">
-                  <a class="popover-link" href="https://github.com/dhg/Skeleton#browser-support">second</a>
+                  <a class="popover-link" href="{{ url_for('auth.logout' )}}">logout</a>
                 </li>
               </ul>
             </div>
           </li>
+          {% endif %}
         </ul>
       </div>
     </nav>

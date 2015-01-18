@@ -1,8 +1,7 @@
 $(document).ready(function() {
 
   // Variables
-  var $codeSnippets = $('.code-example-body'),
-      $nav = $('.navbar'),
+  var $nav = $('.navbar'),
       $body = $('body'),
       $window = $(window),
       $popoverLink = $('[data-popover]'),
