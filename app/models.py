@@ -3,7 +3,9 @@
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import url_for
 from flask.ext.login import UserMixin
+
 
 from . import db, login_manager
 
@@ -77,7 +79,7 @@ class TodoList(db.Model):
             'title': self.title,
             'created_at': self.created_at,
             'todos': url_for('api.get_todolist_todos',
-                                 id=self.id, _external=True),
+                                 todolist_id=self.id, _external=True),
             'todo_count': self.todolists.count()
         }
         return json_todolist
