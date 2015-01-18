@@ -9,7 +9,8 @@ from ..models import User
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    form = TodoForm()
+    return render_template('index.html', form=form)
 
 
 @main.route('/user/<username>')
