@@ -15,6 +15,7 @@ $(document).ready(function() {
     $popoverLink.on('click', openPopover)
     $document.on('click', closePopover)
     $('a[href^="#"]').on('click', smoothScroll)
+    $("input[type=text]:first").focus()
   }
 
   function smoothScroll(e) {
