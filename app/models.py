@@ -40,6 +40,17 @@ class User(UserMixin, db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
 
+    def to_json(self):
+        json_user = {
+            'username': self.username,
+            'member_since': self.member_since,
+            'last_seen': self.last_seen,
+            'todolists': url_for('api.get_user_todolists',
+                                 id=self.id, _external=True),
+            'todolist_count': self.todolists.count()
+        }
+        return json_user
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -49,8 +60,9 @@ def load_user(user_id):
 class TodoList(db.Model):
     __tablename__ = 'todolist'
     id = db.Column(db.Integer, primary_key=True)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(128))
+    created_at = db.Column(db.DateTime(), default=datetime.utcnow)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todos = db.relationship('Todo', backref='todolist', lazy='dynamic')
 
     def __init__(self, title, creator_id=None):
@@ -59,6 +71,16 @@ class TodoList(db.Model):
 
     def __repr__(self):
         return '<todolist: {0}>'.format(self.title)
+
+    def to_json(self):
+        json_todolist = {
+            'title': self.title,
+            'created_at': self.created_at,
+            'todos': url_for('api.get_todolist_todos',
+                                 id=self.id, _external=True),
+            'todo_count': self.todolists.count()
+        }
+        return json_todolist
 
 
 class Todo(db.Model):
@@ -84,3 +106,11 @@ class Todo(db.Model):
 
     def finished(self):
         self.finished_at = datetime.utcnow()
+
+    def to_json(self):
+        json_todo = {
+            'description': self.description,
+            'created_at': self.created_at,
+            'status' : 'open' if self.finished_at is None else 'finished'
+        }
+        return json_todo
