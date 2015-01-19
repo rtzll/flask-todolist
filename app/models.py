@@ -74,6 +74,9 @@ class TodoList(db.Model):
     def __repr__(self):
         return '<todolist: {0}>'.format(self.title)
 
+    def change_title(new_title):
+        self.title = new_title
+
     def to_json(self):
         json_todolist = {
             'title': self.title,
