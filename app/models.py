@@ -53,6 +53,10 @@ class User(UserMixin, db.Model):
         }
         return json_user
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -87,6 +91,10 @@ class TodoList(db.Model):
         }
         return json_todolist
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 class Todo(db.Model):
     __tablename__ = 'todo'
@@ -119,3 +127,7 @@ class Todo(db.Model):
             'status' : 'open' if self.finished_at is None else 'finished'
         }
         return json_todo
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
