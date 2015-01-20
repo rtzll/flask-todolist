@@ -1,4 +1,24 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <section class="header">
+      <h2 class="title">{{todolist.title}}</h2>
+      <div class="row">
+        <div class="three columns value-prop"></div>
+        <div class="six columns">
+          <form action="{{ url_for('main.todolist', id=todolist.id) }}" method=post>
+            {{ form.hidden_tag() }}
+            <dl>
+              <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo") }}
+              <dt>{{ form.submit }}
+            </dl>
+          </form>
+          <ul>
+            {% for todo in todolist.todos %}
+              <li>{{ todo.description }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+  </section>
 {% endblock %}
