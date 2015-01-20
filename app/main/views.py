@@ -4,7 +4,7 @@ from flask import render_template, redirect, request, url_for, flash
 
 from . import main
 from .forms import TodoForm
-from ..models import User, TodoList
+from ..models import User, Todo, TodoList
 
 
 @main.route('/')
@@ -28,17 +28,25 @@ def todolist(id):
     todolist = TodoList.query.filter_by(id=id).first_or_404()
     form = TodoForm()
     if form.validate_on_submit():
+        todo = Todo("generic description")
+        todo.todolist_id = todolist.id
+        todo.save()
         return redirect(url_for('main.todolist', id=id))
         flash('Todo added.')
     flash('There seems to be something wrong with your todo.')
-    return render_template('todolist.html', todos=todolist.todos, form=form)
+    return render_template('todolist.html', todolist=todolist, form=form)
 
 
-@main.route('/todolist/new')
+@main.route('/todolist/new', methods=['POST'])
 def new_todolist():
     form = TodoForm(todo=request.form.get('todo'))
-    if request.POST and form.validate():
+    # request.method == 'POST'
+    if form.validate():
         todolist = TodoList("")
+        todolist.save()
+        todo = Todo("Read the docs")
+        todo.todolist_id = todolist.id
+        todo.save()
         return redirect(url_for('main.todolist', id=todolist.id))
     flash('There seems to be something wrong with your todo.')
     return redirect(url_for('main.index'))
