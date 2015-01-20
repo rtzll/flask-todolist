@@ -6,7 +6,6 @@ from flask.ext.login import login_user, logout_user, login_required, \
 
 from . import auth
 from .forms import LoginForm, RegistrationForm
-from .. import db
 from ..models import User
 
 
@@ -37,8 +36,7 @@ def register():
         user = User(email=form.email.data,
                     username=form.username.data,
                     password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        user.save()
         flash('You successfully registered. Welcome!')
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)
