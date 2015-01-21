@@ -5,7 +5,7 @@ import unittest
 from flask import current_app
 
 from app import create_app, db
-from app.models import  User, Todo
+from app.models import  User, Todo, TodoList
 
 
 class TodolistTestCase(unittest.TestCase):
@@ -27,19 +27,16 @@ class TodolistTestCase(unittest.TestCase):
             'username': username,
             'password': 'correcthorsebatterystaple'
         }
-        user = User(**user_data)
-        db.session.add(user)
-        db.session.commit()
+        user = User(**user_data).save()
         return User.query.filter_by(username=username).first()
 
     def add_todo(self, description, user):
         todo_data = {
             'description': description,
+            'todolist_id': TodoList("").save().id,
             'creator_id': user.id
         }
-        read_todo = Todo(**todo_data)
-        db.session.add(read_todo)
-        db.session.commit()
+        read_todo = Todo(**todo_data).save()
         return Todo.query.filter_by(id=read_todo.id).first()
 
     def test_app_exists(self):
