@@ -105,8 +105,9 @@ class Todo(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolist.id'))
 
-    def __init__(self, description, creator_id=None):
+    def __init__(self, description, todolist_id, creator_id=None):
         self.description = description
+        self.todolist_id = todolist_id
         self.creator_id = creator_id
 
     def __repr__(self):

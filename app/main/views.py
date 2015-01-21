@@ -28,9 +28,7 @@ def todolist(id):
     todolist = TodoList.query.filter_by(id=id).first_or_404()
     form = TodoForm()
     if form.validate_on_submit():
-        todo = Todo("generic description")
-        todo.todolist_id = todolist.id
-        todo.save()
+        Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=id))
         flash('Todo added.')
     flash('There seems to be something wrong with your todo.')
@@ -40,13 +38,10 @@ def todolist(id):
 @main.route('/todolist/new', methods=['POST'])
 def new_todolist():
     form = TodoForm(todo=request.form.get('todo'))
-    # request.method == 'POST'
     if form.validate():
         todolist = TodoList("")
         todolist.save()
-        todo = Todo("Read the docs")
-        todo.todolist_id = todolist.id
-        todo.save()
+        Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     flash('There seems to be something wrong with your todo.')
     return redirect(url_for('main.index'))
