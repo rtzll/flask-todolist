@@ -56,6 +56,7 @@ class User(UserMixin, db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+        return self
 
 
 @login_manager.user_loader
@@ -94,6 +95,7 @@ class TodoList(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+        return self
 
 
 class Todo(db.Model):
@@ -132,3 +134,4 @@ class Todo(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+        return self

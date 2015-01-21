@@ -39,8 +39,7 @@ def todolist(id):
 def new_todolist():
     form = TodoForm(todo=request.form.get('todo'))
     if form.validate():
-        todolist = TodoList("")
-        todolist.save()
+        todolist = TodoList("").save()
         Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     flash('There seems to be something wrong with your todo.')
