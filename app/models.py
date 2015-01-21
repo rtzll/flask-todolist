@@ -104,6 +104,7 @@ class Todo(db.Model):
     description = db.Column(db.String(128))
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     finished_at = db.Column(db.DateTime, index=True, default=None)
+    finished = db.Column(db.Boolean, default=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolist.id'))
 
@@ -117,17 +118,18 @@ class Todo(db.Model):
         if self.creator_id is None:
             return '<todo: {0}>'.format(description)
         creator = User.query.filter_by(id=self.creator_id).first().username
-        status = 'open' if self.finished_at is None else 'finished'
+        status = 'open' if self.finished else 'finished'
         return '<{0} todo: {1} from {2}>'.format(status, description, creator)
 
-    def finished(self):
+    def finished_todo(self):
+        self.finished = True
         self.finished_at = datetime.utcnow()
 
     def to_json(self):
         json_todo = {
             'description': self.description,
             'created_at': self.created_at,
-            'status' : 'open' if self.finished_at is None else 'finished'
+            'status' : 'open' if self.finished else 'finished'
         }
         return json_todo
 
