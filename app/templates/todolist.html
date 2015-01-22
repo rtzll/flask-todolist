@@ -13,9 +13,20 @@
               <dt>{{ form.submit }}
             </dl>
           </form>
+          <div class="docs-header">{{ todolist.count_open() }} open todos</div>
           <ul>
             {% for todo in todolist.todos %}
-              <li>{{ todo.description }}</a></li>
+              {% if not todo.is_finished %}
+                <li>{{ todo.description }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <div class="docs-header">{{ todolist.count_finished() }} finished todos</div>
+          <ul>
+            {% for todo in todolist.todos %}
+              {% if todo.is_finished %}
+                <li>{{ todo.description }}</a></li>
+              {% endif %}
             {% endfor %}
           </ul>
         </div>
