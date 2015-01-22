@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask.ext.login import UserMixin
 
-
 from . import db, login_manager
 
 
@@ -97,6 +96,15 @@ class TodoList(db.Model):
         db.session.commit()
         return self
 
+    def count_todos(self):
+        return self.todos.order_by(None).count()
+
+    def count_finished(self):
+        return self.todos.filter_by(is_finished=True).count()
+
+    def count_open(self):
+        return self.todos.filter_by(is_finished=False).count()
+
 
 class Todo(db.Model):
     __tablename__ = 'todo'
@@ -104,7 +112,7 @@ class Todo(db.Model):
     description = db.Column(db.String(128))
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     finished_at = db.Column(db.DateTime, index=True, default=None)
-    finished = db.Column(db.Boolean, default=False)
+    is_finished = db.Column(db.Boolean, default=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolist.id'))
 
@@ -118,18 +126,18 @@ class Todo(db.Model):
         if self.creator_id is None:
             return '<todo: {0}>'.format(description)
         creator = User.query.filter_by(id=self.creator_id).first().username
-        status = 'open' if self.finished else 'finished'
+        status = 'open' if self.is_finished else 'finished'
         return '<{0} todo: {1} from {2}>'.format(status, description, creator)
 
     def finished_todo(self):
-        self.finished = True
+        self.is_finished = True
         self.finished_at = datetime.utcnow()
 
     def to_json(self):
         json_todo = {
             'description': self.description,
             'created_at': self.created_at,
-            'status' : 'open' if self.finished else 'finished'
+            'status' : 'open' if self.is_finished else 'finished'
         }
         return json_todo
 
