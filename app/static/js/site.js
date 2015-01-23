@@ -9,12 +9,15 @@ $(document).ready(function() {
       $document = $(document);
 
   function init() {
-    $window.on('scroll', onScroll)
-    $window.on('resize', resize)
-    $popoverLink.on('click', openPopover)
-    $document.on('click', closePopover)
-    $('a[href^="#"]').on('click', smoothScroll)
-    $("input[type=text]:first").focus()
+    $window.on('scroll', onScroll);
+    $window.on('resize', resize);
+    $popoverLink.on('click', openPopover);
+    $document.on('click', closePopover);
+    $('a[href^="#"]').on('click', smoothScroll);
+    $("input[type=text]:first").focus();
+    $('input[type=text]:first').on('keypress click', function() {
+        $('.has-error').hide();
+    });
   }
 
   function smoothScroll(e) {
@@ -32,16 +35,16 @@ $(document).ready(function() {
   }
 
   function openPopover(e) {
-    e.preventDefault()
+    e.preventDefault();
     closePopover();
     var popover = $($(this).data('popover'));
-    popover.toggleClass('open')
+    popover.toggleClass('open');
     e.stopImmediatePropagation();
   }
 
   function closePopover(e) {
     if($('.popover.open').length > 0) {
-      $('.popover').removeClass('open')
+      $('.popover').removeClass('open');
     }
   }
 
@@ -52,9 +55,9 @@ $(document).ready(function() {
 });
 
   function resize() {
-    $body.removeClass('has-docked-nav')
-    navOffsetTop = $nav.offset().top
-    onScroll()
+    $body.removeClass('has-docked-nav');
+    navOffsetTop = $nav.offset().top;
+    onScroll();
   }
 
   function onScroll() {

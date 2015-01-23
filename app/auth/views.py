@@ -17,7 +17,6 @@ def login():
         if user is not None:
             login_user(user)
             return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Invalid username or password.')
     return render_template('login.html', form=form)
 
 
@@ -36,6 +35,5 @@ def register():
         user = User(email=form.email.data,
                     username=form.username.data,
                     password=form.password.data).save()
-        flash('You successfully registered. Welcome!')
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)

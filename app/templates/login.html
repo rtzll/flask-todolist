@@ -6,7 +6,9 @@
     <div class="row">
       <div class="three columns value-prop"></div>
       <div class="six columns">
-        {% if form.errors %}<p class=error><strong>Your form contains errors.</strong>  {%   endif %}
+        {% if form.errors %}
+          <div class="has-error"><strong>Unable to login. Typo?</strong></div>
+        {%   endif %}
         <form action="{{ url_for('auth.login') }}" method=post>
           {{ form.hidden_tag() }}
           <dl>

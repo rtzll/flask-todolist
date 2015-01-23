@@ -12,7 +12,6 @@ def index():
     form = TodoForm()
     if form.validate_on_submit():
         return redirect(url_for('main.new_todolist'))
-    flash('There seems to be something wrong with your todo.')
     return render_template('index.html', form=form)
 
 
@@ -31,7 +30,6 @@ def todolist(id):
         Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=id))
         flash('Todo added.')
-    flash('There seems to be something wrong with your todo.')
     return render_template('todolist.html', todolist=todolist, form=form)
 
 
@@ -42,5 +40,4 @@ def new_todolist():
         todolist = TodoList("").save()
         Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=todolist.id))
-    flash('There seems to be something wrong with your todo.')
     return redirect(url_for('main.index'))
