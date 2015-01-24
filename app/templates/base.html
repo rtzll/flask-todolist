@@ -45,20 +45,20 @@
     <nav class="navbar">
       <div class="container">
         <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="{{ url_for('main.index' )}}">Flodolist</a></li>
-          {% if not user %}
+          <li class="navbar-item"><a class="navbar-link" href="{{ url_for('main.index') }}">Flodolist</a></li>
+          {% if not current_user.is_authenticated() %}
             <li class="navbar-item">
-              <a class="navbar-link" href="{{ url_for('auth.login' )}}">Login</a>
+              <a class="navbar-link" href="{{ url_for('auth.login') }}">Login</a>
           {% else %}
             <li class="navbar-item">
-            <a class="navbar-link" href="{{ url_for('auth.login' )}}" data-popover="#moreNavPopover">{{user.username}}</a>
+            <a class="navbar-link" href="#" data-popover="#moreNavPopover">{{ current_user.username }}</a>
             <div id="moreNavPopover" class="popover">
               <ul class="popover-list">
                 <li class="popover-item">
-                  <a class="popover-link" href="#">Profile</a>
+                  <a class="popover-link" href="{{ url_for('main.todolist_overview', id=current_user.id) }}">Your Todolists</a>
                 </li>
                 <li class="popover-item">
-                  <a class="popover-link" href="{{ url_for('auth.logout' )}}">logout</a>
+                  <a class="popover-link" href="{{ url_for('auth.logout') }}">logout</a>
                 </li>
               </ul>
             </div>
