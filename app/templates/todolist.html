@@ -18,17 +18,17 @@
           </form>
         </div>
         <div class="row">
-          <div class="six columns">
-            <h6 class="docs-header">{{ todolist.count_open() }} open</h6>
+          <div class="one-half column open-todos">
+            <h6 class="docs-header open-todos">{{ todolist.count_open() }} open</h6>
             <ul>
               {% for todo in todolist.todos %}
                 {% if not todo.is_finished %}
-                  <li>{{ todo.description }}</a></li>
+                  <li><input type="checkbox"> {{ todo.description }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
           </div>
-          <div class="six columns">
+          <div class="one-half column finished-todos">
             <h6 class="docs-header">{{ todolist.count_finished() }} finished</h6>
             <ul>
               {% for todo in todolist.todos %}
