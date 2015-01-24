@@ -85,9 +85,11 @@ class TodoList(db.Model):
         json_todolist = {
             'title': self.title,
             'created_at': self.created_at,
+            'total_todo_count': self.count_todos(),
+            'open_todo_count': self.count_open(),
+            'finished_todo_count': self.count_finished(),
             'todos': url_for('api.get_todolist_todos',
-                                 todolist_id=self.id, _external=True),
-            'todo_count': self.todolists.count()
+                                 todolist_id=self.id, _external=True)
         }
         return json_todolist
 
