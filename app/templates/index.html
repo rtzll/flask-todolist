@@ -5,7 +5,7 @@
       <div class="row">
         <div class="three columns value-prop"></div>
         <div class="six columns">
-          <form action="{{ url_for('main.add_todolist') }}" method=post>
+          <form action="{{ url_for('main.new_todolist') }}" method=post>
             {{ form.hidden_tag() }}
             <dl>
               <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo") }}
