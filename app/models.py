@@ -40,6 +40,7 @@ class User(UserMixin, db.Model):
     def seen(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
+        return self
 
     def to_json(self):
         json_user = {

@@ -15,7 +15,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None:
-            login_user(user)
+            login_user(user.seen())
             return redirect(request.args.get('next') or url_for('main.index'))
     return render_template('login.html', form=form)
 
