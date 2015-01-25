@@ -19,19 +19,18 @@
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="../static/css/normalize.css">
-  <link rel="stylesheet" href="../static/css/skeleton.css">
-  <link rel="stylesheet" href="../static/css/custom.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 
   <!-- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="../static/js/site.js"></script>
+  <script src="{{ url_for('static', filename='js/site.js') }}"></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="../static/images/favicon.png" />
-
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}" />
 </head>
 <body>
 
@@ -55,7 +54,7 @@
             <div id="moreNavPopover" class="popover">
               <ul class="popover-list">
                 <li class="popover-item">
-                  <a class="popover-link" href="{{ url_for('main.todolist_overview', id=current_user.id) }}">Your Todolists</a>
+                  <a class="popover-link" href="{{ url_for('main.todolist_overview') }}">Your Todolists</a>
                 </li>
                 <li class="popover-item">
                   <a class="popover-link" href="{{ url_for('auth.logout') }}">logout</a>
