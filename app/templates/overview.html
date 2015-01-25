@@ -1,4 +1,32 @@
 {% extends "base.html" %}
 
 {% block body %}
+  <section class="header">
+    <h2 class="title">Todolist overview</h2>
+    <div class="row">
+      <div class="three columns value-prop"></div>
+      <div class="six columns">
+        {% if form.errors %}
+          <div class="has-error"><strong>Your todo is longer than 128 characters.</strong></div>
+        {% endif %}
+        <form action="{{ url_for('main.add_todolist') }}" method=post>
+          {{ form.hidden_tag() }}
+          <dl>
+            <dd>{{ form.title(class_="u-full-width", placeholder="Enter a title to start a new todolist", value="") }}
+            <dt>{{ form.submit }}
+          </dl>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="u-full-width">
+        <h6 class="docs-header todolist-titles">All your todolists</h6>
+        <ul>
+          {% for todolist in current_user.todolists %}
+            <li><a href="#">{{ todolist.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
 {% endblock %}
