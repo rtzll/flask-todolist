@@ -22,11 +22,13 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  {% block css %}{% endblock %}
 
   <!-- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="{{ url_for('static', filename='js/site.js') }}"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/site.js') }}"></script>
+  {% block js %}{% endblock %}
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
