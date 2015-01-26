@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block js %}
-<script src="{{ url_for('static', filename='js/jquery.tablesorter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.tablesorter.min.js') }}"></script>
 <script type="text/javascript" id="js">
 $(document).ready(function() {
       $("#todolist-overview-table").tablesorter();
