@@ -25,6 +25,9 @@ def user(username):
 
 @main.route('/todolists', methods=['GET', 'POST'])
 def todolist_overview():
+    # unregistered users don't have access to an overview
+    if not current_user.is_authenticated():
+        return redirect(url_for('main.index'))
     form = TodoListForm()
     if form.validate_on_submit():
         return redirect(url_for('main.add_todolist'))
