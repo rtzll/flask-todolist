@@ -23,7 +23,7 @@
         <h6 class="docs-header todolist-titles">All your todolists</h6>
         <ul>
           {% for todolist in current_user.todolists %}
-            <li><a href="#">{{ todolist.title }}</a></li>
+            <li><a href="{{ url_for(main.todolist, id=todolist.id) }}">{{ todolist.title }}</a></li>
           {% endfor %}
         </ul>
       </div>
