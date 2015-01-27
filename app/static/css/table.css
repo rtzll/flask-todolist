@@ -6,6 +6,10 @@ table.tablesorter {
     text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+    padding-left: 20px;
+    text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
     border: 1px solid #FFF;
 }
 table.tablesorter th:last-child{
