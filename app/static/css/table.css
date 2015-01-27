@@ -5,8 +5,14 @@ table.tablesorter {
     width: 100%;
     text-align: left;
 }
-table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+table.tablesorter thead tr th,
+table.tablesorter tbody tr td,
+table.tablesorter tfoot tr th {
     padding-left: 20px;
+    text-align: center;
+}
+table.tablesorter th:first-child,
+table.tablesorter tbody tr td:first-child {
     text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
