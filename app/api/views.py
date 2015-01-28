@@ -30,7 +30,7 @@ def get_user_todolists(id):
 
 
 @api.route('/user/<int:user_id>/todolist/<int:todolist_id>')
-def get_todolist_todos(todolist_id, user_id=None):
+def get_todolist_todos(todolist_id, user_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
         'todos': [todo.to_json() for todo in todolist.todos]
