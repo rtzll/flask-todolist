@@ -16,13 +16,6 @@ def index():
     return render_template('index.html', form=form)
 
 
-@main.route('/user/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    todos = user.todos.order_by(Todo.timestamp.desc())
-    return render_template('user.html', user=user, todos=todos)
-
-
 @main.route('/todolists', methods=['GET', 'POST'])
 def todolist_overview():
     # unregistered users don't have access to an overview
