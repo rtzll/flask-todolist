@@ -47,7 +47,8 @@ class User(UserMixin, db.Model):
             'username': self.username,
             'member_since': self.member_since,
             'last_seen': self.last_seen,
-            'todolists': url_for('api.get_user_todolists', id=self.id),
+            'todolists': url_for('api.get_user_todolists',
+                                 id=self.id, _external=True),
             'todolist_count': self.todolists.count()
         }
         return json_user
@@ -89,7 +90,8 @@ class TodoList(db.Model):
             'open_todo_count': self.count_open(),
             'finished_todo_count': self.count_finished(),
             'todos': url_for('api.get_todolist_todos',
-                             todolist_id=self.id, user_id=self.creator_id)
+                             todolist_id=self.id, user_id=self.creator_id,
+                             _external=True)
         }
         return json_todolist
 
