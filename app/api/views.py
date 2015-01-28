@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request, current_app, url_for
+from flask import jsonify, request, current_app, url_for, make_response
 
 from . import api
 from ..models import User, TodoList
@@ -35,3 +35,8 @@ def get_todolist_todos(todolist_id, user_id):
     return jsonify({
         'todos': [todo.to_json() for todo in todolist.todos]
     })
+
+
+@api.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
