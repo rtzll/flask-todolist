@@ -2,6 +2,6 @@
 
 from flask import Blueprint
 
-filters_blueprint = Blueprint('filters_blueprint', __name__)
+util = Blueprint('util', __name__)
 
 from . import filters

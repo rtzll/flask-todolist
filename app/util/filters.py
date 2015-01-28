@@ -2,12 +2,12 @@
 
 from datetime import datetime
 
-from . import filters_blueprint
+from . import util
 
 
 # Thanks to Dan Jacob and Sean Vieira for making the following snippet
 # available under http://flask.pocoo.org/snippets/33/
-@filters_blueprint.app_template_filter('humanize')
+@util.app_template_filter('humanize')
 def humanize_time(dt, past_="ago", future_="from now", default="just now"):
     """
     Returns string representing "time since"
