@@ -14,6 +14,16 @@ def get_users():
     })
 
 
+@api.route('/user/', methods=['POST'])
+def add_user():
+    try:
+        user = User(request.json.get('username'), request.json.get('email'),
+                    request.json.get('password')).save()
+    except:
+        abort(400)
+    return jsonify({'user' : user.to_json()}, 201)
+
+
 @api.route('/user/<int:id>')
 def get_user(id):
     user = User.query.get_or_404(id)
@@ -37,6 +47,22 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
+@api.errorhandler(400)
+def not_found(error):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+@api.errorhandler(401)
+def not_found(error):
+    return make_response(jsonify({'error': 'Unauthorized'}), 401)
+
+@api.errorhandler(403)
+def not_found(error):
+    return make_response(jsonify({'error': 'Forbidden'}), 403)
+
 @api.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+@api.errorhandler(500)
+def not_found(error):
+    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
