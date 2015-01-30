@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request, current_app, url_for, make_response
+from flask import jsonify, request, current_app, url_for, make_response, abort
 
 from . import api
 from ..models import User, TodoList
@@ -47,22 +47,18 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
-@api.errorhandler(400)
-def not_found(error):
+@api.app_errorhandler(400)
+def bad_request(error):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
 
-@api.errorhandler(401)
-def not_found(error):
+@api.app_errorhandler(401)
+def unauthorized(error):
     return make_response(jsonify({'error': 'Unauthorized'}), 401)
 
-@api.errorhandler(403)
-def not_found(error):
+@api.app_errorhandler(403)
+def forbidden(error):
     return make_response(jsonify({'error': 'Forbidden'}), 403)
 
-@api.errorhandler(404)
+@api.app_errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
-
-@api.errorhandler(500)
-def not_found(error):
-    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
