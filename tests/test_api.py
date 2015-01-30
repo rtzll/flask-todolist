@@ -23,28 +23,71 @@ class TodolistAPITestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def add_user(self, username):
+    @staticmethod
+    def setup_userdata(username):
         user_data = {
             'email': username + '@example.com',
             'username': username,
             'password': 'correcthorsebatterystaple'
         }
+        return user_data
+
+    def add_user(self, username):
+        user_data = self.setup_userdata(username)
         user = User(**user_data)
         db.session.add(user)
         db.session.commit()
         return User.query.filter_by(username=username).first()
 
+    def add_user_through_json_post(self, username):
+        user_data = self.setup_userdata(username)
+        return self.client.post(url_for('api.add_user'),
+                                json.dumps(user_data))
+
     def test_json_response_is_not_empty_after_adding_a_user(self):
         new_user = self.add_user('new_user')
         response = self.client.get(url_for('api.get_users'))
-        self.assertTrue(response.status_code == 200)
+        self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertTrue(json_response['users'] != [])
+        self.assertNotEqual(json_response['users'], [])
 
     def test_new_user_shows_in_json_response(self):
         username = 'adam'
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_users'))
-        self.assertTrue(response.status_code == 200)
+        self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertTrue(json_response['users'][0]['username'] == username)
+        self.assertEqual(json_response['users'][0]['user']['username'],
+                         username)
+
+    def test_bad_request(self):
+        post_response = self.client.post(url_for('api.add_user'), '')
+        self.assertEqual(post_response.status_code, 400)
+
+        json_response = json.loads(post_response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Bad Request')
+
+        response = self.client.get(url_for('api.get_users'))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['users'], [])
+
+    def test_not_found(self):
+        response = self.client.get('/wrong/url')
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertTrue(json_response['error'] == 'Not found')
+
+    def test_adding_new_user_through_post_shows_in_json_response(self):
+        username = 'adam'
+        post_response = self.add_user_through_json_post(username)
+        self.assertEqual(post_response.status_code, 201)
+
+        response = self.client.get(url_for('api.get_users'))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['users'][0]['user']['username'],
+                         username)
