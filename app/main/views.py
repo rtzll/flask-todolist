@@ -54,7 +54,3 @@ def add_todolist():
         todolist = TodoList(form.title.data, current_user.get_id()).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     return redirect(url_for('main.index'))
-
-@main.app_errorhandler(404)
-def page_not_found(error):
-    return render_template('404.html'), 404
