@@ -8,7 +8,7 @@ table.tablesorter {
 table.tablesorter thead tr th,
 table.tablesorter tbody tr td,
 table.tablesorter tfoot tr th {
-    padding-left: 20px;
+    padding: 10px;
     text-align: center;
 }
 table.tablesorter th:first-child,
