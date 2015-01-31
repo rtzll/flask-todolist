@@ -10,24 +10,25 @@ from ..models import User, TodoList
 def get_users():
     users = User.query.all()
     return jsonify({
-        'users' : [{'user': user.to_json()} for user in users]
+        'users': [{'user': user.to_json()} for user in users]
     })
 
 
 @api.route('/user/', methods=['POST'])
 def add_user():
     try:
-        user = User(request.json.get('username'), request.json.get('email'),
-                    request.json.get('password')).save()
+        user = User(username=request.json.get('username'),
+                    email=request.json.get('email'),
+                    password=request.json.get('password')).save()
     except:
         abort(400)
-    return jsonify({'user' : user.to_json()}, 201)
+    return jsonify({'user': user.to_json()}), 201
 
 
 @api.route('/user/<int:id>')
 def get_user(id):
     user = User.query.get_or_404(id)
-    return jsonify({'user' : user.to_json()})
+    return jsonify({'user': user.to_json()})
 
 
 @api.route('/user/<int:id>/todolists')
@@ -47,18 +48,25 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
-@api.app_errorhandler(400)
+@api.errorhandler(400)
 def bad_request(error):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
 
-@api.app_errorhandler(401)
+
+@api.errorhandler(401)
 def unauthorized(error):
     return make_response(jsonify({'error': 'Unauthorized'}), 401)
 
-@api.app_errorhandler(403)
+
+@api.errorhandler(403)
 def forbidden(error):
     return make_response(jsonify({'error': 'Forbidden'}), 403)
 
-@api.app_errorhandler(404)
+
+@api.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+def internal_server_error(error):
+    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
