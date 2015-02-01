@@ -1,8 +1,11 @@
 *.pyc
 *.pyo
+*.egg
 *.egg-info
 *.db
+.idea
 build
+docs/_build
 dist
 results
 __pycache__
