@@ -69,7 +69,8 @@ class TodolistAPITestCase(unittest.TestCase):
                          username)
 
     def test_bad_request(self):
-        post_response = self.client.post(url_for('api.add_user'), data='')
+        post_response = self.client.post(url_for('api.add_user'),
+                                         headers=self.get_headers(), data='')
         self.assertEqual(post_response.status_code, 400)
 
         json_response = json.loads(post_response.data.decode('utf-8'))
