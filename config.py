@@ -24,7 +24,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR,
                                                           'todolist-test.db')
-    # WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = False
     import logging
     logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
