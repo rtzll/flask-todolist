@@ -25,7 +25,8 @@ class TodolistTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def add_user(self, username):
+    @staticmethod
+    def add_user(username):
         user_data = {
             'email': username + '@example.com',
             'username': username,
@@ -34,7 +35,8 @@ class TodolistTestCase(unittest.TestCase):
         user = User(**user_data).save()
         return User.query.filter_by(username=username).first()
 
-    def add_todo(self, description, user, todolist_id=None):
+    @staticmethod
+    def add_todo(description, user, todolist_id=None):
         todo_data = {
             'description': description,
             'todolist_id': todolist_id or TodoList("").save().id,
