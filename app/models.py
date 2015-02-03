@@ -72,9 +72,10 @@ class TodoList(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todos = db.relationship('Todo', backref='todolist', lazy='dynamic')
 
-    def __init__(self, title, creator_id=None):
+    def __init__(self, title, creator_id=None, created_at=datetime.utcnow):
         self.title = title
         self.creator_id = creator_id
+        self.created_at = created_at
 
     def __repr__(self):
         return '<todolist: {0}>'.format(self.title)
@@ -120,10 +121,12 @@ class Todo(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolist.id'))
 
-    def __init__(self, description, todolist_id, creator_id=None):
+    def __init__(self, description, todolist_id,
+                creator_id=None, created_at=datetime.utcnow):
         self.description = description
         self.todolist_id = todolist_id
         self.creator_id = creator_id
+        self.created_at = created_at
 
     def __repr__(self):
         description = self.description

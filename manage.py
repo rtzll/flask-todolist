@@ -21,5 +21,11 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
+@manager.command
+def fill_db():
+    from fake_generator import FakeGenerator
+    FakeGenerator().generate_fake_data()
+
+
 if __name__ == '__main__':
     manager.run()
