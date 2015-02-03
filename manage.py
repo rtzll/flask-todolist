@@ -20,7 +20,7 @@ def test():
 
 @manager.command
 def fill_db():
-    from fake_generator import FakeGenerator
+    from utils.fake_generator import FakeGenerator
     FakeGenerator().generate_fake_data()
 
 
