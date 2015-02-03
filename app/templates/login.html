@@ -12,7 +12,7 @@
         <form action="{{ url_for('auth.login') }}" method=post>
           {{ form.hidden_tag() }}
           <dl>
-            <dd>{{ form.email(class_="u-full-width", placeholder="Email") }}
+            <dd>{{ form.email_or_username(class_="u-full-width", placeholder="Email or Username") }}
             <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
             <dt>{{ form.submit }}
           </dl>

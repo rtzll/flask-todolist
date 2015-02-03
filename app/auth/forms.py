@@ -9,8 +9,9 @@ from ..models import User
 
 
 class LoginForm(Form):
-    email = StringField('Email', validators=[Required(), Length(1, 64),
-                                             Email()])
+    email_or_username = StringField(
+      'Email or Username', validators=[Required(), Length(1, 64)]
+    )
     password = PasswordField('Password', validators=[Required()])
     submit = SubmitField('Log In')
 

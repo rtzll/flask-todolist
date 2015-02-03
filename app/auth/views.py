@@ -13,9 +13,15 @@ from ..models import User
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is not None:
-            login_user(user.seen())
+        user_by_email = User.query.filter_by(
+            email=form.email_or_username.data).first()
+        user_by_name = User.query.filter_by(
+            username=form.email_or_username.data).first()
+        if user_by_email is not None:
+            login_user(user_by_email.seen())
+            return redirect(request.args.get('next') or url_for('main.index'))
+        if user_by_name is not None:
+            login_user(user_by_name.seen())
             return redirect(request.args.get('next') or url_for('main.index'))
     return render_template('login.html', form=form)
 
