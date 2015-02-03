@@ -4,7 +4,7 @@ import os
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
-class Config:
+class Config(object):
     SECRET_KEY ='development-key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
