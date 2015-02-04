@@ -139,6 +139,7 @@ class Todo(db.Model):
     def finished_todo(self):
         self.is_finished = True
         self.finished_at = datetime.utcnow()
+        self.save()
 
     def to_json(self):
         json_todo = {

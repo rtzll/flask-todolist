@@ -21,7 +21,7 @@ def test():
 @manager.command
 def fill_db():
     from utils.fake_generator import FakeGenerator
-    FakeGenerator().generate_fake_data()
+    FakeGenerator().start()  # side effect: deletes existing data
 
 
 if __name__ == '__main__':

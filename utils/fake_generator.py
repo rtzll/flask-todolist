@@ -10,17 +10,13 @@ from app.models import User, Todo, TodoList
 
 class FakeGenerator(object):
 
-    def __init__(self):
+    def __init__(self, count=42):
         # in case the tables haven't been created already
         db.drop_all()
         db.create_all()
-        self.users = []
-        self.todolists = []
-        self.todos = []
 
     def genereate_fake_users(self, count=42):
         for i in xrange(count):
-
             try:
                 user = User(email=forgery_py.internet.email_address(),
                             username=forgery_py.internet.user_name(True),
@@ -31,29 +27,33 @@ class FakeGenerator(object):
                 # unlucky, we tried an existing email or username
                 pass  # me the dice I'm feeling lucky again!
 
-            else:
-                self.users.append(user)
-
     def genereate_fake_todolists(self, count=42):
         # for the creator relation we need users
-        assert self.users != []
+        users = User.query.all()
+        assert users != []
         for i in xrange(count):
             todolist = TodoList(title=forgery_py.forgery.lorem_ipsum.title(),
-                                creator_id=random.choice(self.users).id,
+                                creator_id=random.choice(users).id,
                                 created_at=forgery_py.date.date(True)).save()
-            self.todolists.append(todolist)
 
     def genereate_fake_todo(self, count=42):
         # for the todolist relation we need todolists
-        assert self.todolists != []
+        todolists = TodoList.query.all()
+        assert todolists != []
         for i in xrange(count):
             todo = Todo(description=forgery_py.forgery.lorem_ipsum.words(),
-                        todolist_id=random.choice(self.todolists).id,
+                        todolist_id=random.choice(todolists).id,
                         created_at=forgery_py.date.date(True)).save()
-            self.todos.append(todo)
+            if random.choice([True, False]):
+                todo.finished_todo()
 
 
     def generate_fake_data(self, count=42):
+        # generation must follow this order, as each builds on the previous
         self.genereate_fake_users(count)
         self.genereate_fake_todolists(count*2)
-        self.genereate_fake_todolists(count*3)
+        self.genereate_fake_todo(count*4)
+
+
+    def start(self, count=42):
+        self.generate_fake_data(count)
