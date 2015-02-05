@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import datetime
 import forgery_py
 
 from sqlalchemy.exc import InvalidRequestError, IntegrityError
@@ -18,10 +19,12 @@ class FakeGenerator(object):
     def genereate_fake_users(self, count=42):
         for i in xrange(count):
             try:
+                dt = datetime.datetime.combine(forgery_py.date.date(True),
+                                               datetime.time())
                 user = User(email=forgery_py.internet.email_address(),
                             username=forgery_py.internet.user_name(True),
                             password="correcthorsebatterystaple",
-                            member_since=forgery_py.date.date(True)).save()
+                            member_since=dt).save()
 
             except (InvalidRequestError, IntegrityError), err:
                 # unlucky, we tried an existing email or username
@@ -32,18 +35,22 @@ class FakeGenerator(object):
         users = User.query.all()
         assert users != []
         for i in xrange(count):
+            dt = datetime.datetime.combine(forgery_py.date.date(True),
+                                           datetime.time())
             todolist = TodoList(title=forgery_py.forgery.lorem_ipsum.title(),
                                 creator_id=random.choice(users).id,
-                                created_at=forgery_py.date.date(True)).save()
+                                created_at=dt).save()
 
     def genereate_fake_todo(self, count=42):
         # for the todolist relation we need todolists
         todolists = TodoList.query.all()
         assert todolists != []
         for i in xrange(count):
+            dt = datetime.datetime.combine(forgery_py.date.date(True),
+                                           datetime.time())
             todo = Todo(description=forgery_py.forgery.lorem_ipsum.words(),
                         todolist_id=random.choice(todolists).id,
-                        created_at=forgery_py.date.date(True)).save()
+                        created_at=dt).save()
             if random.choice([True, False]):
                 todo.finished_todo()
 
