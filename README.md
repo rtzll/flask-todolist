@@ -6,22 +6,23 @@ extensions by building a smallish web app with some of the most basic features.
 ### Explore
 To try out the app yourself install the requirements.
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
-And than start the server(default: http://localhost:5000)
+For your exploration you might find it useful to have some data.
+```
+python manage.py fill_db
+```
+And then start the server(default: http://localhost:5000)
 ```
 python manage.py runserver
 ```
 
-#### Structure
+### Structure
 Usage               | Flask-Extension  
 ------------------- | -----------------------
 Model & Database    | (Flask-)SQLAlchemy
 Forms               | Flask-WTF
 Login               | Flask-Login
-Database Migrations | Flask-Migrate & Alembic
+Extras              | Flask-Script
 
-*Note*: I'm somewhat unhappy with the database migrations.
-For some reason migrations don't work properly. After changing the model and
-running `python manage.py db migrate` it runs into an error which have yet to
-understand.
+*Note*: I was using Flask-Migrate, but for the scope of this project it seemed unfitting.
