@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request, current_app, url_for, make_response, abort
+from flask import jsonify, request, abort
 
 from . import api
-from ..models import User, TodoList
+from ..models import User, Todo, TodoList
 
 
 @api.route('/user/')
@@ -12,6 +12,12 @@ def get_users():
     return jsonify({
         'users': [{'user': user.to_json()} for user in users]
     })
+
+
+@api.route('/user/<int:id>')
+def get_user(id):
+    user = User.query.get_or_404(id)
+    return jsonify({'user': user.to_json()})
 
 
 @api.route('/user/', methods=['POST'])
@@ -25,12 +31,6 @@ def add_user():
     return jsonify({'user': user.to_json()}), 201
 
 
-@api.route('/user/<int:id>')
-def get_user(id):
-    user = User.query.get_or_404(id)
-    return jsonify({'user': user.to_json()})
-
-
 @api.route('/user/<int:id>/todolists')
 def get_user_todolists(id):
     user = User.query.get_or_404(id)
@@ -38,6 +38,16 @@ def get_user_todolists(id):
     return jsonify({
         'todolists': [todolist.to_json() for todolist in todolists]
     })
+
+
+@api.route('/user/<int:id>/todolists', methods=['POST'])
+def add_user_todolists(id):
+    try:
+        todolist = TodoList(title=request.json.get('title'),
+                            creator_id=id).save()
+    except:
+        abort(400)
+    return jsonify({'todolist': todolist.to_json()}), 201
 
 
 @api.route('/user/<int:user_id>/todolist/<int:todolist_id>')
@@ -48,25 +58,11 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
-@api.errorhandler(400)
-def bad_request(error):
-    return make_response(jsonify({'error': 'Bad Request'}), 400)
-
-
-@api.errorhandler(401)
-def unauthorized(error):
-    return make_response(jsonify({'error': 'Unauthorized'}), 401)
-
-
-@api.errorhandler(403)
-def forbidden(error):
-    return make_response(jsonify({'error': 'Forbidden'}), 403)
-
-
-@api.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
-def internal_server_error(error):
-    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
+@api.route('/user/<int:user_id>/todolist/<int:todolist_id>', methods=['POST'])
+def add_todo(user_id, todolist_id):
+    try:
+        todo = Todo(description=request.json.get('description'),
+                    todolist_id=todolist_id, creator_id=user_id).save()
+    except:
+        abort(400)
+    return jsonify({'todo': todo.to_json()}), 201
