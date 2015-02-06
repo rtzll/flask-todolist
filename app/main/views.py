@@ -41,8 +41,7 @@ def todolist(id):
 def new_todolist():
     form = TodoForm(todo=request.form.get('todo'))
     if form.validate():
-        todolist = TodoList(title="untitled",
-                            creator_id=current_user.get_id()).save()
+        todolist = TodoList(creator_id=current_user.get_id()).save()
         Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     return redirect(url_for('main.index'))

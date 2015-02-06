@@ -5,6 +5,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask.ext.login import UserMixin
+from sqlalchemy.exc import IntegrityError
 
 from . import db, login_manager
 
@@ -55,7 +56,10 @@ class User(UserMixin, db.Model):
 
     def save(self):
         db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
         return self
 
 
@@ -72,7 +76,8 @@ class TodoList(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     todos = db.relationship('Todo', backref='todolist', lazy='dynamic')
 
-    def __init__(self, title, creator_id=None, created_at=datetime.utcnow):
+    def __init__(self, title='untitled', creator_id=None,
+                 created_at=datetime.utcnow()):
         self.title = title
         self.creator_id = creator_id
         self.created_at = created_at
@@ -122,7 +127,7 @@ class Todo(db.Model):
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolist.id'))
 
     def __init__(self, description, todolist_id,
-                creator_id=None, created_at=datetime.utcnow):
+                creator_id=None, created_at=datetime.utcnow()):
         self.description = description
         self.todolist_id = todolist_id
         self.creator_id = creator_id
