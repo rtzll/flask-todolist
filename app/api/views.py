@@ -6,7 +6,7 @@ from . import api
 from ..models import User, Todo, TodoList
 
 
-@api.route('/user')
+@api.route('/user/')
 def get_users():
     users = User.query.all()
     return jsonify({
@@ -14,13 +14,13 @@ def get_users():
     })
 
 
-@api.route('/user/<int:id>')
+@api.route('/user/<int:id>/')
 def get_user(id):
     user = User.query.get_or_404(id)
     return jsonify({'user': user.to_json()})
 
 
-@api.route('/user', methods=['POST'])
+@api.route('/user/', methods=['POST'])
 def add_user():
     try:
         user = User(username=request.json.get('username'),
@@ -31,7 +31,7 @@ def add_user():
     return jsonify({'user': user.to_json()}), 201
 
 
-@api.route('/user/<int:id>/todolists')
+@api.route('/user/<int:id>/todolists/')
 def get_user_todolists(id):
     user = User.query.get_or_404(id)
     todolists = user.todolists
@@ -40,7 +40,7 @@ def get_user_todolists(id):
     })
 
 
-@api.route('/user/<int:id>/todolists', methods=['POST'])
+@api.route('/user/<int:id>/todolists/', methods=['POST'])
 def add_user_todolist(id):
     try:
         todolist = TodoList(title=request.json.get('title'),
@@ -50,7 +50,7 @@ def add_user_todolist(id):
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
-@api.route('/todolist', methods=['POST'])
+@api.route('/todolist/', methods=['POST'])
 def add_todolist():
     try:
         todolist = TodoList(title=request.json.get('title')).save()
@@ -59,7 +59,7 @@ def add_todolist():
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
-@api.route('/user/<int:user_id>/todolist/<int:todolist_id>')
+@api.route('/user/<int:user_id>/todolist/<int:todolist_id>/')
 def get_todolist_todos(todolist_id, user_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
@@ -67,7 +67,7 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
-@api.route('/user/<int:user_id>/todolist/<int:todolist_id>', methods=['POST'])
+@api.route('/user/<int:user_id>/todolist/<int:todolist_id>/', methods=['POST'])
 def add_todolist_todo(user_id, todolist_id):
     try:
         todo = Todo(description=request.json.get('description'),
@@ -77,7 +77,7 @@ def add_todolist_todo(user_id, todolist_id):
     return jsonify({'todo': todo.to_json()}), 201
 
 
-@api.route('/todo>', methods=['POST'])
+@api.route('/todo/', methods=['POST'])
 def add_todo():
     try:
         todolist_id = request.json.get('todolist_id') or TodoList().save().id
