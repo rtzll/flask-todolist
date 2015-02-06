@@ -33,7 +33,7 @@ class TodolistClientTestCase(unittest.TestCase):
 
     def login_user(self, name):
         response = self.client.post(url_for('auth.login'), data={
-            'email': name + '@example.com',
+            'email_or_username': name + '@example.com',
             'password': 'correcthorsebatterystaple'
         })
         return response

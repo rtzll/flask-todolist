@@ -87,7 +87,7 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertTrue(json_response['error'] == 'Not found')
+        self.assertEqual(json_response['error'], 'Not found')
 
     def test_adding_new_user_through_post_shows_in_json_response(self):
         username = 'adam'
