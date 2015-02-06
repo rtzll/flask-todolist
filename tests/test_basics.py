@@ -39,7 +39,7 @@ class TodolistTestCase(unittest.TestCase):
     def add_todo(description, user, todolist_id=None):
         todo_data = {
             'description': description,
-            'todolist_id': todolist_id or TodoList("").save().id,
+            'todolist_id': todolist_id or TodoList().save().id,
             'creator_id': user.id
         }
         read_todo = Todo(**todo_data).save()
