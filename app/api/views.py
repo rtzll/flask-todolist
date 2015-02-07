@@ -6,7 +6,7 @@ from . import api
 from ..models import User, Todo, TodoList
 
 
-@api.route('/user/')
+@api.route('/users/')
 def get_users():
     users = User.query.all()
     return jsonify({
@@ -14,13 +14,13 @@ def get_users():
     })
 
 
-@api.route('/user/<int:id>/')
-def get_user(id):
-    user = User.query.get_or_404(id)
+@api.route('/user/<username>/')
+def get_user(username):
+    user = User.query.get_or_404(username=username)
     return jsonify({'user': user.to_json()})
 
 
-@api.route('/user/', methods=['POST'])
+@api.route('/users/', methods=['POST'])
 def add_user():
     try:
         user = User(username=request.json.get('username'),
@@ -31,20 +31,21 @@ def add_user():
     return jsonify({'user': user.to_json()}), 201
 
 
-@api.route('/user/<int:id>/todolists/')
-def get_user_todolists(id):
-    user = User.query.get_or_404(id)
+@api.route('/user/<username>/todolists/')
+def get_user_todolists(username):
+    user = User.query.get_or_404(username)
     todolists = user.todolists
     return jsonify({
         'todolists': [todolist.to_json() for todolist in todolists]
     })
 
 
-@api.route('/user/<int:id>/todolists/', methods=['POST'])
-def add_user_todolist(id):
+@api.route('/user/<username>/todolists/', methods=['POST'])
+def add_user_todolist(username):
     try:
+        user = User.query.get_or_404(username=username)
         todolist = TodoList(title=request.json.get('title'),
-                            creator_id=id).save()
+                            creator_id=user.id).save()
     except:
         abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
@@ -59,7 +60,7 @@ def add_todolist():
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
-@api.route('/user/<int:user_id>/todolist/<int:todolist_id>/')
+@api.route('/user/<username>/todolist/<int:todolist_id>/')
 def get_todolist_todos(todolist_id, user_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
@@ -67,11 +68,12 @@ def get_todolist_todos(todolist_id, user_id):
     })
 
 
-@api.route('/user/<int:user_id>/todolist/<int:todolist_id>/', methods=['POST'])
-def add_todolist_todo(user_id, todolist_id):
+@api.route('/user/<username>/todolist/<int:todolist_id>/', methods=['POST'])
+def add_todolist_todo(username, todolist_id):
     try:
+        user = User.query.get_or_404(username=username)
         todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist_id, creator_id=user_id).save()
+                    todolist_id=todolist_id, creator_id=user.id).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
