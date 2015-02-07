@@ -24,7 +24,7 @@ class FakeGenerator(object):
         for i in xrange(count):
             User(email=forgery_py.internet.email_address(),
                  username=forgery_py.internet.user_name(True),
-                 password="correcthorsebatterystaple",
+                 password='correcthorsebatterystaple',
                  member_since=self.generate_fake_date()).save()
 
     def genereate_fake_todolists(self, count):
@@ -50,8 +50,8 @@ class FakeGenerator(object):
     def generate_fake_data(self, count):
         # generation must follow this order, as each builds on the previous
         self.genereate_fake_users(count)
-        self.genereate_fake_todolists(count*2)
-        self.genereate_fake_todo(count*4)
+        self.genereate_fake_todolists(count*4)
+        self.genereate_fake_todo(count*16)
 
     def start(self, count=100):
         self.generate_fake_data(count)

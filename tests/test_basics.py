@@ -77,7 +77,7 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_adding_new_todo_without_user(self):
         todo = Todo(description=self.read_todo_description,
-                    todolist_id=TodoList("").save().id).save()
+                    todolist_id=TodoList().save().id).save()
         todo_from_db = Todo.query.filter_by(id=todo.id).first()
 
         self.assertEqual(todo_from_db.description, self.read_todo_description)
