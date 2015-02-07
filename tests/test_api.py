@@ -89,7 +89,7 @@ class TodolistAPITestCase(unittest.TestCase):
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['error'], 'Not found')
 
-    def test_adding_new_user_through_post_shows_in_json_response(self):
+    def test_add_user(self):
         username = 'adam'
         post_response = self.add_user_through_json_post(username)
         self.assertEqual(post_response.headers['Content-Type'],
@@ -102,3 +102,15 @@ class TodolistAPITestCase(unittest.TestCase):
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'][0]['user']['username'],
                          username)
+
+    def test_add_todolist(self):
+        pass
+
+    def test_add_user_todolist(self):
+        pass
+
+    def test_add_todolist_todo(self):
+        pass
+
+    def test_add_todo(self):
+        pass
