@@ -33,7 +33,7 @@ class FakeGenerator(object):
         assert users != []
         for i in xrange(count):
             TodoList(title=forgery_py.forgery.lorem_ipsum.title(),
-                     creator_id=random.choice(users).id,
+                     creator=random.choice(users).username,
                      created_at=self.generate_fake_date()).save()
 
     def genereate_fake_todo(self, count):
@@ -41,8 +41,10 @@ class FakeGenerator(object):
         todolists = TodoList.query.all()
         assert todolists != []
         for i in xrange(count):
+            todolist = random.choice(todolists)
             todo = Todo(description=forgery_py.forgery.lorem_ipsum.words(),
-                        todolist_id=random.choice(todolists).id,
+                        todolist_id=todolist.id,
+                        creator=todolist.creator,
                         created_at=self.generate_fake_date()).save()
             if random.choice([True, False]):
                 todo.finished_todo()
