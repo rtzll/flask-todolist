@@ -40,8 +40,9 @@ def todolist(id):
 @main.route('/todolist/new', methods=['POST'])
 def new_todolist():
     form = TodoForm(todo=request.form.get('todo'))
+    user = current_user.username if current_user.is_authenticated() else None
     if form.validate():
-        todolist = TodoList(creator_id=current_user.get_id()).save()
+        todolist = TodoList(creator=user).save()
         Todo(form.todo.data, todolist.id).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     return redirect(url_for('main.index'))
@@ -50,7 +51,8 @@ def new_todolist():
 @main.route('/todolist/add', methods=['POST'])
 def add_todolist():
     form = TodoListForm(todo=request.form.get('title'))
+    user = current_user.username if current_user.is_authenticated() else None
     if form.validate():
-        todolist = TodoList(form.title.data, current_user.get_id()).save()
+        todolist = TodoList(form.title.data, user).save()
         return redirect(url_for('main.todolist', id=todolist.id))
     return redirect(url_for('main.index'))

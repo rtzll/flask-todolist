@@ -40,7 +40,7 @@ class TodolistTestCase(unittest.TestCase):
         todo_data = {
             'description': description,
             'todolist_id': todolist_id or TodoList().save().id,
-            'creator_id': user.id
+            'creator': user.username
         }
         read_todo = Todo(**todo_data).save()
         return Todo.query.filter_by(id=read_todo.id).first()
@@ -81,13 +81,13 @@ class TodolistTestCase(unittest.TestCase):
         todo_from_db = Todo.query.filter_by(id=todo.id).first()
 
         self.assertEqual(todo_from_db.description, self.read_todo_description)
-        self.assertIsNone(todo_from_db.creator_id)
+        self.assertIsNone(todo_from_db.creator)
 
     def test_adding_new_todo_with_user(self):
         some_user = self.add_user(self.username_adam)
         new_todo = self.add_todo(self.read_todo_description, some_user)
         self.assertEqual(new_todo.description, self.read_todo_description)
-        self.assertEqual(new_todo.creator_id, some_user.id)
+        self.assertEqual(new_todo.creator, some_user.username)
 
     def test_adding_two_todos_with_the_same_description(self):
         some_user = self.add_user(self.username_adam)
@@ -95,7 +95,7 @@ class TodolistTestCase(unittest.TestCase):
         second_todo = self.add_todo(self.read_todo_description, some_user)
 
         self.assertEqual(first_todo.description, second_todo.description)
-        self.assertEqual(first_todo.creator_id, second_todo.creator_id)
+        self.assertEqual(first_todo.creator, second_todo.creator)
         self.assertNotEqual(first_todo.id, second_todo.id)
 
     def test_adding_new_todolist_without_user(self):
@@ -103,41 +103,41 @@ class TodolistTestCase(unittest.TestCase):
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
         self.assertEqual(todolist_from_db.title, self.shopping_list_title)
-        self.assertIsNone(todolist_from_db.creator_id)
+        self.assertIsNone(todolist_from_db.creator)
 
     def test_adding_new_todolist_with_user(self):
         user = self.add_user(self.username_adam)
         todolist = TodoList(title=self.shopping_list_title,
-                            creator_id=user.id).save()
+                            creator=user.username).save()
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
         self.assertEqual(todolist_from_db.title, self.shopping_list_title)
-        self.assertEqual(todolist_from_db.creator_id, user.id)
+        self.assertEqual(todolist_from_db.creator, user.username)
 
     def test_adding_two_todolists_with_the_same_title(self):
         user = self.add_user(self.username_adam)
         ftodolist = TodoList(title=self.shopping_list_title,
-                            creator_id=user.id).save()
+                            creator=user.username).save()
         first_todolist = TodoList.query.filter_by(id=ftodolist.id).first()
         stodolist = TodoList(title=self.shopping_list_title,
-                            creator_id=user.id).save()
+                            creator=user.username).save()
         second_todolist = TodoList.query.filter_by(id=stodolist.id).first()
 
         self.assertEqual(first_todolist.title,
                          second_todolist.title)
-        self.assertEqual(first_todolist.creator_id, second_todolist.creator_id)
+        self.assertEqual(first_todolist.creator, second_todolist.creator)
         self.assertNotEqual(first_todolist.id, second_todolist.id)
 
     def test_adding_todo_to_todolist(self):
         user = self.add_user(self.username_adam)
         todolist = TodoList(title=self.shopping_list_title,
-                            creator_id=user.id).save()
+                            creator=user.username).save()
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
         todo_description = 'A book about TDD'
         todo = self.add_todo(todo_description, user, todolist_from_db.id)
 
         self.assertEqual(todolist.title, self.shopping_list_title)
-        self.assertEqual(todolist.creator_id, user.id)
+        self.assertEqual(todolist.creator, user.username)
         self.assertEqual(todo.todolist_id, todolist_from_db.id)
         self.assertEqual(todolist.todos.first(), todo)
