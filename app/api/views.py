@@ -16,7 +16,7 @@ def get_users():
 
 @api.route('/user/<username>/')
 def get_user(username):
-    user = User.query.get_or_404(username=username)
+    user = User.query.filter_by(username=username).one()
     return jsonify({'user': user.to_json()})
 
 
@@ -33,7 +33,7 @@ def add_user():
 
 @api.route('/user/<username>/todolists/')
 def get_user_todolists(username):
-    user = User.query.get_or_404(username)
+    user = User.query.filter_by(username=username).one()
     todolists = user.todolists
     return jsonify({
         'todolists': [todolist.to_json() for todolist in todolists]
@@ -43,9 +43,9 @@ def get_user_todolists(username):
 @api.route('/user/<username>/todolists/', methods=['POST'])
 def add_user_todolist(username):
     try:
-        user = User.query.get_or_404(username=username)
+        user = User.query.filter_by(username=username).one()
         todolist = TodoList(title=request.json.get('title'),
-                            creator_id=user.id).save()
+                            creator=user.username).save()
     except:
         abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
@@ -61,7 +61,7 @@ def add_todolist():
 
 
 @api.route('/user/<username>/todolist/<int:todolist_id>/')
-def get_todolist_todos(todolist_id, user_id):
+def get_todolist_todos(username, todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
         'todos': [todo.to_json() for todo in todolist.todos]
@@ -71,9 +71,9 @@ def get_todolist_todos(todolist_id, user_id):
 @api.route('/user/<username>/todolist/<int:todolist_id>/', methods=['POST'])
 def add_todolist_todo(username, todolist_id):
     try:
-        user = User.query.get_or_404(username=username)
+        user = User.query.filter_by(username=username).one()
         todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist_id, creator_id=user.id).save()
+                    todolist_id=todolist_id, creator=username).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
