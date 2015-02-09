@@ -94,6 +94,15 @@ class TodoList(db.Model):
         self.title = new_title
 
     def to_json(self):
+        if self.creator:
+            todos_url = url_for(
+                'api.get_user_todolist_todos', todolist_id=self.id,
+                username=self.creator, _external=True
+            )
+        else:
+            todos_url = url_for('api.get_todolist_todos', todolist_id=self.id,
+                                _external=True)
+
         json_todolist = {
             'title': self.title,
             'creator': self.creator,
@@ -101,8 +110,7 @@ class TodoList(db.Model):
             'total_todo_count': self.count_todos(),
             'open_todo_count': self.count_open(),
             'finished_todo_count': self.count_finished(),
-            'todos': url_for('api.get_todolist_todos', todolist_id=self.id,
-                             username=self.creator, _external=True)
+            'todos': todos_url
         }
         return json_todolist
 
