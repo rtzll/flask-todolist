@@ -6,7 +6,7 @@ import json
 from flask import url_for
 
 from app import create_app, db
-from app.models import  User, Todo
+from app.models import  User, Todo, TodoList
 
 
 class TodolistAPITestCase(unittest.TestCase):
@@ -41,10 +41,12 @@ class TodolistAPITestCase(unittest.TestCase):
 
     def add_user(self, username):
         user_data = self.setup_new_user(username)
-        user = User(**user_data)
-        db.session.add(user)
-        db.session.commit()
+        User(**user_data).save()
         return User.query.filter_by(username=username).first()
+
+    def add_todolist(self, username, title):
+        todolist = TodoList(title=title, creator=username).save()
+        return TodoList.query.filter_by(id=todolist.id).first()
 
     def add_user_through_json_post(self, username):
         user_data = self.setup_new_user(username)
@@ -90,25 +92,72 @@ class TodolistAPITestCase(unittest.TestCase):
                          username)
 
     def test_add_todolist(self):
-        post_response = self.client.post(url_for('api.add_todolist'),
-                                    headers=self.get_headers(),
-                                    data=json.dumps({'title': 'todolist'}))
+        post_response = self.client.post(
+            url_for('api.add_todolist'),
+            headers=self.get_headers(),
+            data=json.dumps({'title': 'todolist'})
+        )
         self.assertEqual(post_response.status_code, 201)
 
         # the expected id of the todolist is 1, as it is the first to be added
-        response = self.client.get(url_for('api.get_todolist', id=1))
+        response = self.client.get(url_for('api.get_todolist', todolist_id=1))
         self.assertEqual(response.status_code, 200)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todolist']['title'], 'todolist')
 
     def test_add_user_todolist(self):
-        pass
+        username = 'adam'
+        new_user = self.add_user(username)
+        post_response = self.client.post(
+            url_for('api.add_user_todolist', username=username),
+            headers=self.get_headers(),
+            data=json.dumps({'title': 'todolist'})
+        )
+        self.assertEqual(post_response.status_code, 201)
+
+        response = self.client.get(url_for('api.get_user_todolists',
+                                           username=username))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        # check title, creator are set correctly and a total of one todolist
+        self.assertEqual(json_response['todolists'][0]['title'], 'todolist')
+        self.assertEqual(json_response['todolists'][0]['creator'], username)
+        self.assertEqual(len(json_response['todolists']), 1)
+
+    def test_add_user_todolist_todo(self):
+        username = 'adam'
+        todolist_title = 'new todolist'
+        new_user = self.add_user(username)
+        new_todolist = self.add_todolist(username, todolist_title)
+
+        post_response = self.client.post(
+            url_for('api.add_user_todolist_todo',
+                    username=username, todolist_id=new_todolist.id),
+            headers=self.get_headers(),
+            data=json.dumps({
+                'description': 'new todo',
+                'creator': username,
+                'todolist_id': new_todolist.id
+            })
+        )
+        self.assertEqual(post_response.status_code, 201)
+
+        response = self.client.get(url_for('api.get_user_todolist_todos',
+                                           username=username,
+                                           todolist_id=new_todolist.id))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        # check title, creator are set correctly and a total of one todo
+        self.assertEqual(json_response['todos'][0]['description'], 'new todo')
+        self.assertEqual(json_response['todos'][0]['creator'], username)
+        self.assertEqual(len(json_response['todos']), 1)
 
     def test_add_todolist_todo(self):
-        pass
-
-    def test_add_todo(self):
         pass
 
     # test api get calls
@@ -129,13 +178,13 @@ class TodolistAPITestCase(unittest.TestCase):
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['user']['username'], username)
 
-    def test_get_anon_todolists(self):
+    def test_get_todolists(self):
         pass
 
     def test_get_user_todolists(self):
         pass
 
-    def test_get_anon_todolist_todos(self):
+    def test_get_todolist_todos(self):
         pass
 
     def test_get_user_todolist_todos(self):
