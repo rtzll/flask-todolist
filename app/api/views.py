@@ -40,7 +40,7 @@ def get_user_todolists(username):
     })
 
 
-@api.route('/user/<username>/todolists/', methods=['POST'])
+@api.route('/user/<username>/todolist/', methods=['POST'])
 def add_user_todolist(username):
     try:
         user = User.query.filter_by(username=username).one()
@@ -59,9 +59,9 @@ def get_todolists():
     })
 
 
-@api.route('/todolist/<int:id>')
-def get_todolist(id):
-    todolist = TodoList.query.get_or_404(id)
+@api.route('/todolist/<int:todolist_id>')
+def get_todolist(todolist_id):
+    todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({'todolist': todolist.to_json()})
 
 
@@ -91,7 +91,7 @@ def get_user_todolist_todos(username, todolist_id):
 
 
 @api.route('/user/<username>/todolist/<int:todolist_id>/', methods=['POST'])
-def add_todolist_todo(username, todolist_id):
+def add_user_todolist_todo(username, todolist_id):
     try:
         user = User.query.filter_by(username=username).one()
         todo = Todo(description=request.json.get('description'),
@@ -101,10 +101,9 @@ def add_todolist_todo(username, todolist_id):
     return jsonify({'todo': todo.to_json()}), 201
 
 
-@api.route('/todo/', methods=['POST'])
-def add_todo():
+@api.route('/todolist/<int:todolist_id>/', methods=['POST'])
+def add_todolist_todo(todolist_id):
     try:
-        todolist_id = request.json.get('todolist_id') or TodoList().save().id
         todo = Todo(description=request.json.get('description'),
                     todolist_id=todolist_id).save()
     except:
