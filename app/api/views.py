@@ -59,7 +59,7 @@ def get_todolists():
     })
 
 
-@api.route('/todolist/<int:todolist_id>')
+@api.route('/todolist/<int:todolist_id>/')
 def get_todolist(todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({'todolist': todolist.to_json()})
@@ -74,7 +74,7 @@ def add_todolist():
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
-@api.route('/todolist/<int:todolist_id>/')
+@api.route('/todolist/<int:todolist_id>/todos/')
 def get_todolist_todos(todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
@@ -82,7 +82,7 @@ def get_todolist_todos(todolist_id):
     })
 
 
-@api.route('/user/<username>/todolist/<int:todolist_id>/')
+@api.route('/user/<username>/todolist/<int:todolist_id>/todos/')
 def get_user_todolist_todos(username, todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     return jsonify({
