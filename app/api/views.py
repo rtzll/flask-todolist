@@ -16,7 +16,9 @@ def get_users():
 
 @api.route('/user/<username>/')
 def get_user(username):
-    user = User.query.filter_by(username=username).one()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        abort(404)
     return jsonify({'user': user.to_json()})
 
 
@@ -33,7 +35,9 @@ def add_user():
 
 @api.route('/user/<username>/todolists/')
 def get_user_todolists(username):
-    user = User.query.filter_by(username=username).one()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        abort(404)
     todolists = user.todolists
     return jsonify({
         'todolists': [todolist.to_json() for todolist in todolists]
@@ -85,6 +89,8 @@ def get_todolist_todos(todolist_id):
 @api.route('/user/<username>/todolist/<int:todolist_id>/todos/')
 def get_user_todolist_todos(username, todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
+    if todolist.creator != username:
+        abort(404)
     return jsonify({
         'todos': [todo.to_json() for todo in todolist.todos]
     })
