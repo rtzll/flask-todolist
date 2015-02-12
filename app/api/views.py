@@ -44,6 +44,18 @@ def get_user_todolists(username):
     })
 
 
+@api.route('/user/<username>/todolist/<int:todolist_id>/')
+def get_user_todolist(username, todolist_id):
+    user = User.query.filter_by(username=username).first()
+    todolist = TodoList.query.get_or_404(todolist_id)
+    if not user or username != todolist.creator:
+        abort(404)
+    todolists = user.todolists
+    return jsonify({
+        'todolists': [todolist.to_json() for todolist in todolists]
+    })
+
+
 @api.route('/user/<username>/todolist/', methods=['POST'])
 def add_user_todolist(username):
     try:
