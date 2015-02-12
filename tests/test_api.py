@@ -196,17 +196,34 @@ class TodolistAPITestCase(unittest.TestCase):
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_users'))
         self.assertEqual(response.status_code, 200)
+
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'][0]['user']['username'],
                          username)
+
+    def test_get_users_when_no_users_exist(self):
+        response = self.client.get(url_for('api.get_users'))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['users'], [])
 
     def test_get_user(self):
         username = 'adam'
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_user', username=username))
         self.assertEqual(response.status_code, 200)
+
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['user']['username'], username)
+
+    def test_get_user_when_user_does_not_exist(self):
+        username = 'adam'
+        response = self.client.get(url_for('api.get_user', username=username))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
 
     def test_get_todolists(self):
         username = 'adam'
@@ -219,7 +236,6 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
         json_response = json.loads(response.data.decode('utf-8'))
-
         self.assertEqual(json_response['todolists'][0]['title'],
                          'new todolist 1')
         self.assertEqual(json_response['todolists'][0]['creator'], username)
@@ -228,7 +244,13 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(json_response['todolists'][1]['creator'], username)
         self.assertEqual(len(json_response['todolists']), 2)
 
+    def test_get_todolists_when_no_todolists_exist(self):
+        response = self.client.get(url_for('api.get_todolists'))
+        self.assertEqual(response.status_code, 200)
 
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['todolists'], [])
+        self.assertEqual(len(json_response['todolists']), 0)
 
     def test_get_user_todolists(self):
         username = 'adam'
@@ -251,6 +273,26 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(json_response['todolists'][1]['creator'], username)
         self.assertEqual(len(json_response['todolists']), 2)
 
+    def test_get_user_todolists_when_user_does_not_exist(self):
+        username = 'adam'
+        response = self.client.get(url_for('api.get_user_todolists',
+                                           username=username))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
+
+    def test_get_user_todolists_when_user_has_no_todolists(self):
+        username = 'adam'
+        new_user = self.add_user(username)
+        response = self.client.get(url_for('api.get_user_todolists',
+                                           username=username))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['todolists'], [])
+        self.assertEqual(len(json_response['todolists']), 0)
+
     def test_get_todolist_todos(self):
         todolist_title = 'new todolist'
         new_todolist = self.add_todolist(todolist_title)
@@ -269,6 +311,25 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(json_response['todos'][1]['description'], 'second')
         self.assertEqual(json_response['todos'][1]['creator'], None)
         self.assertEqual(len(json_response['todos']), 2)
+
+    def test_get_todolist_todos_when_todolist_does_not_exist(self):
+        response = self.client.get(url_for('api.get_todolist_todos',
+                                           todolist_id=1))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
+
+    def test_get_todolist_todos_when_todolist_has_no_todos(self):
+        todolist_title = 'new todolist'
+        new_todolist = self.add_todolist(todolist_title)
+        response = self.client.get(url_for('api.get_todolist_todos',
+                                           todolist_id=new_todolist.id))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['todos'], [])
+        self.assertEqual(len(json_response['todos']), 0)
 
     def test_get_user_todolist_todos(self):
         username = 'adam'
@@ -291,3 +352,61 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertEqual(json_response['todos'][1]['description'], 'second')
         self.assertEqual(json_response['todos'][1]['creator'], username)
         self.assertEqual(len(json_response['todos']), 2)
+
+    def test_get_user_todolist_todos_when_user_does_not_exist(self):
+        username = 'adam'
+        response = self.client.get(url_for('api.get_user_todolist_todos',
+                                           username=username, todolist_id=1))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
+
+    def test_get_user_todolist_todos_when_todolist_does_not_exist(self):
+        username = 'adam'
+        new_user = self.add_user(username)
+
+        response = self.client.get(url_for('api.get_user_todolist_todos',
+                                           username=username, todolist_id=1))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
+
+    def test_get_user_todolist_todos_when_todolist_has_no_todos(self):
+        username = 'adam'
+        todolist_title = 'new todolist'
+        new_user = self.add_user(username)
+        new_todolist = self.add_todolist(todolist_title, username)
+
+        response = self.client.get(url_for('api.get_user_todolist_todos',
+                                           username=username,
+                                           todolist_id=new_todolist.id))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(json_response['todos'], [])
+        self.assertEqual(len(json_response['todos']), 0)
+
+    def test_get_user_todolist_todos_when_todolist_does_not_belong_to_user(self):
+        first_username = 'adam'
+        second_username = 'ben'
+        todolist_title = 'new todolist'
+        first_user = self.add_user(first_username)
+        second_user = self.add_user(second_username)
+        new_todolist = self.add_todolist(todolist_title, second_username)
+
+        first_todo = self.add_todo('first', new_todolist.id, second_username)
+        second_todo = self.add_todo('second', new_todolist.id, second_username)
+
+        response = self.client.get(url_for('api.get_user_todolist_todos',
+                                            username=first_user,
+                                           todolist_id=new_todolist.id))
+        self.assertEqual(response.status_code, 404)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['error'], 'Not found')
+
+    def test_get_user_todolist():
+        pass
