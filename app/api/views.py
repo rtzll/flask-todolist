@@ -22,7 +22,7 @@ def get_user(username):
     return jsonify({'user': user.to_json()})
 
 
-@api.route('/users/', methods=['POST'])
+@api.route('/user/', methods=['POST'])
 def add_user():
     try:
         user = User(username=request.json.get('username'),
