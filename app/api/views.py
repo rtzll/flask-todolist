@@ -50,10 +50,7 @@ def get_user_todolist(username, todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     if not user or username != todolist.creator:
         abort(404)
-    todolists = user.todolists
-    return jsonify({
-        'todolists': [todolist.to_json() for todolist in todolists]
-    })
+    return jsonify({'todolist': todolist.to_json()})
 
 
 @api.route('/user/<username>/todolist/', methods=['POST'])
