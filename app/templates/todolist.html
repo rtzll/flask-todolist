@@ -23,17 +23,17 @@
             <ul>
               {% for todo in todolist.todos %}
                 {% if not todo.is_finished %}
-                  <li><input type="checkbox"> {{ todo.description }}</a></li>
+                  <li><input type="checkbox" id="{{ todo.id }}"> {{ todo.description }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
           </div>
           <div class="one-half column finished-todos">
-            <h6 class="docs-header">{{ todolist.count_finished() }} finished</h6>
+            <h6 class="docs-header finished-todos">{{ todolist.count_finished() }} finished</h6>
             <ul>
               {% for todo in todolist.todos %}
                 {% if todo.is_finished %}
-                  <li>{{ todo.description }}</a></li>
+                  <li><input type="checkbox" id="{{ todo.id }}" checked="checked">{{ todo.description }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
