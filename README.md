@@ -25,4 +25,5 @@ Forms               | Flask-WTF
 Login               | Flask-Login
 Extras              | Flask-Script
 
-*Note*: I was using Flask-Migrate, but for the scope of this project it seemed unfitting.
+### License
+MIT-License
