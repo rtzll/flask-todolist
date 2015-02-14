@@ -99,24 +99,122 @@ class TodolistAPITestCase(unittest.TestCase):
     def test_add_user_only_using_the_username(self):
         user_data = {'username': 'adam'}
         response = self.client.post(url_for('api.add_user'),
-                                         headers=self.get_headers(),
-                                         data=json.dumps(user_data))
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
         self.assert400Response(response)
 
     def test_add_user_only_using_the_username_and_email(self):
         user_data = {'username': 'adam', 'email': 'adam@example.com'}
         response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_with_to_long_username(self):
+        user_data = {
+            'username': 65 * 'a',
+            'email':  'adam@example.com',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_with_invalid_username(self):
+        user_data = {
+            'username': 'not a valid username',
+            'email':  'adam@example.com',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_without_username(self):
+        user_data = {
+            'username': '',
+            'email':  'adam@example.com',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_with_invalid_email(self):
+        user_data = {
+            'username': 'adam',
+            'email':  'adamexample.com',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_withoout_email(self):
+        user_data = {
+            'username': 'adam',
+            'email':  '',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_with_to_long_email(self):
+        user_data = {
+            'username': 'adam',
+            'email':  53 * 'a' + '@example.com',
+            'password': 'correcthorsebatterystaple',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_without_password(self):
+        user_data = {
+            'username': 'adam',
+            'email':  'adam@example.com',
+            'password': '',
+        }
+        response = self.client.post(url_for('api.add_user'),
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
+        self.assert400Response(response)
+
+    def test_add_user_with_extra_fields(self):
+        user_data = {
+            'username': 'adam',
+            'email': 'adam@example.com',
+            'password': 'correcthorsebatterystaple',
+            'extra-field': 'will be ignored'
+        }
+        post_response = self.client.post(url_for('api.add_user'),
                                          headers=self.get_headers(),
                                          data=json.dumps(user_data))
-        self.assert400Response(response)
+        self.assertEqual(post_response.headers['Content-Type'],
+                         'application/json')
+        self.assertEqual(post_response.status_code, 201)
+
+        response = self.client.get(url_for('api.get_users'))
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(json_response['users'][0]['user']['username'],
+                         'adam')
 
     def test_add_user_only_using_the_username_and_password(self):
         user_data = {
             'username': 'adam', 'password': 'correcthorsebatterystaple'
         }
         response = self.client.post(url_for('api.add_user'),
-                                         headers=self.get_headers(),
-                                         data=json.dumps(user_data))
+                                    headers=self.get_headers(),
+                                    data=json.dumps(user_data))
         self.assert400Response(response)
 
     def test_add_todolist(self):
