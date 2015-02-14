@@ -103,6 +103,10 @@ class TodoList(db.Model):
     def __repr__(self):
         return '<todolist: {0}>'.format(self.title)
 
+    @staticmethod
+    def is_valid_title(title):
+        return len(title) <= 128
+
     def change_title(new_title):
         self.title = new_title
 
