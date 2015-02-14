@@ -25,9 +25,15 @@ def get_user(username):
 @api.route('/user/', methods=['POST'])
 def add_user():
     try:
-        user = User(username=request.json.get('username'),
-                    email=request.json.get('email'),
-                    password=request.json.get('password')).save()
+        username = request.json.get('username')
+        email = request.json.get('email')
+        password = request.json.get('password')
+        if User.is_valid_username(username) and User.is_valid_email(email) \
+            and User.is_valid_password(password):
+            user = User(
+                username=username, email=email, password=password).save()
+        else:
+            abort(400)
     except:
         abort(400)
     return jsonify({'user': user.to_json()}), 201

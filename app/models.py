@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import re
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask.ext.login import UserMixin
-from sqlalchemy.exc import IntegrityError
 
 from . import db, login_manager
 
@@ -29,6 +29,18 @@ class User(UserMixin, db.Model):
         if self.is_admin:
             return '<Admin {}>'.format(self.username)
         return '<User {}>'.format(self.username)
+
+    @staticmethod
+    def is_valid_username(username):
+        return len(username) <= 64 and re.match('^\S+$', username)
+
+    @staticmethod
+    def is_valid_email(email):
+        return len(email) <= 64 and re.match('^\S+@\S+\.\S+$', email)
+
+    @staticmethod
+    def is_valid_password(passwd):
+        return len(generate_password_hash(passwd)) <= 128 and passwd
 
     @property
     def password(self):
@@ -60,6 +72,7 @@ class User(UserMixin, db.Model):
         return json_user
 
     def save(self):
+        from sqlalchemy.exc import IntegrityError
         db.session.add(self)
         try:
             db.session.commit()
