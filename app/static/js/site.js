@@ -52,7 +52,7 @@ $(document).ready(function() {
     $('html, body').animate({
         scrollTop: $("#elementtoScrollToID").offset().top
     }, 2000);
-});
+  });
 
   function resize() {
     $body.removeClass('has-docked-nav');
@@ -69,6 +69,26 @@ $(document).ready(function() {
     }
   }
 
+
+  $(':checkbox').on('click', changeTodoStatus);
+
+  function changeTodoStatus() {
+    if($(':checkbox').is(':checked')) {
+      finishTodo(this);
+      window.location.reload();
+    } else {
+      reopenTodo(this);
+      window.location.reload();
+    }
+  }
+
+  function finishTodo(checkbox) {
+    alert('finishTodo' + checkbox.id);
+  }
+
+  function reopenTodo(checkbox) {
+    alert('reopenTodo' + checkbox.id);
+  }
 
   init();
 
