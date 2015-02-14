@@ -87,7 +87,11 @@ def get_todolist(todolist_id):
 @api.route('/todolist/', methods=['POST'])
 def add_todolist():
     try:
-        todolist = TodoList(title=request.json.get('title')).save()
+        title = request.json.get('title')
+        if title and TodoList.is_valid_title(title):
+            todolist = TodoList(title=title).save()
+        else:
+            abort(400)
     except:
         abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
@@ -115,8 +119,10 @@ def get_user_todolist_todos(username, todolist_id):
 def add_user_todolist_todo(username, todolist_id):
     try:
         user = User.query.filter_by(username=username).one()
+        # this way we check the existence of the todolist
+        todolist = TodoList.query.get(todolist_id)
         todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist_id, creator=username).save()
+                    todolist_id=todolist.id, creator=username).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
@@ -125,8 +131,9 @@ def add_user_todolist_todo(username, todolist_id):
 @api.route('/todolist/<int:todolist_id>/', methods=['POST'])
 def add_todolist_todo(todolist_id):
     try:
+        todolist = TodoList.query.get(todolist_id)
         todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist_id).save()
+                    todolist_id=todolist.id).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
