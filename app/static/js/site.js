@@ -75,19 +75,29 @@ $(document).ready(function() {
   function changeTodoStatus() {
     if($(':checkbox').is(':checked')) {
       finishTodo(this);
-      window.location.reload();
     } else {
       reopenTodo(this);
-      window.location.reload();
     }
   }
 
   function finishTodo(checkbox) {
-    alert('finishTodo' + checkbox.id);
+    putStatusUpdate(checkbox.id, 'finished');
   }
 
   function reopenTodo(checkbox) {
-    alert('reopenTodo' + checkbox.id);
+    putStatusUpdate(checkbox.id, 'reopen');
+  }
+
+  function putStatusUpdate(todoID, status) {
+    $.ajax({
+      url: '/api/todo/' + todoID + '/',
+      type: 'PUT',
+      contentType:  'application/json',
+      data: JSON.stringify({'status': status}),
+      success: function() {
+        window.location.reload();
+      }
+    });
   }
 
   init();
