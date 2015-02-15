@@ -137,3 +137,18 @@ def add_todolist_todo(todolist_id):
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
+
+
+@api.route('/todo/<int:todo_id>/', methods=['PUT'])
+def update_todo_status(todo_id):
+    try:
+        todo = Todo.query.get(todo_id)
+        if request.json.get('status') == 'finished':
+            todo.finished()
+        elif request.json.get('status') == 'reopen':
+            todo.reopen()
+        else:
+            abort(400)
+    except:
+        abort(400)
+    return jsonify({'todo': todo.to_json()}), 200
