@@ -612,3 +612,31 @@ class TodolistAPITestCase(unittest.TestCase):
                                            username=username,
                                            todolist_id=1))
         self.assert404Response(response)
+
+    # test api put call
+    def test_update_todo_status_to_finished(self):
+        todolist = self.add_todolist('new todolist')
+        todo = self.add_todo('first', todolist.id)
+        self.assertFalse(todo.is_finished)
+
+        response = self.client.put(
+            url_for('api.update_todo_status',todo_id=todo.id),
+            headers=self.get_headers(),
+            data=json.dumps({'status': 'finished'})
+        )
+        todo = Todo.query.get(todo.id)
+        self.assertTrue(todo.is_finished)
+
+    def test_update_todo_status_to_open(self):
+        todolist = self.add_todolist('new todolist')
+        todo = self.add_todo('first', todolist.id)
+        todo.finished()
+        self.assertTrue(todo.is_finished)
+
+        response = self.client.put(
+            url_for('api.update_todo_status',todo_id=todo.id),
+            headers=self.get_headers(),
+            data=json.dumps({'status': 'reopen'})
+        )
+        todo = Todo.query.get(todo.id)
+        self.assertFalse(todo.is_finished)
