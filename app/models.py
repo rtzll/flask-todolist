@@ -27,8 +27,8 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         if self.is_admin:
-            return '<Admin {}>'.format(self.username)
-        return '<User {}>'.format(self.username)
+            return '<Admin {0}>'.format(self.username)
+        return '<User {0}>'.format(self.username)
 
     @staticmethod
     def is_valid_username(username):
@@ -101,7 +101,7 @@ class TodoList(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return '<todolist: {0}>'.format(self.title)
+        return '<Todolist: {0}>'.format(self.title)
 
     @staticmethod
     def is_valid_title(title):
@@ -165,7 +165,7 @@ class Todo(db.Model):
 
     def __repr__(self):
         if self.creator is None:
-            return '<todo: {0}>'.format(self.description)
+            return '<Todo: {0}>'.format(self.description)
         status = 'finished' if self.is_finished else 'open'
         return '<{0} todo: {1} by {2}>'.format(status, self.description,
                                                self.creator)

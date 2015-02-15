@@ -151,4 +151,4 @@ def update_todo_status(todo_id):
             abort(400)
     except:
         abort(400)
-    return jsonify({'todo': todo.to_json()}), 200
+    return jsonify({'todo': todo.to_json()})

@@ -14,7 +14,7 @@ $(document).ready(function() {
     $popoverLink.on('click', openPopover);
     $document.on('click', closePopover);
     $('a[href^="#"]').on('click', smoothScroll);
-    $("input[type=text]:first").focus();
+    $('input[type=text]:first').focus();
     $('input[type=text]:first').on('keypress click', function() {
         $('.has-error').hide();
     });
@@ -48,9 +48,9 @@ $(document).ready(function() {
     }
   }
 
-  $("#button").click(function() {
+  $('#button').click(function() {
     $('html, body').animate({
-        scrollTop: $("#elementtoScrollToID").offset().top
+        scrollTop: $('#elementtoScrollToID').offset().top
     }, 2000);
   });
 
@@ -95,7 +95,7 @@ $(document).ready(function() {
       contentType:  'application/json',
       data: JSON.stringify({'status': status}),
       success: function() {
-        window.location.reload();
+        location.reload();
       }
     });
   }
