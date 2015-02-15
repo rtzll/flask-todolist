@@ -41,3 +41,7 @@ def humanize_time(dt, past_='ago', future_='from now', default='just now'):
                 past_ if dt_is_past else future_)
 
     return default
+
+@utils.app_template_filter('in_seconds')
+def in_seconds(dt):
+    return int((dt - datetime(1970, 1, 1)).total_seconds())
