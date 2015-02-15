@@ -89,6 +89,26 @@ class TodolistTestCase(unittest.TestCase):
         self.assertEqual(new_todo.description, self.read_todo_description)
         self.assertEqual(new_todo.creator, some_user.username)
 
+    def test_closing_todo(self):
+        some_user = self.add_user(self.username_adam)
+        new_todo = self.add_todo(self.read_todo_description, some_user)
+        self.assertFalse(new_todo.is_finished)
+        new_todo.finished()
+        self.assertTrue(new_todo.is_finished)
+        self.assertEqual(new_todo.description, self.read_todo_description)
+        self.assertEqual(new_todo.creator, some_user.username)
+
+    def test_reopen_closed_todo(self):
+        some_user = self.add_user(self.username_adam)
+        new_todo = self.add_todo(self.read_todo_description, some_user)
+        self.assertFalse(new_todo.is_finished)
+        new_todo.finished()
+        self.assertTrue(new_todo.is_finished)
+        new_todo.reopen()
+        self.assertFalse(new_todo.is_finished)
+        self.assertEqual(new_todo.description, self.read_todo_description)
+        self.assertEqual(new_todo.creator, some_user.username)
+
     def test_adding_two_todos_with_the_same_description(self):
         some_user = self.add_user(self.username_adam)
         first_todo = self.add_todo(self.read_todo_description, some_user)
@@ -137,7 +157,30 @@ class TodolistTestCase(unittest.TestCase):
         todo_description = 'A book about TDD'
         todo = self.add_todo(todo_description, user, todolist_from_db.id)
 
+        self.assertEqual(todolist_from_db.count_todos(), 1)
         self.assertEqual(todolist.title, self.shopping_list_title)
         self.assertEqual(todolist.creator, user.username)
         self.assertEqual(todo.todolist_id, todolist_from_db.id)
         self.assertEqual(todolist.todos.first(), todo)
+
+    def test_counting_todos_of_todolist(self):
+        user = self.add_user(self.username_adam)
+        todolist = TodoList(title=self.shopping_list_title,
+                            creator=user.username).save()
+        todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
+
+        todo_description = 'A book about TDD'
+        todo = self.add_todo(todo_description, user, todolist_from_db.id)
+
+        self.assertEqual(todolist.title, self.shopping_list_title)
+        self.assertEqual(todolist.creator, user.username)
+        self.assertEqual(todo.todolist_id, todolist_from_db.id)
+        self.assertEqual(todolist.todos.first(), todo)
+
+        self.assertEqual(todolist_from_db.count_finished(), 0)
+        self.assertEqual(todolist_from_db.count_open(), 1)
+
+        todo.finished()
+
+        self.assertEqual(todolist_from_db.count_finished(), 1)
+        self.assertEqual(todolist_from_db.count_open(), 0)
