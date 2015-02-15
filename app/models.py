@@ -170,9 +170,14 @@ class Todo(db.Model):
         return '<{0} todo: {1} by {2}>'.format(status, self.description,
                                                self.creator)
 
-    def finished_todo(self):
+    def finished(self):
         self.is_finished = True
         self.finished_at = datetime.utcnow()
+        self.save()
+
+    def reopen(self):
+        self.is_finished = False
+        self.finished_at = None
         self.save()
 
     def to_json(self):
