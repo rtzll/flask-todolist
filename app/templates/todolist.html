@@ -33,7 +33,7 @@
             <ul>
               {% for todo in todolist.todos %}
                 {% if todo.is_finished %}
-                  <li><input type="checkbox" id="{{ todo.id }}" checked="checked">{{ todo.description }}</a></li>
+                  <li><input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}" checked="checked">{{ todo.description }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
