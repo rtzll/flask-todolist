@@ -20,6 +20,10 @@ def test():
 
 @manager.command
 def fill_db():
+    """Fill database with random data.
+    By default 100 users, 400 todolists and 1600 todos.
+    WARNING: will delete existing data. For testing purposes only.
+    """
     from utils.fake_generator import FakeGenerator
     FakeGenerator().start()  # side effect: deletes existing data
 
