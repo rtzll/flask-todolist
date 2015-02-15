@@ -73,7 +73,7 @@ $(document).ready(function() {
   $(':checkbox').on('click', changeTodoStatus);
 
   function changeTodoStatus() {
-    if($(':checkbox').is(':checked')) {
+    if($('#checkbox').is(':checked')) {
       finishTodo(this);
     } else {
       reopenTodo(this);
@@ -81,11 +81,11 @@ $(document).ready(function() {
   }
 
   function finishTodo(checkbox) {
-    putStatusUpdate(checkbox.id, 'finished');
+    putStatusUpdate(checkbox.getAttribute('data-todo-id'), 'finished');
   }
 
   function reopenTodo(checkbox) {
-    putStatusUpdate(checkbox.id, 'reopen');
+    putStatusUpdate(checkbox.getAttribute('data-todo-id'), 'reopen');
   }
 
   function putStatusUpdate(todoID, status) {
