@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from flask import render_template, redirect, request, url_for
-from flask.ext.login import current_user
+from flask.ext.login import current_user, login_required
 
 from . import main
 from .forms import TodoForm, TodoListForm
 from ..models import User, Todo, TodoList
+from ..decorators import admin_required
 
 
 @main.route('/')
@@ -17,14 +18,18 @@ def index():
 
 
 @main.route('/todolists/', methods=['GET', 'POST'])
+@login_required
 def todolist_overview():
-    # unregistered users don't have access to an overview
-    if not current_user.is_authenticated():
-        return redirect(url_for('main.index'))
     form = TodoListForm()
     if form.validate_on_submit():
         return redirect(url_for('main.add_todolist'))
     return render_template('overview.html', form=form)
+
+
+@main.route('/stats/')
+@admin_required
+def stats():
+    return render_template('stats.html')
 
 
 @main.route('/todolist/<int:id>/', methods=['GET', 'POST'])
