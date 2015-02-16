@@ -6,6 +6,13 @@ from . import utils
 from .. import api
 
 
+@utils.app_errorhandler(403)
+def forbidden(error):
+    if request.path.startswith('/api'):
+        return api.errors.forbidden(error)
+    return render_template('403.html'), 403
+
+
 @utils.app_errorhandler(404)
 def page_not_found(error):
     if request.path.startswith('/api'):
