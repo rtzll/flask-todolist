@@ -9,7 +9,7 @@
         {% if form.errors %}
           <div class="has-error"><strong>Unable to login. Typo?</strong></div>
         {%   endif %}
-        <form action="{{ url_for('auth.login') }}" method=post>
+        <form method=post>
           {{ form.hidden_tag() }}
           <dl>
             <dd>{{ form.email_or_username(class_="u-full-width", placeholder="Email or Username") }}
