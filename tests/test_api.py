@@ -620,7 +620,7 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertFalse(todo.is_finished)
 
         response = self.client.put(
-            url_for('api.update_todo_status',todo_id=todo.id),
+            url_for('api.update_todo_status', todo_id=todo.id),
             headers=self.get_headers(),
             data=json.dumps({'status': 'finished'})
         )
@@ -634,9 +634,52 @@ class TodolistAPITestCase(unittest.TestCase):
         self.assertTrue(todo.is_finished)
 
         response = self.client.put(
-            url_for('api.update_todo_status',todo_id=todo.id),
+            url_for('api.update_todo_status', todo_id=todo.id),
             headers=self.get_headers(),
             data=json.dumps({'status': 'reopen'})
         )
         todo = Todo.query.get(todo.id)
         self.assertFalse(todo.is_finished)
+
+    def test_change_todolist_title(self):
+        todolist = self.add_todolist('new todolist')
+
+        response = self.client.put(
+            url_for('api.change_todolist_title', todolist_id=todolist.id),
+            headers=self.get_headers(),
+            data=json.dumps({'title': 'changed title'})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(json_response['todolist']['title'], 'changed title')
+
+    def test_change_todolist_title_too_long_title(self):
+        todolist = self.add_todolist('new todolist')
+
+        response = self.client.put(
+            url_for('api.change_todolist_title', todolist_id=todolist.id),
+            headers=self.get_headers(),
+            data=json.dumps({'title': 129 * 't'})
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_change_todolist_title_empty_title(self):
+        todolist = self.add_todolist('new todolist')
+
+        response = self.client.put(
+            url_for('api.change_todolist_title', todolist_id=todolist.id),
+            headers=self.get_headers(),
+            data=json.dumps({'title': ''})
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_change_todolist_title_without_title(self):
+        todolist = self.add_todolist('new todolist')
+
+        response = self.client.put(
+            url_for('api.change_todolist_title', todolist_id=todolist.id),
+            headers=self.get_headers()
+        )
+        self.assertEqual(response.status_code, 400)
