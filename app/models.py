@@ -104,18 +104,17 @@ class TodoList(db.Model):
         return '<Todolist: {0}>'.format(self.title)
 
     @staticmethod
-    def is_valid_title(title):
-        return len(title) <= 128
+    def is_valid_title(list_title):
+        return len(list_title) <= 128 and list_title
 
-    def change_title(new_title):
+    def change_title(self, new_title):
         self.title = new_title
+        self.save()
 
     def to_json(self):
         if self.creator:
-            todos_url = url_for(
-                'api.get_user_todolist_todos', todolist_id=self.id,
-                username=self.creator, _external=True
-            )
+            todos_url = url_for( 'api.get_user_todolist_todos',
+                todolist_id=self.id, username=self.creator, _external=True)
         else:
             todos_url = url_for('api.get_todolist_todos', todolist_id=self.id,
                                 _external=True)
@@ -167,8 +166,8 @@ class Todo(db.Model):
         if self.creator is None:
             return '<Todo: {0}>'.format(self.description)
         status = 'finished' if self.is_finished else 'open'
-        return '<{0} todo: {1} by {2}>'.format(status, self.description,
-                                               self.creator)
+        return '<{0} todo: {1} by {2}>'.format(
+            status, self.description, self.creator)
 
     def finished(self):
         self.is_finished = True
