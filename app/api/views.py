@@ -152,3 +152,17 @@ def update_todo_status(todo_id):
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()})
+
+
+@api.route('/todolist/<int:todolist_id>/', methods=['PUT'])
+def change_todolist_title(todolist_id):
+    try:
+        todolist = TodoList.query.get(todolist_id)
+        title = request.json.get('title')
+        if TodoList.is_valid_title(title):
+            todolist.change_title(title)
+        else:
+            abort(400)
+    except:
+        abort(400)
+    return jsonify({'todolist': todolist.to_json()})
