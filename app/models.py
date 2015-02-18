@@ -10,6 +10,22 @@ from flask.ext.login import UserMixin
 from . import db, login_manager
 
 
+class Association(db.Model):
+    __tablename__ = 'association'
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'),
+                         primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                        primary_key=True)
+    # extra_data = db.Column(db.String(50))
+    user = db.relationship('User', backref='group_association')
+
+
+class Group(db.Model):
+    __tablename__ = 'group'
+    id = db.Column(db.Integer, primary_key=True)
+    members = db.relationship('Association', backref='group', lazy='dynamic')
+
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +37,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     todolists = db.relationship('TodoList', backref='user', lazy='dynamic')
+    # groups = db.relationship('Group', backref='member')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
