@@ -6,24 +6,27 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask.ext.login import UserMixin
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from . import db, login_manager
 
 
-class Association(db.Model):
-    __tablename__ = 'association'
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'),
-                         primary_key=True)
+class UserGroup(db.Model):
+    __tablename__ = 'user_group'
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                         primary_key=True)
-    # extra_data = db.Column(db.String(50))
-    user = db.relationship('User', backref='group_association')
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'),
+                         primary_key=True)
+
+    user = db.relationship('User', backref=db.backref('group_association',
+                           cascade='all, delete-orphan'))
+    group = db.relationship('Group')
 
 
 class Group(db.Model):
     __tablename__ = 'group'
     id = db.Column(db.Integer, primary_key=True)
-    members = db.relationship('Association', backref='group', lazy='dynamic')
+    group_name = db.Column(db.String(64), unique=True)
 
 
 class User(UserMixin, db.Model):
@@ -37,7 +40,8 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     todolists = db.relationship('TodoList', backref='user', lazy='dynamic')
-    # groups = db.relationship('Group', backref='member')
+    groups = association_proxy('user_group', 'group')
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
