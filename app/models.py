@@ -18,7 +18,7 @@ class UserGroup(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'),
                          primary_key=True)
 
-    user = db.relationship('User', backref=db.backref('group_association',
+    user = db.relationship('User', backref=db.backref('user_groups',
                            cascade='all, delete-orphan'))
     group = db.relationship('Group')
 
@@ -26,7 +26,40 @@ class UserGroup(db.Model):
 class Group(db.Model):
     __tablename__ = 'group'
     id = db.Column(db.Integer, primary_key=True)
-    group_name = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(64), unique=True)
+    creator = db.Column(db.String(64), db.ForeignKey('user.username'))
+    # members = association_proxy('user_group', 'user')
+
+    def __init__(self, name, creator):
+        self.name = name
+        self.creator = creator
+        # self.members.append(User.query.filter_by(username=creator))
+
+    @staticmethod
+    def is_valid_group_name(name):
+        return len(name) <= 64 and re.match('^\S+$', name)
+
+    def change_name(self, name):
+        self.name = name
+        self.save()
+
+    def to_json(self):
+        json_group = {
+            'group_name': self.name,
+            'creator': self.creator,
+            'group_url': url_for('api.get_group', id=self.id, _external=True)
+            # 'member_count': len(self.members)
+        }
+        return json_group
+
+    def save(self):
+        from sqlalchemy.exc import IntegrityError
+        db.session.add(self)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+        return self
 
 
 class User(UserMixin, db.Model):
@@ -40,8 +73,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     todolists = db.relationship('TodoList', backref='user', lazy='dynamic')
-    groups = association_proxy('user_group', 'group')
-
+    groups = association_proxy('user_groups', 'group')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -76,8 +108,7 @@ class User(UserMixin, db.Model):
 
     def seen(self):
         self.last_seen = datetime.utcnow()
-        db.session.add(self)
-        return self
+        return self.save()
 
     def to_json(self):
         json_user = {
@@ -151,11 +182,6 @@ class TodoList(db.Model):
         }
         return json_todolist
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
-
     def count_todos(self):
         return self.todos.order_by(None).count()
 
@@ -164,6 +190,11 @@ class TodoList(db.Model):
 
     def count_open(self):
         return self.todos.filter_by(is_finished=False).count()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
 
 
 class Todo(db.Model):
