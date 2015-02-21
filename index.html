@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Flask-Todolist : todolist web application - build using Flask and Skeleton">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Flask-Todolist</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/0xfoo/flask-todolist">View on GitHub</a>
+
+          <h1 id="project_title">Flask-Todolist</h1>
+          <h2 id="project_tagline">todolist web application - build using Flask and Skeleton</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/0xfoo/flask-todolist/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/0xfoo/flask-todolist/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="hello-traveler" class="anchor" href="#hello-traveler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hello Traveler.</h1>
+
+<p>This page assembles some information around my Flask-Todolist project.</p>
+
+<p>The idea was to explore the Flask-ecosystem and try to build a small web application. Small as it should not be fancy in any way, but atleast tackle the most common patterns/features of a web application.</p>
+
+<p>So you'll find an API, User-Management (Register/Login) and the accoring views + to-do lists (obviously).
+If your interested, check it out! In 3 Steps you can get up and running:</p>
+
+<pre><code>pip install -r requirements.txt
+python manage.py fill_db
+python manage.py runserver
+</code></pre>
+
+<p>Now you can explore the app on <a href="http://localhost:5000/">http://localhost:5000/</a></p>
+
+<h2>
+<a id="reasons-for-this-project" class="anchor" href="#reasons-for-this-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reasons for this project</h2>
+
+<p>As mentioned before, the reason for the existence of this project is for me to explore Flask and its many extensions.</p>
+
+<p>At this point I'm fairly new to web development and wanted to get started in an uncomplicated fashion, thus Flask seemed reasonable.
+Also this project might be a quick start for other developers looking into Flask.</p>
+
+<h2>
+<a id="encouragement" class="anchor" href="#encouragement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encouragement</h2>
+
+<p>Flask is cool! Let me show it.</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-en">@</span><span class="pl-en">api.route</span>(<span class="pl-s1"><span class="pl-pds">'</span>/todolists/<span class="pl-pds">'</span></span>)
+<span class="pl-st">def</span> <span class="pl-en">get_todolists</span>():
+    todolists <span class="pl-k">=</span> TodoList.query.all()
+    <span class="pl-k">return</span> jsonify({
+        <span class="pl-s1"><span class="pl-pds">'</span>todolists<span class="pl-pds">'</span></span>: [todolist.to_json() <span class="pl-k">for</span> todolist <span class="pl-k">in</span> todolists]
+    })</pre></div>
+
+<p>Just 6 lines for an API view, which will display all todolists as JSON.</p>
+
+<p>The decorator does multiple things. It registers a route on the api blueprint. Which are the Flask way of modularization. As I see it, equivalent to apps in Django.
+Here the api blueprint is prefixed with 'api', i.e. <a href="http://localhost:5000/api/todolists/">http://localhost:5000/api/todolists/</a> would be the link for the above view.</p>
+
+<p>TodoList is a class based upon SQLAlchemy which is seemingly the way to go in terms of an ORM for Flask (specifically Flask-SQLAlchemy).
+And jsonify is a funciton comming from Flask which will return a proper JSON response of a dictionary. Which here is a neat list comprehension of json representations of todolists.</p>
+
+<h2>
+<a id="discouragement" class="anchor" href="#discouragement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Discouragement</h2>
+
+<p>Flask is a micro web development framework for Python.</p>
+
+<p>Well sounds pretty good, right? So it did to me, and still does. The problem or atleast my problem is not with Flask per se, but with the extensions.</p>
+
+<p>In this project I used a few and most of the time it is a breeze, but sometimes you'll find some weird behaviour or don't really get how it works or worse why it doesn't.
+Although often documentation can be found, it mostly covers quick starts and easy examples, but falls short on going deeper.</p>
+
+<p>So if you, like me, are new to web development this can be discouraging.</p>
+
+<h2>
+<a id="meta" class="anchor" href="#meta" aria-hidden="true"><span class="octicon octicon-link"></span></a>Meta</h2>
+
+<p>To my fellow travelers I want to say that I found it really usefull to enter such a project. Small enough to do on the side and large enough to actually learn something.</p>
+
+<p>So I'd like to encourage you to try something like this yourself. Not necessarily a Flask project or even a web related one, just something that make you curious.</p>
+
+<p>Here some tips for you adventurers:</p>
+
+<ul>
+<li>set limits, may it be time or scope</li>
+<li>don't bang your head to hard against the wall</li>
+<li><a href="https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it">YAGNI</a></li>
+<li>have fun</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Flask-Todolist maintained by <a href="https://github.com/0xfoo">0xfoo</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
