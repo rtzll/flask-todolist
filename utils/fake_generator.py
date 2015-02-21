@@ -6,7 +6,7 @@ import forgery_py
 from datetime import datetime
 
 from app import db
-from app.models import User, Group, Todo, TodoList
+from app.models import User, Todo, TodoList
 
 
 class FakeGenerator(object):
@@ -26,21 +26,6 @@ class FakeGenerator(object):
                  username=forgery_py.internet.user_name(True),
                  password='correcthorsebatterystaple',
                  member_since=self.generate_fake_date()).save()
-
-    def generate_fake_groups(self, count):
-        # we need a group creator and members
-        users = User.query.all()
-        assert users != []
-        for _ in xrange(count):
-            creator = random.choice(users)
-            group = Group(name=forgery_py.lorem_ipsum.title(),
-                          creator=creator.username).save()
-            if group:
-                creator.groups.append(group)
-                for _ in xrange(count):
-                    user = random.choice(users)
-                    user.groups.append(group)
-                    # group.members.append(user)
 
     def generate_fake_todolists(self, count):
         # for the creator relation we need users
@@ -67,7 +52,6 @@ class FakeGenerator(object):
     def generate_fake_data(self, count):
         # generation must follow this order, as each builds on the previous
         self.generate_fake_users(count)
-        self.generate_fake_groups(count*2)
         self.generate_fake_todolists(count*4)
         self.generate_fake_todo(count*16)
 
