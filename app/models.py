@@ -13,14 +13,28 @@ from . import db, login_manager
 
 class UserGroup(db.Model):
     __tablename__ = 'user_group'
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                         primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'),
                          primary_key=True)
 
-    user = db.relationship('User', backref=db.backref('user_groups',
-                           cascade='all, delete-orphan'))
-    group = db.relationship('Group')
+    user = db.relationship(
+        'User',
+        backref='user_groups',
+        cascade='all, delete-orphan',
+        single_parent=True
+    )
+    group = db.relationship(
+        'Group',
+        backref='group_users',
+        cascade='all, delete-orphan',
+        single_parent=True
+    )
+
+    def __init__(self, user=None, group=None):
+        self.user = user
+        self.group = group
 
 
 class Group(db.Model):
@@ -28,7 +42,10 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     creator = db.Column(db.String(64), db.ForeignKey('user.username'))
-    # members = association_proxy('user_group', 'user')
+
+    members = association_proxy(
+        'group_users', 'user', creator=lambda user: UserGroup(user=user)
+    )
 
     def __init__(self, name, creator):
         self.name = name
@@ -59,6 +76,7 @@ class Group(db.Model):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            return
         return self
 
 
@@ -73,7 +91,10 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     todolists = db.relationship('TodoList', backref='user', lazy='dynamic')
-    groups = association_proxy('user_groups', 'group')
+
+    groups = association_proxy(
+        'user_groups', 'group', creator=lambda group: UserGroup(group=group)
+    )
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -130,6 +151,7 @@ class User(UserMixin, db.Model):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            return
         return self
 
 
