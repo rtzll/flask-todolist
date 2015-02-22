@@ -5,12 +5,21 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from config import config
 
+from flask.ext.login import AnonymousUserMixin
+
+
+class Anonymous(AnonymousUserMixin):
+
+  def __init__(self):
+    self.is_admin = False
+
 
 db = SQLAlchemy()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
+login_manager.anonymous_user = Anonymous
 
 
 def create_app(config_name):
