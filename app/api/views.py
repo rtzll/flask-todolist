@@ -4,6 +4,7 @@ from flask import jsonify, request, abort
 
 from . import api
 from ..models import User, Todo, TodoList
+from ..decorators import admin_required
 
 
 @api.route('/users/')
@@ -166,3 +167,45 @@ def change_todolist_title(todolist_id):
     except:
         abort(400)
     return jsonify({'todolist': todolist.to_json()})
+
+
+@api.route('/user/<int:user_id>/', methods=['DELETE'])
+@admin_required
+def delete_user(user_id):
+    try:
+        user = User.query.get(user_id)
+        if user_id == request.json.get('user_id'):
+            user.delete()
+            return jsonify()
+        else:
+            abort(400)
+    except:
+        abort(400)
+
+
+@api.route('/todolist/<int:todolist_id>/', methods=['DELETE'])
+@admin_required
+def delete_todolist(todolist_id):
+    try:
+        todolist = TodoList.query.get(todolist_id)
+        if todolist_id == request.json.get('todolist_id'):
+            todolist.delete()
+            return jsonify()
+        else:
+            abort(400)
+    except:
+        abort(400)
+
+
+@api.route('/todo/<int:todo_id>/', methods=['DELETE'])
+@admin_required
+def delete_todo(todo_id):
+    try:
+        todo = Todo.query.get(todo_id)
+        if todo_id == request.json.get('todo_id'):
+            todo.delete()
+            return jsonify()
+        else:
+            abort(400)
+    except:
+        abort(400)
