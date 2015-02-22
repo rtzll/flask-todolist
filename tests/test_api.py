@@ -683,3 +683,55 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers()
         )
         self.assertEqual(response.status_code, 400)
+
+    # test api delete calls
+    @unittest.skip('because acquiring admin rights is currently an issue')
+    def test_delete_user(self):
+        user = self.add_user('adam')
+        user_id = user.id
+
+        response = self.client.delete(
+            url_for('api.delete_user', user_id=user_id),
+            headers=self.get_headers(),
+            data=json.dumps({'user_id': user_id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(url_for('api.get_user', user_id=user_id))
+        self.assertEqual(response.status_code, 404)
+
+    @unittest.skip('because acquiring admin rights is currently an issue')
+    def test_delete_todolist(self):
+        todolist = self.add_todolist('new todolist')
+        todolist_id = todolist.id
+
+        response = self.client.delete(
+            url_for('api.delete_todolist', todolist_id=todolist_id),
+            headers=self.get_headers(),
+            data=json.dumps({'todolist_id': todolist_id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(
+            url_for('api.get_todolist', todolist_id=todolist_id)
+        )
+        self.assertEqual(response.status_code, 404)
+
+    @unittest.skip('because acquiring admin rights is currently an issue')
+    def test_delete_todo(self):
+        # we need admin rights for this test
+        todolist = self.add_todolist('new todolist')
+        todo = self.add_todo('new todo', todolist.id)
+        todo_id = todo.id
+
+        response = self.client.delete(
+            url_for('api.delete_todo', todo_id=todo_id),
+            headers=self.get_headers(),
+            data=json.dumps({'todo_id': todo_id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(
+            url_for('api.get_todo', todo_id=todo_id)
+        )
+        self.assertEqual(response.status_code, 404)
