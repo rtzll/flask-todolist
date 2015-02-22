@@ -44,5 +44,21 @@ Extras              | Flask-Script
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
 
+### Issues / Features
+
+So here a few issues, that are still bothering me and hopefully I will come to later.
+
+ - [ ] In testing I found that login_required was returning the site even when not logged in
+ - [ ] testing the admin_required views
+ - [ ] making the todolist titles editable (maybe with some jQuery magic, or use title forms)
+ - [ ] putting some boundaries on the API (login_required/admin_required)
+ - [ ] showing some stats on the admin page (stats.html)
+ - [ ] todo overview + todo deadlines
+ - [ ] adding private todolists
+ - [ ] **adding groups**
+  - [ ] Updates via [Pub-Sub](http://redis.io/topics/pubsub/) for group todolists ([Websockets](http://lucumr.pocoo.org/2012/9/24/websockets-101/))
+
+
+
 ### License (MIT)
 As far as licenses go MIT seemed pretty decent, thus I used it.
