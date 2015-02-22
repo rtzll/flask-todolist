@@ -70,6 +70,14 @@ class User(UserMixin, db.Model):
         }
         return json_user
 
+    def promote_to_admin(self):
+        self.is_admin = True
+        return self.save()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def save(self):
         from sqlalchemy.exc import IntegrityError
         db.session.add(self)
@@ -139,6 +147,10 @@ class TodoList(db.Model):
     def count_open(self):
         return self.todos.filter_by(is_finished=False).count()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -187,6 +199,10 @@ class Todo(db.Model):
             'status' : 'finished' if self.is_finished else 'open'
         }
         return json_todo
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def save(self):
         db.session.add(self)
