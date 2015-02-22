@@ -184,3 +184,25 @@ class TodolistTestCase(unittest.TestCase):
 
         self.assertEqual(todolist_from_db.count_finished(), 1)
         self.assertEqual(todolist_from_db.count_open(), 0)
+
+    # test delete functions
+    def test_delete_user(self):
+        user = self.add_user(self.username_adam)
+        user_id = user.id
+        user.delete()
+        self.assertIsNone(User.query.get(user_id))
+
+    def test_delete_todolist(self):
+        todolist = TodoList(self.shopping_list_title).save()
+        todolist_id = todolist.id
+        todolist.delete()
+        self.assertIsNone(TodoList.query.get(todolist_id))
+
+    def test_delete_todo(self):
+        todolist = TodoList(self.shopping_list_title).save()
+        todo = Todo('A book about TDD', todolist.id).save()
+        self.assertEqual(todolist.count_todos(), 1)
+        todo_id = todo.id
+        todo.delete()
+        self.assertIsNone(Todo.query.get(todo_id))
+        self.assertEqual(todolist.count_todos(), 0)
