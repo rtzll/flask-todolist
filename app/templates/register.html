@@ -9,7 +9,7 @@
           {% if form.errors %}
             <div class="has-error"><strong>Your registration contains errors.</strong></div>
           {%   endif %}
-        <form action="{{ url_for('auth.register') }}" method=post>
+        <form method=post>
           {{ form.hidden_tag() }}
           <dl>
             <dd>{{ form.username(class_="u-full-width", placeholder="Username") }}
