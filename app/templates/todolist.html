@@ -9,7 +9,7 @@
           {% if form.errors %}
             <div class="has-error"><strong>Your todo is longer than 128 characters.</strong></div>
           {%   endif %}
-          <form action="{{ url_for('main.todolist', id=todolist.id) }}" method=post>
+          <form method=post>
             {{ form.hidden_tag() }}
             <dl>
               <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", value="") }}
