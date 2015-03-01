@@ -73,7 +73,7 @@ $(document).ready(function() {
   $(':checkbox').on('click', changeTodoStatus);
 
   function changeTodoStatus() {
-    if($('#checkbox').is(':checked')) {
+    if($(this).is(':checked')) {
       finishTodo(this);
     } else {
       reopenTodo(this);
