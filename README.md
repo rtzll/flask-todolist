@@ -1,11 +1,12 @@
-Flask-Todolist
-=======================
+#Flask-Todolist
 In this project I explored Flask and some of its great
 extensions. The most basic features of most web apps can be found here.
 
 Using the Skeleton CSS framework I tried to achieve a look that is minimal and also modern. Opposed to a lot of small projects which are proof of concepty/exploratory I made a conscious effort to also build something that looks nice. Nonetheless I'm not a designer, so I strived for good enough.
 
 A bit more information can be found here: https://0xfoo.github.io/flask-todolist/
+
+Cross promotion: I'm currently building a quite similar app in Django: https://github.com/0xfoo/django-todolist
 
 
 ### Explore
