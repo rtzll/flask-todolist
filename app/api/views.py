@@ -32,7 +32,8 @@ def add_user():
         if User.is_valid_username(username) and User.is_valid_email(email) \
             and User.is_valid_password(password):
             user = User(
-                username=username, email=email, password=password).save()
+                username=username, email=email, password=password
+            ).save()
         else:
             abort(400)
     except:
@@ -64,8 +65,10 @@ def get_user_todolist(username, todolist_id):
 def add_user_todolist(username):
     try:
         user = User.query.filter_by(username=username).one()
-        todolist = TodoList(title=request.json.get('title'),
-                            creator=user.username).save()
+        todolist = TodoList(
+            title=request.json.get('title'),
+            creator=user.username
+        ).save()
     except:
         abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
@@ -122,8 +125,11 @@ def add_user_todolist_todo(username, todolist_id):
         user = User.query.filter_by(username=username).one()
         # this way we check the existence of the todolist
         todolist = TodoList.query.get(todolist_id)
-        todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist.id, creator=username).save()
+        todo = Todo(
+            description=request.json.get('description'),
+            todolist_id=todolist.id,
+            creator=username
+        ).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201
@@ -133,8 +139,10 @@ def add_user_todolist_todo(username, todolist_id):
 def add_todolist_todo(todolist_id):
     try:
         todolist = TodoList.query.get(todolist_id)
-        todo = Todo(description=request.json.get('description'),
-                    todolist_id=todolist.id).save()
+        todo = Todo(
+            description=request.json.get('description'),
+            todolist_id=todolist.id
+        ).save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()}), 201

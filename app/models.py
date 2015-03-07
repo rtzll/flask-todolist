@@ -60,12 +60,15 @@ class User(UserMixin, db.Model):
     def to_json(self):
         json_user = {
             'username': self.username,
-            'user_url': url_for('api.get_user', username=self.username,
-                                _external=True),
+            'user_url': url_for(
+                'api.get_user', username=self.username, _external=True
+            ),
             'member_since': self.member_since,
             'last_seen': self.last_seen,
-            'todolists': url_for('api.get_user_todolists',
-                                 username=self.username, _external=True),
+            'todolists': url_for(
+                'api.get_user_todolists',
+                username=self.username, _external=True
+            ),
             'todolist_count': self.todolists.count()
         }
         return json_user
@@ -121,11 +124,14 @@ class TodoList(db.Model):
 
     def to_json(self):
         if self.creator:
-            todos_url = url_for( 'api.get_user_todolist_todos',
-                todolist_id=self.id, username=self.creator, _external=True)
+            todos_url = url_for(
+                'api.get_user_todolist_todos',
+                todolist_id=self.id, username=self.creator, _external=True
+            )
         else:
-            todos_url = url_for('api.get_todolist_todos', todolist_id=self.id,
-                                _external=True)
+            todos_url = url_for(
+                'api.get_todolist_todos', todolist_id=self.id, _external=True
+            )
 
         json_todolist = {
             'title': self.title,

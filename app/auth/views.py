@@ -13,9 +13,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user_by_email = User.query.filter_by(
-            email=form.email_or_username.data).first()
+            email=form.email_or_username.data
+        ).first()
         user_by_name = User.query.filter_by(
-            username=form.email_or_username.data).first()
+            username=form.email_or_username.data
+        ).first()
         if user_by_email is not None and \
             user_by_email.verify_password(form.password.data):
             login_user(user_by_email.seen())
@@ -37,8 +39,10 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    username=form.username.data,
-                    password=form.password.data).save()
+        user = User(
+            email=form.email.data,
+            username=form.username.data,
+            password=form.password.data
+        ).save()
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)
