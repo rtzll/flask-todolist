@@ -74,18 +74,10 @@ $(document).ready(function() {
 
   function changeTodoStatus() {
     if($(this).is(':checked')) {
-      finishTodo(this);
+      putStatusUpdate(this.getAttribute('data-todo-id'), 'finished');
     } else {
-      reopenTodo(this);
+      putStatusUpdate(this.getAttribute('data-todo-id'), 'reopen');
     }
-  }
-
-  function finishTodo(checkbox) {
-    putStatusUpdate(checkbox.getAttribute('data-todo-id'), 'finished');
-  }
-
-  function reopenTodo(checkbox) {
-    putStatusUpdate(checkbox.getAttribute('data-todo-id'), 'reopen');
   }
 
   function putStatusUpdate(todoID, status) {
