@@ -6,7 +6,6 @@ from flask.ext.login import current_user, login_required
 from . import main
 from .forms import TodoForm, TodoListForm
 from ..models import User, Todo, TodoList
-from ..decorators import admin_required
 
 
 @main.route('/')
@@ -24,12 +23,6 @@ def todolist_overview():
     if form.validate_on_submit():
         return redirect(url_for('main.add_todolist'))
     return render_template('overview.html', form=form)
-
-
-@main.route('/stats/')
-@admin_required
-def stats():
-    return render_template('stats.html')
 
 
 @main.route('/todolist/<int:id>/', methods=['GET', 'POST'])
