@@ -4,9 +4,7 @@ extensions. The most basic features of most web apps can be found here.
 
 Using the [Skeleton](http://www.getskeleton.com/) CSS framework I tried to achieve a look that is minimal and also modern. Opposed to a lot of small projects which are proof of concepty/exploratory I made a conscious effort to also build something that looks nice. Nonetheless I'm not a designer, so I strived for good enough.
 
-A bit more information can be found here: https://0xfoo.github.io/flask-todolist/
-
-Cross promotion: I'm currently building a quite similar app in Django: https://github.com/0xfoo/django-todolist
+I've also build a quite similar app in Django: https://github.com/0xfoo/django-todolist
 
 
 ### Explore
@@ -35,7 +33,7 @@ Click around, there is not to much, but I like the overview under: http://localh
 
 In the process of this project I used a couple of extensions.
 
-Usage               | Flask-Extension  
+Usage               | Flask-Extension
 ------------------- | -----------------------
 Model & Database    | [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.0/)
 Forms               | [Flask-WTF](https://flask-wtf.readthedocs.org/en/latest/)
@@ -53,15 +51,6 @@ So here a few issues, that are still bothering me and hopefully I will come to l
  - [ ] find a way to test admin_required views
  - [ ] making the todolist titles editable (maybe with some jQuery magic, or use title forms)
  - [ ] using login_required/admin_required for access control on API
- - [ ] showing some stats on the admin page (currently empty)
-
-
-### Features (nice to have)
-
-- [ ] **adding groups**
-- [ ] automatic updates via [Pub-Sub](http://redis.io/topics/pubsub/) for group todolists ([Websockets](http://lucumr.pocoo.org/2012/9/24/websockets-101/))
-- [ ] adding private todolists
-- [ ] todo overview + todo deadlines
 
 
 ### License (MIT)
