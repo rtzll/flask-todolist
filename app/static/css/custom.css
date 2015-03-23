@@ -3,8 +3,8 @@
   list-style: none;
   text-align: left; }
 .finished-todos li{
-  color: #ccc;
-  font-style: italic; }
+  color: #aaa;
+  text-decoration: line-through; }
 .container {
   max-width: 800px; }
 .header {
