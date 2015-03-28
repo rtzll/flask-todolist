@@ -69,29 +69,6 @@ $(document).ready(function() {
     }
   }
 
-
-  $(':checkbox').on('click', changeTodoStatus);
-
-  function changeTodoStatus() {
-    if($(this).is(':checked')) {
-      putStatusUpdate(this.getAttribute('data-todo-id'), 'finished');
-    } else {
-      putStatusUpdate(this.getAttribute('data-todo-id'), 'reopen');
-    }
-  }
-
-  function putStatusUpdate(todoID, status) {
-    $.ajax({
-      url: '/api/todo/' + todoID + '/',
-      type: 'PUT',
-      contentType:  'application/json',
-      data: JSON.stringify({'status': status}),
-      success: function() {
-        location.reload();
-      }
-    });
-  }
-
   init();
 
 });
