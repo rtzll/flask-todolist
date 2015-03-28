@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block js %}
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<script src="{{ url_for('static', filename='js/lists.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     <section class="header">
       <h2 class="title">{{todolist.title|title}}</h2>
