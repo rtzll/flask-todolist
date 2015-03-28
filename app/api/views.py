@@ -148,6 +148,12 @@ def add_todolist_todo(todolist_id):
     return jsonify({'todo': todo.to_json()}), 201
 
 
+@api.route('/todo/<int:todo_id>/')
+def get_todot(todo_id):
+    todo = Todo.query.get_or_404(todo_id)
+    return jsonify({'todo': todo.to_json()})
+
+
 @api.route('/todo/<int:todo_id>/', methods=['PUT'])
 def update_todo_status(todo_id):
     try:
