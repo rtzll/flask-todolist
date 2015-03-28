@@ -47,7 +47,7 @@ function putNewStatus(todoID, isFinished) {
     }
   });
   // send put request using the data of the get for the same id
-  var todoURL = '/api/todos/' + todoID + '/'
+  var todoURL = '/api/todo/' + todoID + '/'
   $.getJSON(todoURL, function(data) {
     data.is_finished = isFinished;
     if (isFinished) {
