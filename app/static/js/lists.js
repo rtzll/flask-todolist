@@ -49,11 +49,11 @@ function putNewStatus(todoID, isFinished) {
   // send put request using the data of the get for the same id
   var todoURL = '/api/todo/' + todoID + '/'
   $.getJSON(todoURL, function(data) {
-    data.is_finished = isFinished;
+    data.todo.is_finished = isFinished;
     if (isFinished) {
-      data.finished_at = moment().toISOString();
+      data.todo.finished_at = moment().toISOString();
     }else{
-      data.finished_at = null;
+      data.todo.finished_at = null;
     }
     console.log(JSON.stringify(data));
     $.ajax({

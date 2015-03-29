@@ -2,6 +2,8 @@
 
 from flask import jsonify, request, abort
 
+from datetime import datetime
+
 from . import api
 from ..models import User, Todo, TodoList
 from ..decorators import admin_required
@@ -149,7 +151,7 @@ def add_todolist_todo(todolist_id):
 
 
 @api.route('/todo/<int:todo_id>/')
-def get_todot(todo_id):
+def get_todo(todo_id):
     todo = Todo.query.get_or_404(todo_id)
     return jsonify({'todo': todo.to_json()})
 
@@ -158,12 +160,12 @@ def get_todot(todo_id):
 def update_todo_status(todo_id):
     try:
         todo = Todo.query.get(todo_id)
-        if request.json.get('status') == 'finished':
-            todo.finished()
-        elif request.json.get('status') == 'reopen':
-            todo.reopen()
-        else:
-            abort(400)
+        todo_json = request.json.get('todo')
+        todo.is_finished = todo_json.get('is_finished')
+        todo.finished_at = datetime.strptime(
+            todo_json.get('finished_at'), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+        todo.save()
     except:
         abort(400)
     return jsonify({'todo': todo.to_json()})
