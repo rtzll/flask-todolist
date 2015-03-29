@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import json
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -73,6 +74,10 @@ class User(UserMixin, db.Model):
         }
         return json_user
 
+    @staticmethod
+    def from_json(json_user):
+        User(json.loads(json_user)).save()
+
     def promote_to_admin(self):
         self.is_admin = True
         return self.save()
@@ -144,6 +149,10 @@ class TodoList(db.Model):
         }
         return json_todolist
 
+    @staticmethod
+    def from_json(json_todolist):
+        TodoList(json.loads(json_todolist)).save()
+
     def count_todos(self):
         return self.todos.order_by(None).count()
 
@@ -205,6 +214,10 @@ class Todo(db.Model):
             'status' : 'finished' if self.is_finished else 'open'
         }
         return json_todo
+
+    @staticmethod
+    def from_json(json_todo):
+        Todo(json.loads(json_todo)).save()
 
     def delete(self):
         db.session.delete(self)
