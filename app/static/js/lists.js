@@ -5,9 +5,9 @@ $(document).ready(function() {
 
 function changeTodoStatus() {
   if($(this).is(':checked')) {
-    putNewStatus(this.getAttribute('data-todo-id'), true);
+    putNewStatus($(this).data('todo-id'), true);
   } else {
-    putNewStatus(this.getAttribute('data-todo-id'), false);
+    putNewStatus($(this).data('todo-id'), false);
   }
 }
 
@@ -55,7 +55,6 @@ function putNewStatus(todoID, isFinished) {
     }else{
       data.todo.finished_at = null;
     }
-    console.log(JSON.stringify(data));
     $.ajax({
       url: todoURL,
       type: 'PUT',
