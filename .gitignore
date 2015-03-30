@@ -1,12 +1,19 @@
+# python related files
 *.pyc
 *.pyo
 *.egg
 *.egg-info
+__pycache__
+
+# sqlite db
 *.db
-.idea
+
+# sublime related files
+*.sublime-project
+*.sublime-workspace
+
+# test, build, etc
 build
 docs/_build
 dist
 results
-__pycache__
-.DS_Store
