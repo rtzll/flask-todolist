@@ -1,10 +1,9 @@
-
 $(document).ready(function() {
   $(':checkbox').on('click', changeTodoStatus);
 });
 
 function changeTodoStatus() {
-  if($(this).is(':checked')) {
+  if ($(this).is(':checked')) {
     putNewStatus($(this).data('todo-id'), true);
   } else {
     putNewStatus($(this).data('todo-id'), false);
@@ -20,17 +19,17 @@ function csrfSafeMethod(method) {
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie != '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-          var cookie = jQuery.trim(cookies[i]);
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) == (name + '=')) {
-              cookieValue = decodeURIComponent(
-                cookie.substring(name.length + 1)
-              );
-              break;
-          }
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) == (name + '=')) {
+        cookieValue = decodeURIComponent(
+          cookie.substring(name.length + 1)
+        );
+        break;
       }
+    }
   }
   return cookieValue;
 }
@@ -52,7 +51,7 @@ function putNewStatus(todoID, isFinished) {
     data.todo.is_finished = isFinished;
     if (isFinished) {
       data.todo.finished_at = moment().toISOString();
-    }else{
+    } else {
       data.todo.finished_at = null;
     }
     $.ajax({
