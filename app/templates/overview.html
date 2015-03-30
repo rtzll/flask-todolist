@@ -35,7 +35,7 @@ $(document).ready(function() {
         <form action="{{ url_for('main.add_todolist') }}" method=post>
           {{ form.hidden_tag() }}
           <dl>
-            <dd>{{ form.title(class_="u-full-width", placeholder="Enter a title to start a new todolist", value="") }}
+            <dd>{{ form.title(class_="u-full-width", placeholder="Enter a title to start a new todolist", value="", maxlength=64) }}
             <dt>{{ form.submit }}
           </dl>
         </form>

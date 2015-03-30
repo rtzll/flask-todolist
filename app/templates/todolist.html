@@ -17,7 +17,7 @@
           <form method=post>
             {{ form.hidden_tag() }}
             <dl>
-              <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", value="") }}
+              <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", value="", maxlength=128) }}
               <dt>{{ form.submit }}
             </dl>
           </form>

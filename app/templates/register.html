@@ -12,8 +12,8 @@
         <form method=post>
           {{ form.hidden_tag() }}
           <dl>
-            <dd>{{ form.username(class_="u-full-width", placeholder="Username") }}
-            <dd>{{ form.email(class_="u-full-width", placeholder="Email") }}
+            <dd>{{ form.username(class_="u-full-width", placeholder="Username", maxlength=64) }}
+            <dd>{{ form.email(class_="u-full-width", placeholder="Email", maxlength=64) }}
             <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
             <dd>{{ form.password_confirmation(class_="u-full-width", placeholder="Confirm your Password") }}
             <dt>{{ form.submit }}
