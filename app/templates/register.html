@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 
 {% block body %}
-  <section class="header">
-    <h2 class="title">Register</h2>
-      <div class="row">
-        <div class="three columns value-prop"></div>
-        <div class="six columns">
-          {% if form.errors %}
-            <div class="has-error"><strong>Your registration contains errors.</strong></div>
-          {%   endif %}
-        <form method=post>
-          {{ form.hidden_tag() }}
-          <dl>
-            <dd>{{ form.username(class_="u-full-width", placeholder="Username", maxlength=64) }}
-            <dd>{{ form.email(class_="u-full-width", placeholder="Email", maxlength=64) }}
-            <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
-            <dd>{{ form.password_confirmation(class_="u-full-width", placeholder="Confirm your Password") }}
-            <dt>{{ form.submit }}
-          </dl>
-        </form>
-        <p>Already registerd? <a href="{{ url_for('auth.login') }}">Click here to login</a>.</p>
-        </div>
-      </div>
-  </section>
+<section class="header">
+  <h2 class="title">Register</h2>
+  <div class="row">
+    <div class="three columns value-prop"></div>
+    <div class="six columns">
+      {% if form.errors %}
+      <div class="has-error"><strong>Your registration contains errors.</strong></div>
+      {% endif %}
+      <form method=post>
+        {{ form.hidden_tag() }}
+        <dl>
+          <dd>{{ form.username(class_="u-full-width", placeholder="Username", maxlength=64) }}
+          <dd>{{ form.email(class_="u-full-width", placeholder="Email", maxlength=64) }}
+          <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
+          <dd>{{ form.password_confirmation(class_="u-full-width", placeholder="Confirm your Password") }}
+          <dt>{{ form.submit }}
+        </dl>
+      </form>
+      <p>Already registerd? <a href="{{ url_for('auth.login') }}">Click here to login</a>.</p>
+    </div>
+  </div>
+</section>
 {% endblock %}

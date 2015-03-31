@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <section class="header">
-      <h2 class="title">Dead simple Todolists.</h2>
-      <div class="row">
-        <div class="three columns value-prop"></div>
-        <div class="six columns">
-          <form action="{{ url_for('main.new_todolist') }}" method=post>
-            {{ form.hidden_tag() }}
-            <dl>
-              <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", maxlength=128) }}
-              <dt>{{ form.submit(class="button button-primary", value="Start one now") }}
-            </dl>
-          </form>
-        </div>
-      </div>
-  </section>
+<section class="header">
+  <h2 class="title">Dead simple Todolists.</h2>
+  <div class="row">
+    <div class="three columns value-prop"></div>
+    <div class="six columns">
+      <form action="{{ url_for('main.new_todolist') }}" method=post>
+        {{ form.hidden_tag() }}
+        <dl>
+          <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", maxlength=128) }}
+          <dt>{{ form.submit(class="button button-primary", value="Start one now") }}
+        </dl>
+      </form>
+    </div>
+  </div>
+</section>
 {% endblock %}

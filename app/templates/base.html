@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
 
+<head>
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
   <title>Flodolist</title>
   <meta name="description" content="Small todolist app.">
   <meta name="author" content="Christian Rotzoll">
-
   <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
   <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-  {% block css %}{% endblock %}
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"> {% block css %}{% endblock %}
   <!-- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/site.js') }}"></script>
   {% block js %}{% endblock %}
-
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}" />
 </head>
-<body>
 
+<body>
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="container">
-
     <!-- Navigation
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <div class="navbar-spacer"></div>
@@ -48,31 +41,29 @@
         <ul class="navbar-list">
           <li class="navbar-item"><a class="navbar-link" href="{{ url_for('main.index') }}">Flodolist</a></li>
           {% if not current_user.is_authenticated() %}
+          <li class="navbar-item">
+            <a class="navbar-link" href="{{ url_for('auth.login') }}">Login</a> {% else %}
             <li class="navbar-item">
-              <a class="navbar-link" href="{{ url_for('auth.login') }}">Login</a>
-          {% else %}
-            <li class="navbar-item">
-            <a class="navbar-link" href="#" data-popover="#moreNavPopover">{{ current_user.username }}</a>
-            <div id="moreNavPopover" class="popover">
-              <ul class="popover-list">
-                <li class="popover-item">
-                  <a class="popover-link" href="{{ url_for('main.todolist_overview') }}">Your Todolists</a>
-                </li>
-                <li class="popover-item">
-                  <a class="popover-link" href="{{ url_for('auth.logout') }}">logout</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          {% endif %}
+              <a class="navbar-link" href="#" data-popover="#moreNavPopover">{{ current_user.username }}</a>
+              <div id="moreNavPopover" class="popover">
+                <ul class="popover-list">
+                  <li class="popover-item">
+                    <a class="popover-link" href="{{ url_for('main.todolist_overview') }}">Your Todolists</a>
+                  </li>
+                  <li class="popover-item">
+                    <a class="popover-link" href="{{ url_for('auth.logout') }}">logout</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
         </ul>
       </div>
     </nav>
-
-  {% block body %}{% endblock %}
-
+    {% block body %}{% endblock %}
   </div>
-<!-- End Document
+  <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
+
 </html>
