@@ -6,11 +6,14 @@
   <div class="row">
     <div class="three columns value-prop"></div>
     <div class="six columns">
+      {% if form.errors %}
+      <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
+      {% endif %}
       <form action="{{ url_for('main.new_todolist') }}" method=post>
         {{ form.hidden_tag() }}
         <dl>
           <dd>{{ form.todo(class_="u-full-width", placeholder="Enter your todo", maxlength=128) }}
-          <dt>{{ form.submit(class="button button-primary", value="Start one now") }}
+            <dt>{{ form.submit(class="button button-primary", value="Start one now") }}
         </dl>
       </form>
     </div>
