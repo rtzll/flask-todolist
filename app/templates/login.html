@@ -12,7 +12,7 @@
       <form method=post>
         {{ form.hidden_tag() }}
         <dl>
-          <dd>{{ form.email_or_username(class_="u-full-width", placeholder="Email or Username", maxlength=64)}}
+          <dd>{{ form.email_or_username(class_="u-full-width", placeholder="Email or Username", maxlength=128)}}
           <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
           <dt>{{ form.submit }}
         </dl>

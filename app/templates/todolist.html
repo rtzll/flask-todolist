@@ -12,7 +12,7 @@
     <div class="three columns value-prop"></div>
     <div class="six columns">
       {% if form.errors %}
-      <div class="has-error"><strong>Your todo is longer than 128 characters.</strong></div>
+      <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
       {% endif %}
       <form method=post>
         {{ form.hidden_tag() }}
