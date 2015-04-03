@@ -12,7 +12,7 @@
     <div class="three columns value-prop"></div>
     <div class="six columns">
       {% if form.errors %}
-      <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
+        <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
       {% endif %}
       <form method=post>
         {{ form.hidden_tag() }}
@@ -26,21 +26,21 @@
       <div class="one-half column open-todos">
         <h6 class="docs-header">{{ todolist.count_open() }} open</h6>
         <ul>
-          {% for todo in todolist.todos %} {% if not todo.is_finished %}
-          <li>
-            <input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}"> {{ todo.description }}
-          </li>
-          {% endif %} {% endfor %}
+          {% for todo in todolist.todos %}
+            {% if not todo.is_finished %}
+              <li><input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}"> {{ todo.description }}</li>
+            {% endif %}
+          {% endfor %}
         </ul>
       </div>
       <div class="one-half column finished-todos">
         <h6 class="docs-header">{{ todolist.count_finished() }} finished</h6>
         <ul>
-          {% for todo in todolist.todos %} {% if todo.is_finished %}
-          <li>
-            <input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}" checked="checked"> {{ todo.description }}
-          </li>
-          {% endif %} {% endfor %}
+          {% for todo in todolist.todos %}
+            {% if todo.is_finished %}
+              <li><input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}" checked="checked"> {{ todo.description }}</li>
+            {% endif %}
+          {% endfor %}
         </ul>
       </div>
     </div>

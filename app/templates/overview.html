@@ -29,7 +29,7 @@ $(document).ready(function() {
     <div class="three columns value-prop"></div>
     <div class="six columns">
       {% if form.errors %}
-      <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
+        <div class="has-error"><strong>Todos should neither be empty nor be longer than 128 characters.</strong></div>
       {% endif %}
       <form action="{{ url_for('main.add_todolist') }}" method=post>
         {{ form.hidden_tag() }}
@@ -54,12 +54,12 @@ $(document).ready(function() {
         </thead>
         <tbody>
           {% for todolist in current_user.todolists %}
-          <tr>
-            <td><a href="{{ url_for('main.todolist', id=todolist.id) }}">{{ todolist.title }}</a></td>
-            <td>{{ todolist.count_open() }}</td>
-            <td>{{ todolist.count_finished() }}</td>
-            <td data-time-in-seconds="{{ todolist.created_at|in_seconds }}">{{ todolist.created_at|humanize }}</td>
-          </tr>
+            <tr>
+              <td><a href="{{ url_for('main.todolist', id=todolist.id) }}">{{ todolist.title }}</a></td>
+              <td>{{ todolist.count_open() }}</td>
+              <td>{{ todolist.count_finished() }}</td>
+              <td data-time-in-seconds="{{ todolist.created_at|in_seconds }}">{{ todolist.created_at|humanize }}</td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
