@@ -2,10 +2,22 @@
 .finished-todos ul {
   list-style: none;
   text-align: left;
+  word-wrap: break-word;
 }
 
-.finished-todos li{
+h2.title {
+  word-wrap: break-word;
+}
+
+th.todolist-title,
+tr td.todolist-title {
+  width: 50%;
+  word-break: break-word;
+}
+
+.finished-todos li {
   color: #aaa;
+  padding-left: 5pt;
   text-decoration: line-through;
 }
 
