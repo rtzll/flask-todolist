@@ -46,21 +46,18 @@ class TodolistClientTestCase(unittest.TestCase):
 
     def test_home_page(self):
         response = self.client.get(url_for('main.index'))
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(b'Todolists' in response.data)
 
     def test_register_page(self):
         response = self.client.get(url_for('auth.register'))
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(b'Already registerd?' in response.data)
 
     def test_login_page(self):
         response = self.client.get(url_for('auth.login'))
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(b'New user?' in response.data)
-
-    @unittest.skip('because of strange behaviour of flask-login')
-    def test_overview_redirect_if_user_not_logged_in(self):
-        response = self.client.get(url_for('main.todolist_overview'))
-        # expect redirect to login page, as login is required for overview
-        self.assertEqual(response.status_code, 302)
 
     def test_overview_no_redirect_if_user_logged_in(self):
         self.register_and_login('adam')
