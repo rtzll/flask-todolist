@@ -1,25 +1,29 @@
-#Flask-Todolist
-In this project I explored Flask and some of its great
-extensions. The most basic features of most web apps can be found here.
+# Flask-Todolist
 
-Using the [Skeleton](http://www.getskeleton.com/) CSS framework I tried to achieve a look that is minimal and also modern. Opposed to a lot of small projects which are proof of concepty/exploratory I made a conscious effort to also build something that looks nice. Nonetheless I'm not a designer, so I strived for good enough.
+[![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+
+Flask-Todolist is a todolist web application with the most basic features of most web apps, i.e. accounts/login, API and (somewhat) interactive UI.
+
+---
+CSS | [Skeleton](http://getskeleton.com/)
+JS  | [jQuery](https://jquery.com/)
 
 I've also build a quite similar app in Django: https://github.com/0xfoo/django-todolist
 
 
-### Explore
+## Explore
 To try out the app yourself install the requirements.
-```
-pip install -r requirements.txt
-```
+
+    pip install -r requirements.txt
+
 For your exploration you might find it useful to have some data. (This takes a moment or two.)
-```
-python manage.py fill_db
-```
+
+    python manage.py fill_db
+
 And then start the server (default: http://localhost:5000)
-```
-python manage.py runserver
-```
+
+    python manage.py runserver
+
 
 Now you can browse the API:
 http://localhost:5000/api/users
@@ -29,7 +33,7 @@ Click around, there is not to much, but I like the overview under: http://localh
 (You must be logged in to see it.)
 
 
-### Extensions
+## Extensions
 
 In the process of this project I used a couple of extensions.
 
@@ -43,7 +47,7 @@ Extras              | [Flask-Script](http://flask-script.readthedocs.org/en/late
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
 
-### Issues
+## Issues
 
 So here a few issues, that are still bothering me and hopefully I will come to later.
 
@@ -53,5 +57,8 @@ So here a few issues, that are still bothering me and hopefully I will come to l
  - [ ] using login_required/admin_required for access control on API
 
 
-### License (MIT)
-As far as licenses go MIT seemed pretty decent, thus I used it.
+[license-url]: https://github.com/0xfoo/flask-todolist/blob/master/LICENSE
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+
+[travis-url]: https://travis-ci.org/0xfoo/flask-todolist
+[travis-image]: https://travis-ci.org/0xfoo/flask-todolist.svg?branch=master
