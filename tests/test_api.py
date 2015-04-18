@@ -2,7 +2,7 @@
 
 import unittest
 import json
-
+from datetime import datetime
 from flask import url_for
 
 from app import create_app, db
@@ -619,11 +619,14 @@ class TodolistAPITestCase(unittest.TestCase):
         todo = self.add_todo('first', todolist.id)
         self.assertFalse(todo.is_finished)
 
+        now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         response = self.client.put(
             url_for('api.update_todo_status', todo_id=todo.id),
             headers=self.get_headers(),
-            data=json.dumps({'status': 'finished'})
+            data=json.dumps({'todo': {'is_finished': True,
+                                      'finished_at': now}})
         )
+
         todo = Todo.query.get(todo.id)
         self.assertTrue(todo.is_finished)
 
@@ -636,7 +639,7 @@ class TodolistAPITestCase(unittest.TestCase):
         response = self.client.put(
             url_for('api.update_todo_status', todo_id=todo.id),
             headers=self.get_headers(),
-            data=json.dumps({'status': 'reopen'})
+            data=json.dumps({'todo': {'is_finished': False}})
         )
         todo = Todo.query.get(todo.id)
         self.assertFalse(todo.is_finished)
