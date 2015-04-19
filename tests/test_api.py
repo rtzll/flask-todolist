@@ -1,35 +1,35 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import json
+import unittest
 from datetime import datetime
+
+from flask.ext.testing import TestCase
 from flask import url_for
 
 from app import create_app, db
 from app.models import  User, Todo, TodoList
 
 
-class TodolistAPITestCase(unittest.TestCase):
+class TodolistAPITestCase(TestCase):
+
+    def create_app(self):
+        return create_app('testing')
 
     def setUp(self):
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
         db.create_all()
-        self.client = self.app.test_client()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-        self.app_context.pop()
 
     def assert404Response(self, response):
-        self.assertEqual(response.status_code, 404)
+        self.assert_404(response)
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['error'], 'Not found')
 
     def assert400Response(self, response):
-        self.assertEqual(response.status_code, 400)
+        self.assert_400(response)
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['error'], 'Bad Request')
 
@@ -87,10 +87,10 @@ class TodolistAPITestCase(unittest.TestCase):
         post_response = self.add_user_through_json_post(username)
         self.assertEqual(post_response.headers['Content-Type'],
                          'application/json')
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         response = self.client.get(url_for('api.get_users'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'][0]['user']['username'],
@@ -199,10 +199,10 @@ class TodolistAPITestCase(unittest.TestCase):
                                          data=json.dumps(user_data))
         self.assertEqual(post_response.headers['Content-Type'],
                          'application/json')
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         response = self.client.get(url_for('api.get_users'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'][0]['user']['username'],
@@ -223,11 +223,11 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 'todolist'})
         )
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         # the expected id of the todolist is 1, as it is the first to be added
         response = self.client.get(url_for('api.get_todolist', todolist_id=1))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todolist']['title'], 'todolist')
@@ -256,11 +256,11 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 'todolist'})
         )
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         response = self.client.get(url_for('api.get_user_todolists',
                                            username=username))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -294,12 +294,12 @@ class TodolistAPITestCase(unittest.TestCase):
                 'todolist_id': new_todolist.id
             })
         )
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         response = self.client.get(url_for('api.get_user_todolist_todos',
                                            username=username,
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -349,11 +349,11 @@ class TodolistAPITestCase(unittest.TestCase):
                 'todolist_id': new_todolist.id
             })
         )
-        self.assertEqual(post_response.status_code, 201)
+        self.assert_status(post_response, 201)
 
         response = self.client.get(url_for('api.get_todolist_todos',
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -387,7 +387,7 @@ class TodolistAPITestCase(unittest.TestCase):
         username = 'adam'
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_users'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'][0]['user']['username'],
@@ -395,7 +395,7 @@ class TodolistAPITestCase(unittest.TestCase):
 
     def test_get_users_when_no_users_exist(self):
         response = self.client.get(url_for('api.get_users'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['users'], [])
@@ -404,7 +404,7 @@ class TodolistAPITestCase(unittest.TestCase):
         username = 'adam'
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_user', username=username))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['user']['username'], username)
@@ -422,7 +422,7 @@ class TodolistAPITestCase(unittest.TestCase):
         second_todolist = self.add_todolist(todolist_title + '2', username)
 
         response = self.client.get(url_for('api.get_todolists'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todolists'][0]['title'],
@@ -435,7 +435,7 @@ class TodolistAPITestCase(unittest.TestCase):
 
     def test_get_todolists_when_no_todolists_exist(self):
         response = self.client.get(url_for('api.get_todolists'))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todolists'], [])
@@ -450,7 +450,7 @@ class TodolistAPITestCase(unittest.TestCase):
 
         response = self.client.get(url_for('api.get_user_todolists',
                                            username=username))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -473,7 +473,7 @@ class TodolistAPITestCase(unittest.TestCase):
         new_user = self.add_user(username)
         response = self.client.get(url_for('api.get_user_todolists',
                                            username=username))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todolists'], [])
@@ -488,7 +488,7 @@ class TodolistAPITestCase(unittest.TestCase):
 
         response = self.client.get(url_for('api.get_todolist_todos',
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -508,7 +508,7 @@ class TodolistAPITestCase(unittest.TestCase):
         new_todolist = self.add_todolist(todolist_title)
         response = self.client.get(url_for('api.get_todolist_todos',
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['todos'], [])
@@ -526,7 +526,7 @@ class TodolistAPITestCase(unittest.TestCase):
         response = self.client.get(url_for('api.get_user_todolist_todos',
                                            username=username,
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -559,7 +559,7 @@ class TodolistAPITestCase(unittest.TestCase):
         response = self.client.get(url_for('api.get_user_todolist_todos',
                                            username=username,
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -591,7 +591,7 @@ class TodolistAPITestCase(unittest.TestCase):
         response = self.client.get(url_for('api.get_user_todolist',
                                            username=username,
                                            todolist_id=new_todolist.id))
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -652,7 +652,7 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 'changed title'})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
 
@@ -666,7 +666,7 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 129 * 't'})
         )
-        self.assertEqual(response.status_code, 400)
+        self.assert_400(response)
 
     def test_change_todolist_title_empty_title(self):
         todolist = self.add_todolist('new todolist')
@@ -676,7 +676,7 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': ''})
         )
-        self.assertEqual(response.status_code, 400)
+        self.assert_400(response)
 
     def test_change_todolist_title_without_title(self):
         todolist = self.add_todolist('new todolist')
@@ -685,7 +685,7 @@ class TodolistAPITestCase(unittest.TestCase):
             url_for('api.change_todolist_title', todolist_id=todolist.id),
             headers=self.get_headers()
         )
-        self.assertEqual(response.status_code, 400)
+        self.assert_400(response)
 
     # test api delete calls
     @unittest.skip('because acquiring admin rights is currently an issue')
@@ -698,10 +698,10 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'user_id': user_id})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         response = self.client.get(url_for('api.get_user', user_id=user_id))
-        self.assertEqual(response.status_code, 404)
+        self.assert_404(response)
 
     @unittest.skip('because acquiring admin rights is currently an issue')
     def test_delete_todolist(self):
@@ -713,12 +713,12 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'todolist_id': todolist_id})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         response = self.client.get(
             url_for('api.get_todolist', todolist_id=todolist_id)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assert_404(response)
 
     @unittest.skip('because acquiring admin rights is currently an issue')
     def test_delete_todo(self):
@@ -732,9 +732,9 @@ class TodolistAPITestCase(unittest.TestCase):
             headers=self.get_headers(),
             data=json.dumps({'todo_id': todo_id})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
 
         response = self.client.get(
             url_for('api.get_todo', todo_id=todo_id)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assert_404(response)
