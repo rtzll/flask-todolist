@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from flask.ext.testing import TestCase
 
 from flask import url_for
 
@@ -8,19 +8,17 @@ from app import create_app, db
 from app.models import  User, Todo
 
 
-class TodolistClientTestCase(unittest.TestCase):
+class TodolistClientTestCase(TestCase):
+
+    def create_app(self):
+        return create_app('testing')
 
     def setUp(self):
-        self.app = create_app('testing')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
         db.create_all()
-        self.client = self.app.test_client(use_cookies=True)
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-        self.app_context.pop()
 
     def register_user(self, name):
         response = self.client.post(url_for('auth.register'), data={
@@ -40,30 +38,31 @@ class TodolistClientTestCase(unittest.TestCase):
 
     def register_and_login(self, name):
         response = self.register_user(name)
-        self.assertEqual(response.status_code, 302)
+        self.assert_redirects (response, '/auth/login')
         response = self.login_user(name)
-        self.assertEqual(response.status_code, 302)
+        self.assert_redirects (response, '/')
 
     def test_home_page(self):
         response = self.client.get(url_for('main.index'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(b'Todolists' in response.data)
+        self.assert_200(response)
+        self.assert_template_used('index.html')
 
     def test_register_page(self):
         response = self.client.get(url_for('auth.register'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(b'Already registerd?' in response.data)
+        self.assert_200(response)
+        self.assert_template_used('register.html')
 
     def test_login_page(self):
         response = self.client.get(url_for('auth.login'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(b'New user?' in response.data)
+        self.assert_200(response)
+        self.assert_template_used('login.html')
 
-    def test_overview_no_redirect_if_user_logged_in(self):
+    def test_overview_page(self):
         self.register_and_login('adam')
         response = self.client.get(url_for('main.todolist_overview'))
         # expect not redirect as user is logged in
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
+        self.assert_template_used('overview.html')
 
     def test_last_seen_update_after_login(self):
         response = self.register_user('adam')
@@ -76,15 +75,16 @@ class TodolistClientTestCase(unittest.TestCase):
         # register a new account
         response = self.register_user('adam')
         # expect redirect to login
-        self.assertEqual(response.status_code, 302)
+        self.assert_redirects (response, '/auth/login')
 
         # login with the new account
         response = self.login_user('adam')
         # expect redirect to index
-        self.assertEqual(response.status_code, 302)
+        self.assert_redirects (response, '/')
 
         # logout
         response = self.client.get(url_for('auth.logout'),
                                    follow_redirects=True)
         # follow redirect to index
-        self.assertEqual(response.status_code, 200)
+        self.assert_200(response)
+        self.assert_template_used('index.html')
