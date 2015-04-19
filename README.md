@@ -47,17 +47,6 @@ Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
-
-## Issues
-
-So here a few issues, that are still bothering me and hopefully I will come to later.
-
- - [ ] In testing I found that login_required was returning the site even when not logged in
- - [ ] find a way to test admin_required views
- - [ ] making the todolist titles editable (maybe with some jQuery magic, or use title forms)
- - [ ] using login_required/admin_required for access control on API
-
-
 [license-url]: https://github.com/0xfoo/flask-todolist/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 
