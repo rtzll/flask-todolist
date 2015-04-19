@@ -21,7 +21,7 @@ class FakeGenerator(object):
                                 datetime.utcnow().time())
 
     def generate_fake_users(self, count):
-        for _ in xrange(count):
+        for _ in range(count):
             User(email=forgery_py.internet.email_address(),
                  username=forgery_py.internet.user_name(True),
                  password='correcthorsebatterystaple',
@@ -31,7 +31,7 @@ class FakeGenerator(object):
         # for the creator relation we need users
         users = User.query.all()
         assert users != []
-        for _ in xrange(count):
+        for _ in range(count):
             TodoList(title=forgery_py.forgery.lorem_ipsum.title(),
                      creator=random.choice(users).username,
                      created_at=self.generate_fake_date()).save()
@@ -40,7 +40,7 @@ class FakeGenerator(object):
         # for the todolist relation we need todolists
         todolists = TodoList.query.all()
         assert todolists != []
-        for _ in xrange(count):
+        for _ in range(count):
             todolist = random.choice(todolists)
             todo = Todo(description=forgery_py.forgery.lorem_ipsum.words(),
                         todolist_id=todolist.id,
