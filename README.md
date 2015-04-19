@@ -12,7 +12,7 @@ I've also build a quite similar app in Django: https://github.com/0xfoo/django-t
 
 
 ## Explore
-To try out the app yourself install the requirements.
+Try it out by installing the requirements. (Works with Python 2 and 3.)
 
     pip install -r requirements.txt
 
@@ -43,6 +43,7 @@ Model & Database    | [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.0/)
 Forms               | [Flask-WTF](https://flask-wtf.readthedocs.org/en/latest/)
 Login               | [Flask-Login](http://flask-login.readthedocs.org/en/latest/)
 Extras              | [Flask-Script](http://flask-script.readthedocs.org/en/latest/)
+Testing             | [Flask-Testing](http://flask-script.readthedocs.org/en/latest/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
