@@ -41,9 +41,9 @@ Usage               | Flask-Extension
 ------------------- | -----------------------
 Model & Database    | [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.0/)
 Forms               | [Flask-WTF](https://flask-wtf.readthedocs.org/en/latest/)
-Login               | [Flask-Login](http://flask-login.readthedocs.org/en/latest/)
-Extras              | [Flask-Script](http://flask-script.readthedocs.org/en/latest/)
-Testing             | [Flask-Testing](http://flask-script.readthedocs.org/en/latest/)
+Login               | [Flask-Login](https://flask-login.readthedocs.org/en/latest/)
+Extras              | [Flask-Script](https://flask-script.readthedocs.org/en/latest/)
+Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
