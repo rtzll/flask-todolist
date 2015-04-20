@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, url_for
 
 from datetime import datetime
 
 from . import api
 from ..models import User, Todo, TodoList
 from ..decorators import admin_required
+
+
+@api.route('/')
+def get_routes():
+    routes = dict()
+    routes['users'] = url_for('api.get_users', _external=True)
+    routes['todolists'] = url_for('api.get_todolists', _external=True)
+    return jsonify(routes)
 
 
 @api.route('/users/')
