@@ -71,6 +71,15 @@ class TodolistAPITestCase(TestCase):
                                 headers=self.get_headers(),
                                 data=json.dumps(user_data))
 
+    # test for routes
+    def test_main_route(self):
+        response = self.client.get(url_for('api.get_routes'))
+        self.assert_200(response)
+
+        json_response = json.loads(response.data.decode('utf-8'))
+        self.assertTrue('users' in json_response)
+        self.assertTrue('todolists' in json_response)
+
     # test for errors
     def test_bad_request(self):
         response = self.client.post(url_for('api.add_user'),
