@@ -5,7 +5,7 @@ import unittest
 from flask import current_app
 
 from app import create_app, db
-from app.models import  User, Todo, TodoList
+from app.models import User, Todo, TodoList
 
 
 class TodolistTestCase(unittest.TestCase):
@@ -137,10 +137,10 @@ class TodolistTestCase(unittest.TestCase):
     def test_adding_two_todolists_with_the_same_title(self):
         user = self.add_user(self.username_adam)
         ftodolist = TodoList(title=self.shopping_list_title,
-                            creator=user.username).save()
+                             creator=user.username).save()
         first_todolist = TodoList.query.filter_by(id=ftodolist.id).first()
         stodolist = TodoList(title=self.shopping_list_title,
-                            creator=user.username).save()
+                             creator=user.username).save()
         second_todolist = TodoList.query.filter_by(id=stodolist.id).first()
 
         self.assertEqual(first_todolist.title,

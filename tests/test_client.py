@@ -5,7 +5,7 @@ from flask.ext.testing import TestCase
 from flask import url_for
 
 from app import create_app, db
-from app.models import  User, Todo
+from app.models import User, Todo
 
 
 class TodolistClientTestCase(TestCase):
@@ -23,7 +23,7 @@ class TodolistClientTestCase(TestCase):
     def register_user(self, name):
         response = self.client.post(url_for('auth.register'), data={
             'username': name,
-            'email': name +'@example.com',
+            'email': name + '@example.com',
             'password': 'correcthorsebatterystaple',
             'password_confirmation': 'correcthorsebatterystaple'
         })
@@ -38,9 +38,9 @@ class TodolistClientTestCase(TestCase):
 
     def register_and_login(self, name):
         response = self.register_user(name)
-        self.assert_redirects (response, '/auth/login')
+        self.assert_redirects(response, '/auth/login')
         response = self.login_user(name)
-        self.assert_redirects (response, '/')
+        self.assert_redirects(response, '/')
 
     def test_home_page(self):
         response = self.client.get(url_for('main.index'))
@@ -75,12 +75,12 @@ class TodolistClientTestCase(TestCase):
         # register a new account
         response = self.register_user('adam')
         # expect redirect to login
-        self.assert_redirects (response, '/auth/login')
+        self.assert_redirects(response, '/auth/login')
 
         # login with the new account
         response = self.login_user('adam')
         # expect redirect to index
-        self.assert_redirects (response, '/')
+        self.assert_redirects(response, '/')
 
         # logout
         response = self.client.get(url_for('auth.logout'),

@@ -5,7 +5,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
-    SECRET_KEY ='development-key'
+    SECRET_KEY = 'development-key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
 
@@ -26,7 +26,9 @@ class TestingConfig(Config):
                                                           'todolist-test.db')
     WTF_CSRF_ENABLED = False
     import logging
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+    logging.basicConfig(
+        format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
+    )
     logging.getLogger().setLevel(logging.DEBUG)
 
 

@@ -9,8 +9,9 @@ from flask.ext.login import AnonymousUserMixin
 
 
 class Anonymous(AnonymousUserMixin):
-  def __init__(self):
-    self.is_admin = False
+
+    def __init__(self):
+        self.is_admin = False
 
 
 db = SQLAlchemy()

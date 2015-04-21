@@ -8,7 +8,7 @@ from flask.ext.testing import TestCase
 from flask import url_for
 
 from app import create_app, db
-from app.models import  User, Todo, TodoList
+from app.models import User, Todo, TodoList
 
 
 class TodolistAPITestCase(TestCase):
@@ -587,7 +587,7 @@ class TodolistAPITestCase(TestCase):
         second_todo = self.add_todo('second', new_todolist.id, second_username)
 
         response = self.client.get(url_for('api.get_user_todolist_todos',
-                                            username=first_user,
+                                           username=first_user,
                                            todolist_id=new_todolist.id))
         self.assert404Response(response)
 

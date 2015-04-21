@@ -211,7 +211,7 @@ class Todo(db.Model):
             'description': self.description,
             'creator': self.creator,
             'created_at': self.created_at,
-            'status' : 'finished' if self.is_finished else 'open'
+            'status': 'finished' if self.is_finished else 'open'
         }
         return json_todo
 

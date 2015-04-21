@@ -52,8 +52,8 @@ class FakeGenerator(object):
     def generate_fake_data(self, count):
         # generation must follow this order, as each builds on the previous
         self.generate_fake_users(count)
-        self.generate_fake_todolists(count*4)
-        self.generate_fake_todo(count*16)
+        self.generate_fake_todolists(count * 4)
+        self.generate_fake_todo(count * 16)
 
     def start(self, count=100):
         self.generate_fake_data(count)
