@@ -628,7 +628,7 @@ class TodolistAPITestCase(TestCase):
         todo = self.add_todo('first', todolist.id)
         self.assertFalse(todo.is_finished)
 
-        now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         response = self.client.put(
             url_for('api.update_todo_status', todo_id=todo.id),
             headers=self.get_headers(),
@@ -638,6 +638,10 @@ class TodolistAPITestCase(TestCase):
 
         todo = Todo.query.get(todo.id)
         self.assertTrue(todo.is_finished)
+        self.assertEqual(
+            todo.finished_at.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            now
+        )
 
     def test_update_todo_status_to_open(self):
         todolist = self.add_todolist('new todolist')
@@ -652,6 +656,7 @@ class TodolistAPITestCase(TestCase):
         )
         todo = Todo.query.get(todo.id)
         self.assertFalse(todo.is_finished)
+        self.assertTrue(todo.finished_at is None)
 
     def test_change_todolist_title(self):
         todolist = self.add_todolist('new todolist')

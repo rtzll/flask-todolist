@@ -172,7 +172,7 @@ def update_todo_status(todo_id):
         todo.is_finished = todo_json.get('is_finished')
         if todo.is_finished:
             todo.finished_at = datetime.strptime(
-                todo_json.get('finished_at'), "%Y-%m-%dT%H:%M:%S.%fZ"
+                todo_json.get('finished_at'), '%Y-%m-%dT%H:%M:%S.%fZ'
             )
         else:
             todo.finished_at = None
