@@ -186,7 +186,8 @@ def update_todo_status(todo_id):
 def change_todolist_title(todolist_id):
     try:
         todolist = TodoList.query.get(todolist_id)
-        title = request.json.get('title')
+        todolist_json = request.json.get('todolist')
+        title = todolist_json.get('title')
         if TodoList.is_valid_title(title):
             todolist.change_title(title)
         else:

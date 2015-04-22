@@ -659,7 +659,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.put(
             url_for('api.change_todolist_title', todolist_id=todolist.id),
             headers=self.get_headers(),
-            data=json.dumps({'title': 'changed title'})
+            data=json.dumps({'todolist': {'title': 'changed title'}})
         )
         self.assert_200(response)
 
