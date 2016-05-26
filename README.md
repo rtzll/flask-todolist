@@ -8,7 +8,7 @@ Flask-Todolist is a todolist web application with the most basic features of mos
 CSS | [Skeleton](http://getskeleton.com/)
 JS  | [jQuery](https://jquery.com/)
 
-I've also build a quite similar app in Django: https://github.com/0xfoo/django-todolist
+I've also build a quite similar app in Django: https://github.com/polyfunc/django-todolist
 
 
 ## Explore
