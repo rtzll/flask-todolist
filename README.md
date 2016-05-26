@@ -47,8 +47,8 @@ Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
-[license-url]: https://github.com/0xfoo/flask-todolist/blob/master/LICENSE
+[license-url]: https://github.com/polyfunc/flask-todolist/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 
-[travis-url]: https://travis-ci.org/0xfoo/flask-todolist
-[travis-image]: https://travis-ci.org/0xfoo/flask-todolist.svg?branch=master
+[travis-url]: https://travis-ci.org/polyfunc/flask-todolist
+[travis-image]: https://travis-ci.org/polyfund/flask-todolist.svg?branch=master
