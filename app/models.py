@@ -6,7 +6,7 @@ from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
-from flask.ext.login import UserMixin
+from flask_login import UserMixin
 
 from . import db, login_manager
 

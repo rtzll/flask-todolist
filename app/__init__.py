@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 from config import config
 
-from flask.ext.login import AnonymousUserMixin
+from flask_login import AnonymousUserMixin
 
 
 class Anonymous(AnonymousUserMixin):

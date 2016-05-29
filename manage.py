@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.script import Manager
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_script import Manager
+from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app, db
 
