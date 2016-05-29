@@ -1,57 +1,46 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Flask-Todolist : todolist web application - build using Flask and Skeleton">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Flask-Todolist</title>
+    <meta charset="UTF-8">
+    <title>Flask-Todolist by polyfunc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">Flask-Todolist</h1>
+      <h2 class="project-tagline">exemplary flask application - small to do list web app </h2>
+      <a href="https://github.com/polyfunc/flask-todolist" class="btn">View on GitHub</a>
+      <a href="https://github.com/polyfunc/flask-todolist/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/polyfunc/flask-todolist/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/0xfoo/flask-todolist">View on GitHub</a>
-
-          <h1 id="project_title">Flask-Todolist</h1>
-          <h2 id="project_tagline">todolist web application - build using Flask and Skeleton</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/0xfoo/flask-todolist/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/0xfoo/flask-todolist/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a id="hello-traveler" class="anchor" href="#hello-traveler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hello Traveler.</h1>
+    <section class="main-content">
+      <h1>
+<a id="hello-traveler" class="anchor" href="#hello-traveler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hello Traveler.</h1>
 
 <p>This page assembles some information around my Flask-Todolist project.</p>
 
-<p>The idea was to explore the Flask-ecosystem and try to build a small web application. Small as it should not be fancy in any way, but atleast tackle the most common patterns/features of a web application.</p>
+<p>The idea was to explore the Flask ecosystem and try to build a small web application. Small as it should not be fancy in any way, but atleast tackle the most common patterns/features of a web application.</p>
 
-<p>So you'll find an API, User-Management (Register/Login) and the accoring views + to-do lists (obviously).
-If your interested, check it out! In 3 Steps you can get up and running:</p>
+<p>So you'll find an API, User-Management (Register/Login) and the accoring views + to do lists (obviously).
+If your interested, check it out! In 4 Steps you can get up and running:</p>
 
 <pre><code>pip install -r requirements.txt
-python manage.py fill_db
-python manage.py runserver
+export FLASK_APP=./todolist.py
+flask fill_db
+flask run
 </code></pre>
+
+<p>This uses Flask 0.11 which added the <code>flask</code> command, which I really like.</p>
 
 <p>Now you can explore the app on <a href="http://localhost:5000/">http://localhost:5000/</a></p>
 
-<h4>or catch a <a href="#sneak-peek">sneak peek</a></h4>
-
 <h2>
-<a id="reasons-for-this-project" class="anchor" href="#reasons-for-this-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reasons for this project</h2>
+<a id="reasons-for-this-project" class="anchor" href="#reasons-for-this-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Reasons for this project</h2>
 
 <p>As mentioned before, the reason for the existence of this project is for me to explore Flask and its many extensions.</p>
 
@@ -59,15 +48,15 @@ python manage.py runserver
 Also this project might be a quick start for other developers looking into Flask.</p>
 
 <h2>
-<a id="encouragement" class="anchor" href="#encouragement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encouragement</h2>
+<a id="encouragement" class="anchor" href="#encouragement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Encouragement</h2>
 
 <p>Flask is cool! Let me show it.</p>
 
-<div class="highlight highlight-python"><pre><span class="pl-en">@</span><span class="pl-en">api.route</span>(<span class="pl-s1"><span class="pl-pds">'</span>/todolists/<span class="pl-pds">'</span></span>)
-<span class="pl-st">def</span> <span class="pl-en">get_todolists</span>():
+<div class="highlight highlight-source-python"><pre><span class="pl-en">@api.route</span>(<span class="pl-s"><span class="pl-pds">'</span>/todolists/<span class="pl-pds">'</span></span>)
+<span class="pl-k">def</span> <span class="pl-en">get_todolists</span>():
     todolists <span class="pl-k">=</span> TodoList.query.all()
     <span class="pl-k">return</span> jsonify({
-        <span class="pl-s1"><span class="pl-pds">'</span>todolists<span class="pl-pds">'</span></span>: [todolist.to_json() <span class="pl-k">for</span> todolist <span class="pl-k">in</span> todolists]
+        <span class="pl-s"><span class="pl-pds">'</span>todolists<span class="pl-pds">'</span></span>: [todolist.to_json() <span class="pl-k">for</span> todolist <span class="pl-k">in</span> todolists]
     })</pre></div>
 
 <p>Just 6 lines for an API view, which will display all todolists as JSON.</p>
@@ -79,7 +68,7 @@ Here the api blueprint is prefixed with 'api', i.e. <a href="http://localhost:50
 And jsonify is a funciton comming from Flask which will return a proper JSON response of a dictionary. Which here is a neat list comprehension of json representations of todolists.</p>
 
 <h2>
-<a id="discouragement" class="anchor" href="#discouragement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Discouragement</h2>
+<a id="discouragement" class="anchor" href="#discouragement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Discouragement</h2>
 
 <p>Flask is a micro web development framework for Python.</p>
 
@@ -90,8 +79,10 @@ Although often documentation can be found, it mostly covers quick starts and eas
 
 <p>So if you, like me, are new to web development this can be discouraging.</p>
 
+<p><em>Note: after doing the same application using Django, see <a href="https://github.com/polyfunc/django-todolist">here</a> I feel somewhat differently. The experience was better with regards to documentation, <em>but</em> I had to read much more documentation just to get up to speed, or so it felt.</em></p>
+
 <h2>
-<a id="meta" class="anchor" href="#meta" aria-hidden="true"><span class="octicon octicon-link"></span></a>Meta</h2>
+<a id="meta" class="anchor" href="#meta" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Meta</h2>
 
 <p>To my fellow travelers I want to say that I found it really usefull to enter such a project. Small enough to do on the side and large enough to actually learn something.</p>
 
@@ -106,36 +97,14 @@ Although often documentation can be found, it mostly covers quick starts and eas
 <li>have fun</li>
 </ul>
 
-<h2>
-<a id="sneak-peek" class="anchor" href="#sneak-peek" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sneak Peek</h2>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/polyfunc/flask-todolist">Flask-Todolist</a> is maintained by <a href="https://github.com/polyfunc">polyfunc</a>.</span>
 
-<h4>Index</h4>
-<img src="images/index.png">
-<h4>Index when logged in</h4>
-<img src="images/index_when_logged_in.png">
-<h4>Overview</h4>
-<img src="images/todolist_overview.png">
-<h4>Todolist View</h4>
-<img src="images/todolist_view.png">
-<h4>Login</h4>
-<img src="images/login.png">
-<h4>Register</h4>
-<img src="images/register.png">
-<h4>API (Users)</h4>
-<img src="images/api_users.png">
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Flask-Todolist maintained by <a href="https://github.com/0xfoo">0xfoo</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
+    </section>
 
-
+  
   </body>
 </html>
