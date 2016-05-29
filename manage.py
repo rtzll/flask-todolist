@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app, db
 
-
 app = create_app('development')
-manager = Manager(app)
 
 
-@manager.command
+@app.cli.command()
 def test():
     """Run the unit tests."""
     import unittest
@@ -18,7 +15,7 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
-@manager.command
+@app.cli.command()
 def fill_db():
     """Fill database with random data.
     By default 100 users, 400 todolists and 1600 todos.
