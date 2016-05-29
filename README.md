@@ -51,4 +51,4 @@ I tried out some more, but for the scope of this endeavor the above mentioned ex
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 
 [travis-url]: https://travis-ci.org/polyfunc/flask-todolist
-[travis-image]: https://travis-ci.org/polyfund/flask-todolist.svg?branch=master
+[travis-image]: https://travis-ci.org/polyfunc/flask-todolist.svg?branch=master
