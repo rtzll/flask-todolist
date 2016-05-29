@@ -1,29 +1,26 @@
 # Flask-Todolist
 
-[![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+[![License][license-image]][license-url]
+[![Build Status][travis-image]][travis-url]
 
-Flask-Todolist is a todolist web application with the most basic features of most web apps, i.e. accounts/login, API and (somewhat) interactive UI.
+Flask-Todolist is a simple To Do List web application with the most basic
+features of most web apps, i.e. accounts/login, API and (somewhat) interactive UI.
 
 ---
 CSS | [Skeleton](http://getskeleton.com/)
 JS  | [jQuery](https://jquery.com/)
 
-I've also build a quite similar app in Django: https://github.com/polyfunc/django-todolist
+I've also build a quite similar app in Django:
+https://github.com/polyfunc/django-todolist
 
 
 ## Explore
-Try it out by installing the requirements. (Works with Python 2 and 3.)
+Try it out! (Works with Python 2 and 3.)
 
     pip install -r requirements.txt
-
-For your exploration you might find it useful to have some data. (This takes a moment or two.)
-
-    python manage.py fill_db
-
-And then start the server (default: http://localhost:5000)
-
-    python manage.py runserver
-
+    export FLASK_APP=./todolist.py
+    flask fill_db  # optional
+    flask run
 
 Now you can browse the API:
 http://localhost:5000/api/users
@@ -39,10 +36,9 @@ In the process of this project I used a couple of extensions.
 
 Usage               | Flask-Extension
 ------------------- | -----------------------
-Model & Database    | [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.0/)
+Model & Database    | [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.1/)
 Forms               | [Flask-WTF](https://flask-wtf.readthedocs.org/en/latest/)
 Login               | [Flask-Login](https://flask-login.readthedocs.org/en/latest/)
-Extras              | [Flask-Script](https://flask-script.readthedocs.org/en/latest/)
 Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
