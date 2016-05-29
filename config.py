@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -8,6 +9,7 @@ class Config(object):
     SECRET_KEY = 'development-key'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod
     def init_app(app):
