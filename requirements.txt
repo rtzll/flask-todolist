@@ -1,4 +1,4 @@
-Flask==0.10.1
+Flask==0.11
 Flask-Login==0.3.2
 Flask-SQLAlchemy==2.1
 Flask-Script==2.0.5
@@ -7,8 +7,7 @@ Flask-Testing==0.4.2
 ForgeryPy==0.1
 Jinja2==2.8
 MarkupSafe==0.23
-SQLAlchemy==1.0.12
+SQLAlchemy==1.0.13
 WTForms==2.1
-Werkzeug==0.11.4
-blinker==1.4
+Werkzeug==0.11.10
 itsdangerous==0.24
