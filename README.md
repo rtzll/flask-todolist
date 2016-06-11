@@ -18,9 +18,13 @@ https://github.com/polyfunc/django-todolist
 Try it out! (Works with Python 2 and 3.)
 
     pip install -r requirements.txt
-    export FLASK_APP=./todolist.py
-    flask fill_db  # optional
+    export FLASK_APP=todolist.py
     flask run
+
+To add some 'play' data you can run
+
+    pip install -r test-requirements.txt
+    flask fill_db
 
 Now you can browse the API:
 http://localhost:5000/api/users
