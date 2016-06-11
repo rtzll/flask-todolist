@@ -1,0 +1,3 @@
+Flask-Testing==0.4.2
+blinker==1.4
+ForgeryPy==0.1

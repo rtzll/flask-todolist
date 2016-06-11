@@ -1,14 +1,4 @@
-Flask==0.11
+Flask==0.11.1
 Flask-Login==0.3.2
 Flask-SQLAlchemy==2.1
 Flask-WTF==0.12
-Flask-Testing==0.4.2
-blinker==1.4
-click==6.6
-ForgeryPy==0.1
-Jinja2==2.8
-MarkupSafe==0.23
-SQLAlchemy==1.0.13
-WTForms==2.1
-Werkzeug==0.11.10
-itsdangerous==0.24
