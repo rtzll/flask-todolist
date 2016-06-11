@@ -8,12 +8,9 @@ __pycache__
 # sqlite db
 *.db
 
-# sublime related files
-*.sublime-project
-*.sublime-workspace
-
 # test, build, etc
 build
 docs/_build
 dist
 results
+venv
