@@ -11,7 +11,30 @@ from flask_login import UserMixin
 from . import db, login_manager
 
 
-class User(UserMixin, db.Model):
+class BaseModel:
+    """Base for all models, providing save and delte methods."""
+
+    def __commit(self):
+        """Commits the current db.session, does rollback on failure."""
+        from sqlalchemy.exc import IntegrityError
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+
+    def delete(self):
+        """Deletes this model from the db (through db.session)"""
+        db.session.delete(self)
+        self.__commit()
+
+    def save(self):
+        """Adds this model to the db (through db.session)"""
+        db.session.add(self)
+        self.__commit()
+        return self
+
+
+class User(UserMixin, db.Model, BaseModel):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
@@ -82,19 +105,6 @@ class User(UserMixin, db.Model):
         self.is_admin = True
         return self.save()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def save(self):
-        from sqlalchemy.exc import IntegrityError
-        db.session.add(self)
-        try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            return
-        return self
 
 
 @login_manager.user_loader
@@ -102,7 +112,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class TodoList(db.Model):
+class TodoList(db.Model, BaseModel):
     __tablename__ = 'todolist'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
@@ -162,17 +172,8 @@ class TodoList(db.Model):
     def count_open(self):
         return self.todos.filter_by(is_finished=False).count()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
-
-
-class Todo(db.Model):
+class Todo(db.Model, BaseModel):
     __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(128))
@@ -219,11 +220,3 @@ class Todo(db.Model):
     def from_json(json_todo):
         Todo(json.loads(json_todo)).save()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
