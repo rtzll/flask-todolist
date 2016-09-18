@@ -39,7 +39,7 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
+        User(
             email=form.email.data,
             username=form.username.data,
             password=form.password.data

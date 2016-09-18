@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 
 from . import main
 from .forms import TodoForm, TodoListForm
-from ..models import User, Todo, TodoList
+from ..models import Todo, TodoList
 
 
 @main.route('/')
