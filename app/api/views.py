@@ -45,9 +45,9 @@ def add_user():
                 username=username, email=email, password=password
             ).save()
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
     return jsonify({'user': user.to_json()}), 201
 
 
@@ -73,14 +73,14 @@ def get_user_todolist(username, todolist_id):
 
 @api.route('/user/<username>/todolist/', methods=['POST'])
 def add_user_todolist(username):
+    user = User.query.filter_by(username=username).first_or_404()
     try:
-        user = User.query.filter_by(username=username).one()
         todolist = TodoList(
             title=request.json.get('title'),
             creator=user.username
         ).save()
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
@@ -105,9 +105,9 @@ def add_todolist():
         if title and TodoList.is_valid_title(title):
             todolist = TodoList(title=title).save()
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
@@ -131,30 +131,29 @@ def get_user_todolist_todos(username, todolist_id):
 
 @api.route('/user/<username>/todolist/<int:todolist_id>/', methods=['POST'])
 def add_user_todolist_todo(username, todolist_id):
+    user = User.query.filter_by(username=username).first_or_404()
+    todolist = TodoList.query.get_or_404(todolist_id)
     try:
-        user = User.query.filter_by(username=username).one()
-        # this way we check the existence of the todolist
-        todolist = TodoList.query.get(todolist_id)
         todo = Todo(
             description=request.json.get('description'),
             todolist_id=todolist.id,
-            creator=username
+            creator=user.username
         ).save()
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todo': todo.to_json()}), 201
 
 
 @api.route('/todolist/<int:todolist_id>/', methods=['POST'])
 def add_todolist_todo(todolist_id):
+    todolist = TodoList.query.get_or_404(todolist_id)
     try:
-        todolist = TodoList.query.get(todolist_id)
         todo = Todo(
             description=request.json.get('description'),
             todolist_id=todolist.id
         ).save()
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todo': todo.to_json()}), 201
 
 
@@ -166,8 +165,8 @@ def get_todo(todo_id):
 
 @api.route('/todo/<int:todo_id>/', methods=['PUT'])
 def update_todo_status(todo_id):
+    todo = Todo.query.get_or_404(todo_id)
     try:
-        todo = Todo.query.get(todo_id)
         todo_json = request.json.get('todo')
         todo.is_finished = todo_json.get('is_finished')
         if todo.is_finished:
@@ -178,62 +177,62 @@ def update_todo_status(todo_id):
             todo.finished_at = None
         todo.save()
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todo': todo.to_json()})
 
 
 @api.route('/todolist/<int:todolist_id>/', methods=['PUT'])
 def change_todolist_title(todolist_id):
+    todolist = TodoList.query.get_or_404(todolist_id)
     try:
-        todolist = TodoList.query.get(todolist_id)
         todolist_json = request.json.get('todolist')
         title = todolist_json.get('title')
         if TodoList.is_valid_title(title):
             todolist.change_title(title)
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
     return jsonify({'todolist': todolist.to_json()})
 
 
 @api.route('/user/<int:user_id>/', methods=['DELETE'])
 @admin_required
 def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
     try:
-        user = User.query.get(user_id)
         if user_id == request.json.get('user_id'):
             user.delete()
             return jsonify()
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
 
 
 @api.route('/todolist/<int:todolist_id>/', methods=['DELETE'])
 @admin_required
 def delete_todolist(todolist_id):
+    todolist = TodoList.query.get_or_404(todolist_id)
     try:
-        todolist = TodoList.query.get(todolist_id)
         if todolist_id == request.json.get('todolist_id'):
             todolist.delete()
             return jsonify()
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
 
 
 @api.route('/todo/<int:todo_id>/', methods=['DELETE'])
 @admin_required
 def delete_todo(todo_id):
+    todo = Todo.query.get_or_404(todo_id)
     try:
-        todo = Todo.query.get(todo_id)
         if todo_id == request.json.get('todo_id'):
             todo.delete()
             return jsonify()
         else:
-            abort(400)
+            abort(500)
     except:
-        abort(400)
+        abort(500)
