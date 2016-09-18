@@ -5,7 +5,7 @@ from flask_testing import TestCase
 from flask import url_for
 
 from app import create_app, db
-from app.models import User, Todo
+from app.models import User
 
 
 class TodolistClientTestCase(TestCase):
@@ -65,9 +65,9 @@ class TodolistClientTestCase(TestCase):
         self.assert_template_used('overview.html')
 
     def test_last_seen_update_after_login(self):
-        response = self.register_user('adam')
+        self.register_user('adam')
         before = User.query.filter_by(username='adam').first().last_seen
-        response = self.login_user('adam')
+        self.login_user('adam')
         after = User.query.filter_by(username='adam').first().last_seen
         self.assertNotEqual(before, after)
 

@@ -33,7 +33,7 @@ class TodolistTestCase(unittest.TestCase):
             'password': 'correcthorsebatterystaple'
         }
         user = User(**user_data).save()
-        return User.query.filter_by(username=username).first()
+        return User.query.filter_by(username=user.username).first()
 
     @staticmethod
     def add_todo(description, user, todolist_id=None):

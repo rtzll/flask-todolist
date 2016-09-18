@@ -106,7 +106,6 @@ class User(UserMixin, db.Model, BaseModel):
         return self.save()
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -219,4 +218,3 @@ class Todo(db.Model, BaseModel):
     @staticmethod
     def from_json(json_todo):
         Todo(json.loads(json_todo)).save()
-
