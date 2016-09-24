@@ -1,0 +1,9 @@
+version: '2'
+services:
+  todolist:
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    command: gunicorn todolist:app -w 2 -b :8000
