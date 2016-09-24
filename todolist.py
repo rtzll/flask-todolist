@@ -9,8 +9,11 @@ app = create_app('development')
 def test():
     """Runs the unit tests."""
     import unittest
+    import sys
     tests = unittest.TestLoader().discover('tests')
-    unittest.TextTestRunner(verbosity=2).run(tests)
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.errors or result.failures:
+        sys.exit(1)
 
 
 @app.cli.command()
