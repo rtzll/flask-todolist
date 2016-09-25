@@ -4,6 +4,7 @@ python:
   - "3.5"
 env:
   - FLASK_APP=todolist.py
+  - SECRET_KEY='keep no secrets form travis'
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
