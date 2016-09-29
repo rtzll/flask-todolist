@@ -45,9 +45,9 @@ def add_user():
                 username=username, email=email, password=password
             ).save()
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)
     return jsonify({'user': user.to_json()}), 201
 
 
@@ -80,7 +80,7 @@ def add_user_todolist(username):
             creator=user.username
         ).save()
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
@@ -105,9 +105,9 @@ def add_todolist():
         if title and TodoList.is_valid_title(title):
             todolist = TodoList(title=title).save()
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todolist': todolist.to_json()}), 201
 
 
@@ -140,7 +140,7 @@ def add_user_todolist_todo(username, todolist_id):
             creator=user.username
         ).save()
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todo': todo.to_json()}), 201
 
 
@@ -153,7 +153,7 @@ def add_todolist_todo(todolist_id):
             todolist_id=todolist.id
         ).save()
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todo': todo.to_json()}), 201
 
 
@@ -177,7 +177,7 @@ def update_todo_status(todo_id):
             todo.finished_at = None
         todo.save()
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todo': todo.to_json()})
 
 
@@ -190,9 +190,9 @@ def change_todolist_title(todolist_id):
         if TodoList.is_valid_title(title):
             todolist.change_title(title)
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)
     return jsonify({'todolist': todolist.to_json()})
 
 
@@ -205,9 +205,9 @@ def delete_user(user_id):
             user.delete()
             return jsonify()
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)
 
 
 @api.route('/todolist/<int:todolist_id>/', methods=['DELETE'])
@@ -219,9 +219,9 @@ def delete_todolist(todolist_id):
             todolist.delete()
             return jsonify()
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)
 
 
 @api.route('/todo/<int:todo_id>/', methods=['DELETE'])
@@ -233,6 +233,6 @@ def delete_todo(todo_id):
             todo.delete()
             return jsonify()
         else:
-            abort(500)
+            abort(400)
     except:
-        abort(500)
+        abort(400)

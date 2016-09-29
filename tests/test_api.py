@@ -33,11 +33,6 @@ class TodolistAPITestCase(TestCase):
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertEqual(json_response['error'], 'Bad Request')
 
-    def assert500Response(self, response):
-        self.assert_500(response)
-        json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['error'], 'Internal Server Error')
-
     @staticmethod
     def setup_new_user(username):
         user_data = {
@@ -108,14 +103,14 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_only_using_the_username_and_email(self):
         user_data = {'username': 'adam', 'email': 'adam@example.com'}
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_with_to_long_username(self):
         user_data = {
@@ -126,7 +121,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_with_invalid_username(self):
         user_data = {
@@ -137,7 +132,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_without_username(self):
         user_data = {
@@ -148,7 +143,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_with_invalid_email(self):
         user_data = {
@@ -159,7 +154,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_withoout_email(self):
         user_data = {
@@ -170,7 +165,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_with_too_long_email(self):
         user_data = {
@@ -181,7 +176,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_without_password(self):
         user_data = {
@@ -192,7 +187,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_with_extra_fields(self):
         user_data = {
@@ -222,7 +217,7 @@ class TodolistAPITestCase(TestCase):
         response = self.client.post(url_for('api.add_user'),
                                     headers=self.get_headers(),
                                     data=json.dumps(user_data))
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_todolist(self):
         post_response = self.client.post(
@@ -245,7 +240,7 @@ class TodolistAPITestCase(TestCase):
             headers=self.get_headers()
         )
         # opposed to the form, the title is a required argument
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_todolist_with_too_long_title(self):
         response = self.client.post(
@@ -253,7 +248,7 @@ class TodolistAPITestCase(TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 129 * 't'})
         )
-        self.assert500Response(response)
+        self.assert400Response(response)
 
     def test_add_user_todolist(self):
         username = 'adam'
@@ -342,7 +337,7 @@ class TodolistAPITestCase(TestCase):
                     username=username, todolist_id=new_todolist.id),
             headers=self.get_headers()
         )
-        self.assert500Response(post_response)
+        self.assert400Response(post_response)
 
     def test_add_todolist_todo(self):
         new_todolist = TodoList().save()  # todolist with default title
@@ -387,7 +382,7 @@ class TodolistAPITestCase(TestCase):
             url_for('api.add_todolist_todo', todolist_id=new_todolist.id),
             headers=self.get_headers()
         )
-        self.assert500Response(post_response)
+        self.assert400Response(post_response)
 
     # test api get calls
     def test_get_users(self):
@@ -678,7 +673,7 @@ class TodolistAPITestCase(TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': 129 * 't'})
         )
-        self.assert_500(response)
+        self.assert_400(response)
 
     def test_change_todolist_title_empty_title(self):
         todolist = self.add_todolist('new todolist')
@@ -688,7 +683,7 @@ class TodolistAPITestCase(TestCase):
             headers=self.get_headers(),
             data=json.dumps({'title': ''})
         )
-        self.assert_500(response)
+        self.assert_400(response)
 
     def test_change_todolist_title_without_title(self):
         todolist = self.add_todolist('new todolist')
@@ -697,7 +692,7 @@ class TodolistAPITestCase(TestCase):
             url_for('api.change_todolist_title', todolist_id=todolist.id),
             headers=self.get_headers()
         )
-        self.assert_500(response)
+        self.assert_400(response)
 
     # test api delete calls
     @unittest.skip('because acquiring admin rights is currently an issue')
