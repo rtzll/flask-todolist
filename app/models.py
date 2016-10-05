@@ -10,6 +10,9 @@ from flask_login import UserMixin
 
 from . import db, login_manager
 
+EMAIL_REGEX = re.compile(r'^\S+@\S+\.\S+$')
+USERNAME_REGEX = re.compile(r'^\S+$')
+
 
 class BaseModel:
     """Base for all models, providing save and delte methods."""
@@ -56,11 +59,12 @@ class User(UserMixin, db.Model, BaseModel):
 
     @staticmethod
     def is_valid_username(username):
-        return username and len(username) <= 64 and re.match('^\S+$', username)
+        return username and len(username) <= 64 and \
+            USERNAME_REGEX.match(username)
 
     @staticmethod
     def is_valid_email(email):
-        return email and len(email) <= 64 and re.match('^\S+@\S+\.\S+$', email)
+        return email and len(email) <= 64 and EMAIL_REGEX.match(email)
 
     @staticmethod
     def is_valid_password(passwd):
