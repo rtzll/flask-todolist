@@ -56,15 +56,15 @@ class User(UserMixin, db.Model, BaseModel):
 
     @staticmethod
     def is_valid_username(username):
-        return len(username) <= 64 and re.match('^\S+$', username)
+        return username and len(username) <= 64 and re.match('^\S+$', username)
 
     @staticmethod
     def is_valid_email(email):
-        return len(email) <= 64 and re.match('^\S+@\S+\.\S+$', email)
+        return email and len(email) <= 64 and re.match('^\S+@\S+\.\S+$', email)
 
     @staticmethod
     def is_valid_password(passwd):
-        return len(generate_password_hash(passwd)) <= 128 and passwd
+        return passwd and len(generate_password_hash(passwd)) <= 128
 
     @property
     def password(self):
