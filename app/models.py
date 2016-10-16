@@ -14,15 +14,16 @@ EMAIL_REGEX = re.compile(r'^\S+@\S+\.\S+$')
 USERNAME_REGEX = re.compile(r'^\S+$')
 
 
-class BaseModel:
-    """Base for all models, providing save and delte methods."""
+def check_length(attribute, length):
+    """Checks the attribute's length."""
+    try:
+        return bool(attribute) and len(attribute) <= length
+    except:
+        return False
 
-    @staticmethod
-    def _check_length(attribute, length):
-        try:
-            return bool(attribute) and len(attribute) <= length
-        except:
-            return False
+
+class BaseModel:
+    """Base for all models, providing providing save and delete methods."""
 
     def __commit(self):
         """Commits the current db.session, does rollback on failure."""
@@ -66,18 +67,17 @@ class User(UserMixin, db.Model, BaseModel):
 
     @staticmethod
     def is_valid_username(username):
-        is_valid_length = BaseModel._check_length(username, 64)
+        is_valid_length = check_length(username, 64)
         return is_valid_length and bool(USERNAME_REGEX.match(username))
 
     @staticmethod
     def is_valid_email(email):
-        is_valid_length = BaseModel._check_length(email, 64)
-        return is_valid_length and bool(EMAIL_REGEX.match(email))
+        return check_length(email, 64) and bool(EMAIL_REGEX.match(email))
 
     @staticmethod
     def is_valid_password(passwd):
         passwd_hash = generate_password_hash(passwd)
-        return bool(passwd) and BaseModel._check_length(passwd_hash, 128)
+        return bool(passwd) and check_length(passwd_hash, 128)
 
     @property
     def password(self):
@@ -143,7 +143,7 @@ class TodoList(db.Model, BaseModel):
 
     @staticmethod
     def is_valid_title(list_title):
-        return BaseModel._check_length(list_title, 128)
+        return check_length(list_title, 128)
 
     def change_title(self, new_title):
         self.title = new_title
