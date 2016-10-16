@@ -17,6 +17,13 @@ USERNAME_REGEX = re.compile(r'^\S+$')
 class BaseModel:
     """Base for all models, providing save and delte methods."""
 
+    @staticmethod
+    def _check_length(attribute, length):
+        try:
+            return bool(attribute) and len(attribute) <= length
+        except:
+            return False
+
     def __commit(self):
         """Commits the current db.session, does rollback on failure."""
         from sqlalchemy.exc import IntegrityError
@@ -59,16 +66,18 @@ class User(UserMixin, db.Model, BaseModel):
 
     @staticmethod
     def is_valid_username(username):
-        return username and len(username) <= 64 and \
-            USERNAME_REGEX.match(username)
+        is_valid_length = BaseModel._check_length(username, 64)
+        return is_valid_length and bool(USERNAME_REGEX.match(username))
 
     @staticmethod
     def is_valid_email(email):
-        return email and len(email) <= 64 and EMAIL_REGEX.match(email)
+        is_valid_length = BaseModel._check_length(email, 64)
+        return is_valid_length and bool(EMAIL_REGEX.match(email))
 
     @staticmethod
     def is_valid_password(passwd):
-        return passwd and len(generate_password_hash(passwd)) <= 128
+        passwd_hash = generate_password_hash(passwd)
+        return bool(passwd) and BaseModel._check_length(passwd_hash, 128)
 
     @property
     def password(self):
@@ -134,7 +143,7 @@ class TodoList(db.Model, BaseModel):
 
     @staticmethod
     def is_valid_title(list_title):
-        return len(list_title) <= 128 and list_title
+        return BaseModel._check_length(list_title, 128)
 
     def change_title(self, new_title):
         self.title = new_title
