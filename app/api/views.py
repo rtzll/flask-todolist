@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request, abort, url_for
-
 from datetime import datetime
 
-from . import api
-from ..models import User, Todo, TodoList
-from ..decorators import admin_required
+from flask import jsonify, request, abort, url_for
+
+from app.api import api
+from app.models import User, Todo, TodoList
+from app.decorators import admin_required
 
 
 @api.route('/')

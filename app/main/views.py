@@ -3,9 +3,9 @@
 from flask import render_template, redirect, request, url_for
 from flask_login import current_user, login_required
 
-from . import main
-from .forms import TodoForm, TodoListForm
-from ..models import Todo, TodoList
+from app.main import main
+from app.main.forms import TodoForm, TodoListForm
+from app.models import Todo, TodoList
 
 
 @main.route('/')
