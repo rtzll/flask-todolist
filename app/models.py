@@ -203,11 +203,13 @@ class Todo(db.Model, BaseModel):
         self.created_at = created_at
 
     def __repr__(self):
-        if self.creator is None:
-            return '<Todo: {0}>'.format(self.description)
-        status = 'finished' if self.is_finished else 'open'
         return '<{0} todo: {1} by {2}>'.format(
-            status, self.description, self.creator)
+            self.status, self.description, self.creator or 'None')
+
+    @property
+    def status(self):
+        return 'finished' if self.is_finished else 'open'
+
 
     def finished(self):
         self.is_finished = True
@@ -224,7 +226,7 @@ class Todo(db.Model, BaseModel):
             'description': self.description,
             'creator': self.creator,
             'created_at': self.created_at,
-            'status': 'finished' if self.is_finished else 'open'
+            'status': self.status,
         }
         return json_todo
 
