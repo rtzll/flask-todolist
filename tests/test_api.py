@@ -95,8 +95,7 @@ class TodolistAPITestCase(TestCase):
         self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['users'][0]['user']['username'],
-                         username)
+        self.assertEqual(json_response['users'][0]['username'], username)
 
     def test_add_user_only_using_the_username(self):
         user_data = {'username': 'adam'}
@@ -207,8 +206,7 @@ class TodolistAPITestCase(TestCase):
         self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['users'][0]['user']['username'],
-                         'adam')
+        self.assertEqual(json_response['users'][0]['username'], 'adam')
 
     def test_add_user_only_using_the_username_and_password(self):
         user_data = {
@@ -232,7 +230,7 @@ class TodolistAPITestCase(TestCase):
         self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['todolist']['title'], 'todolist')
+        self.assertEqual(json_response['title'], 'todolist')
 
     def test_add_todolist_without_title(self):
         response = self.client.post(
@@ -392,7 +390,7 @@ class TodolistAPITestCase(TestCase):
         self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['users'][0]['user']['username'],
+        self.assertEqual(json_response['users'][0]['username'],
                          username)
 
     def test_get_users_when_no_users_exist(self):
@@ -409,7 +407,7 @@ class TodolistAPITestCase(TestCase):
         self.assert_200(response)
 
         json_response = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(json_response['user']['username'], username)
+        self.assertEqual(json_response['username'], username)
 
     def test_get_user_when_user_does_not_exist(self):
         username = 'adam'
@@ -597,8 +595,8 @@ class TodolistAPITestCase(TestCase):
 
         json_response = json.loads(response.data.decode('utf-8'))
 
-        self.assertEqual(json_response['todolist']['title'], todolist_title)
-        self.assertEqual(json_response['todolist']['creator'], username)
+        self.assertEqual(json_response['title'], todolist_title)
+        self.assertEqual(json_response['creator'], username)
 
     def test_get_user_todolist_when_user_does_not_exist(self):
         username = 'adam'
@@ -663,7 +661,7 @@ class TodolistAPITestCase(TestCase):
 
         json_response = json.loads(response.data.decode('utf-8'))
 
-        self.assertEqual(json_response['todolist']['title'], 'changed title')
+        self.assertEqual(json_response['title'], 'changed title')
 
     def test_change_todolist_title_too_long_title(self):
         todolist = self.add_todolist('new todolist')

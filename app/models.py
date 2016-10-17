@@ -94,8 +94,8 @@ class User(UserMixin, db.Model, BaseModel):
         self.last_seen = datetime.utcnow()
         return self.save()
 
-    def to_json(self):
-        json_user = {
+    def to_dict(self):
+        return {
             'username': self.username,
             'user_url': url_for(
                 'api.get_user', username=self.username, _external=True
@@ -108,7 +108,6 @@ class User(UserMixin, db.Model, BaseModel):
             ),
             'todolist_count': self.todolists.count()
         }
-        return json_user
 
     @staticmethod
     def from_json(json_user):
@@ -148,27 +147,30 @@ class TodoList(db.Model, BaseModel):
         self.title = new_title
         self.save()
 
-    def to_json(self):
+    def to_dict(self):
         if self.creator:
             todos_url = url_for(
                 'api.get_user_todolist_todos',
-                todolist_id=self.id, username=self.creator, _external=True
+                todolist_id=self.id,
+                username=self.creator,
+                _external=True,
             )
         else:
             todos_url = url_for(
-                'api.get_todolist_todos', todolist_id=self.id, _external=True
+                'api.get_todolist_todos',
+                todolist_id=self.id,
+                _external=True,
             )
 
-        json_todolist = {
+        return {
             'title': self.title,
             'creator': self.creator,
             'created_at': self.created_at,
             'total_todo_count': self.count_todos(),
             'open_todo_count': self.count_open(),
             'finished_todo_count': self.count_finished(),
-            'todos': todos_url
+            'todos': todos_url,
         }
-        return json_todolist
 
     @staticmethod
     def from_json(json_todolist):
@@ -220,14 +222,13 @@ class Todo(db.Model, BaseModel):
         self.finished_at = None
         self.save()
 
-    def to_json(self):
-        json_todo = {
+    def to_dict(self):
+        return {
             'description': self.description,
             'creator': self.creator,
             'created_at': self.created_at,
             'status': self.status,
         }
-        return json_todo
 
     @staticmethod
     def from_json(json_todo):
