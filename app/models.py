@@ -23,7 +23,7 @@ def check_length(attribute, length):
 
 
 class BaseModel:
-    """Base for all models, providing providing save and delete methods."""
+    """Base for all models, providing save, delete and from_dict methods."""
 
     def __commit(self):
         """Commits the current db.session, does rollback on failure."""
@@ -43,6 +43,10 @@ class BaseModel:
         db.session.add(self)
         self.__commit()
         return self
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict).save()
 
 
 class User(UserMixin, db.Model, BaseModel):
@@ -109,10 +113,6 @@ class User(UserMixin, db.Model, BaseModel):
             'todolist_count': self.todolists.count()
         }
 
-    @staticmethod
-    def from_json(json_user):
-        User(json.loads(json_user)).save()
-
     def promote_to_admin(self):
         self.is_admin = True
         return self.save()
@@ -172,10 +172,6 @@ class TodoList(db.Model, BaseModel):
             'todos': todos_url,
         }
 
-    @staticmethod
-    def from_json(json_todolist):
-        TodoList(json.loads(json_todolist)).save()
-
     def count_todos(self):
         return self.todos.order_by(None).count()
 
@@ -229,7 +225,3 @@ class Todo(db.Model, BaseModel):
             'created_at': self.created_at,
             'status': self.status,
         }
-
-    @staticmethod
-    def from_json(json_todo):
-        Todo(json.loads(json_todo)).save()
