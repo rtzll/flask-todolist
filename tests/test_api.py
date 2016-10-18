@@ -51,7 +51,7 @@ class TodolistAPITestCase(TestCase):
 
     def add_user(self, username):
         user_data = self.setup_new_user(username)
-        User(**user_data).save()
+        User.from_dict(user_data)
         return User.query.filter_by(username=username).first()
 
     @staticmethod

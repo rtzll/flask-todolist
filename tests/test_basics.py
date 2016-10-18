@@ -32,7 +32,7 @@ class TodolistTestCase(unittest.TestCase):
             'username': username,
             'password': 'correcthorsebatterystaple'
         }
-        user = User(**user_data).save()
+        user = User.from_dict(user_data)
         return User.query.filter_by(username=user.username).first()
 
     @staticmethod
@@ -42,7 +42,7 @@ class TodolistTestCase(unittest.TestCase):
             'todolist_id': todolist_id or TodoList().save().id,
             'creator': user.username
         }
-        read_todo = Todo(**todo_data).save()
+        read_todo = Todo.from_dict(todo_data)
         return Todo.query.filter_by(id=read_todo.id).first()
 
     def test_app_exists(self):
