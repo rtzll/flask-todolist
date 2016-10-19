@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import json
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -68,7 +67,6 @@ class User(UserMixin, db.Model, BaseModel):
         if self.is_admin:
             return '<Admin {0}>'.format(self.username)
         return '<User {0}>'.format(self.username)
-
 
     @property
     def name(self):
@@ -221,7 +219,6 @@ class Todo(db.Model, BaseModel):
     @property
     def status(self):
         return 'finished' if self.is_finished else 'open'
-
 
     def finished(self):
         self.is_finished = True

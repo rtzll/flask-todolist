@@ -190,7 +190,7 @@ def change_todolist_title(todolist_id):
 def delete_user(username):
     user = User.query.get_or_404(username=username)
     try:
-        if user_id == request.json.get('user_id'):
+        if username == request.json.get('username'):
             user.delete()
             return jsonify()
         else:
