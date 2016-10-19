@@ -69,19 +69,27 @@ class User(UserMixin, db.Model, BaseModel):
             return '<Admin {0}>'.format(self.username)
         return '<User {0}>'.format(self.username)
 
-    @staticmethod
-    def is_valid_username(username):
+
+    @property
+    def name(self):
+        return self.username
+
+    @name.setter
+    def name(self, username):
         is_valid_length = check_length(username, 64)
-        return is_valid_length and bool(USERNAME_REGEX.match(username))
+        if not is_valid_length or not bool(USERNAME_REGEX.match(username)):
+            raise ValueError('{} is not a valid username'.format(username))
+        self.username = username
 
-    @staticmethod
-    def is_valid_email(email):
-        return check_length(email, 64) and bool(EMAIL_REGEX.match(email))
+    @property
+    def emailaddress(self):
+        return self.email
 
-    @staticmethod
-    def is_valid_password(passwd):
-        passwd_hash = generate_password_hash(passwd)
-        return bool(passwd) and check_length(passwd_hash, 128)
+    @emailaddress.setter
+    def emailaddress(self, email):
+        if not check_length(email, 64) or not bool(EMAIL_REGEX.match(email)):
+            raise ValueError('{} is not a valid email address'.format(email))
+        self.email = email
 
     @property
     def password(self):
@@ -89,7 +97,14 @@ class User(UserMixin, db.Model, BaseModel):
 
     @password.setter
     def password(self, password):
-        self.password_hash = generate_password_hash(password)
+        if not bool(password):
+            raise ValueError('no password given')
+
+        hashed_password = generate_password_hash(password)
+        if not check_length(hashed_password, 128):
+            raise ValueError('not a valid password, hash is too long')
+        else:
+            self.password_hash = hashed_password
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
