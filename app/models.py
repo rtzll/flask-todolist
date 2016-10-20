@@ -3,6 +3,7 @@
 import re
 from datetime import datetime
 
+from sqlalchemy.orm import synonym
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask_login import UserMixin
@@ -51,8 +52,8 @@ class BaseModel:
 class User(UserMixin, db.Model, BaseModel):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True)
-    email = db.Column(db.String(64), unique=True)
+    _username = db.Column('username', db.String(64), unique=True)
+    _email = db.Column('email', db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
     member_since = db.Column(db.DateTime, default=datetime.utcnow)
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
@@ -69,25 +70,29 @@ class User(UserMixin, db.Model, BaseModel):
         return '<User {0}>'.format(self.username)
 
     @property
-    def name(self):
-        return self.username
+    def username(self):
+        return self._username
 
-    @name.setter
-    def name(self, username):
+    @username.setter
+    def username(self, username):
         is_valid_length = check_length(username, 64)
         if not is_valid_length or not bool(USERNAME_REGEX.match(username)):
             raise ValueError('{} is not a valid username'.format(username))
-        self.username = username
+        self._username = username
+
+    username = synonym('_username', descriptor=username)
 
     @property
-    def emailaddress(self):
-        return self.email
+    def email(self):
+        return self._email
 
-    @emailaddress.setter
-    def emailaddress(self, email):
+    @email.setter
+    def email(self, email):
         if not check_length(email, 64) or not bool(EMAIL_REGEX.match(email)):
             raise ValueError('{} is not a valid email address'.format(email))
-        self.email = email
+        self._email = email
+
+    email = synonym('_email', descriptor=email)
 
     @property
     def password(self):
@@ -161,6 +166,8 @@ class TodoList(db.Model, BaseModel):
         if not check_length(title, 128):
             raise ValueError('{} is not a valid title'.format(title))
         self._title = title
+
+    title = synonym('_title', descriptor=title)
 
     def to_dict(self):
         if self.creator:

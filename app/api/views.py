@@ -32,8 +32,8 @@ def get_user(username):
 def add_user():
     try:
         user = User(
-            name=request.json.get('username'),
-            emailaddress=request.json.get('email'),
+            username=request.json.get('username'),
+            email=request.json.get('email'),
             password=request.json.get('password'),
         ).save()
     except:
