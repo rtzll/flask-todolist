@@ -139,7 +139,7 @@ def load_user(user_id):
 class TodoList(db.Model, BaseModel):
     __tablename__ = 'todolist'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128))
+    _title = db.Column('title', db.String(128))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     creator = db.Column(db.String(64), db.ForeignKey('user.username'))
     todos = db.relationship('Todo', backref='todolist', lazy='dynamic')
@@ -152,13 +152,15 @@ class TodoList(db.Model, BaseModel):
     def __repr__(self):
         return '<Todolist: {0}>'.format(self.title)
 
-    @staticmethod
-    def is_valid_title(list_title):
-        return check_length(list_title, 128)
+    @property
+    def title(self):
+        return self._title
 
-    def change_title(self, new_title):
-        self.title = new_title
-        self.save()
+    @title.setter
+    def title(self, title):
+        if not check_length(title, 128):
+            raise ValueError('{} is not a valid title'.format(title))
+        self._title = title
 
     def to_dict(self):
         if self.creator:

@@ -89,11 +89,7 @@ def get_todolist(todolist_id):
 @api.route('/todolist/', methods=['POST'])
 def add_todolist():
     try:
-        title = request.json.get('title')
-        if title and TodoList.is_valid_title(title):
-            todolist = TodoList(title=title).save()
-        else:
-            abort(400)
+        todolist = TodoList(title=request.json.get('title')).save()
     except:
         abort(400)
     return jsonify(todolist.to_dict()), 201
@@ -175,11 +171,8 @@ def change_todolist_title(todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     try:
         todolist_json = request.json.get('todolist')
-        title = todolist_json.get('title')
-        if TodoList.is_valid_title(title):
-            todolist.change_title(title)
-        else:
-            abort(400)
+        todolist.title = todolist_json.get('title')
+        todolist.save()
     except:
         abort(400)
     return jsonify(todolist.to_dict())
