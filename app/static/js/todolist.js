@@ -45,20 +45,15 @@ function putNewStatus(todoID, isFinished) {
       }
     }
   });
-  // send put request using the data of the get for the same id
+  // send put request using the todo of the get for the same id
   var todoURL = '/api/todo/' + todoID + '/'
-  $.getJSON(todoURL, function(data) {
-    data.todo.is_finished = isFinished;
-    if (isFinished) {
-      data.todo.finished_at = moment().toISOString();
-    } else {
-      data.todo.finished_at = null;
-    }
+  $.getJSON(todoURL, function(todo) {
+    todo.is_finished = isFinished;
     $.ajax({
       url: todoURL,
       type: 'PUT',
       contentType: 'application/json',
-      data: JSON.stringify(data),
+      data: JSON.stringify(todo),
       success: function() {
         location.reload();
       }

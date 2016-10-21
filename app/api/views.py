@@ -152,26 +152,20 @@ def get_todo(todo_id):
 def update_todo_status(todo_id):
     todo = Todo.query.get_or_404(todo_id)
     try:
-        todo_json = request.json.get('todo')
-        todo.is_finished = todo_json.get('is_finished')
-        if todo.is_finished:
-            todo.finished_at = datetime.strptime(
-                todo_json.get('finished_at'), '%Y-%m-%dT%H:%M:%S.%fZ'
-            )
+        if request.json.get('is_finished'):
+            todo.finished()
         else:
-            todo.finished_at = None
-        todo.save()
+            todo.reopen()
     except:
         abort(400)
-    return jsonify({'todo': todo.to_dict()})
+    return jsonify(todo.to_dict())
 
 
 @api.route('/todolist/<int:todolist_id>/', methods=['PUT'])
 def change_todolist_title(todolist_id):
     todolist = TodoList.query.get_or_404(todolist_id)
     try:
-        todolist_json = request.json.get('todolist')
-        todolist.title = todolist_json.get('title')
+        todolist.title = request.json.get('title')
         todolist.save()
     except:
         abort(400)
