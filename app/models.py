@@ -188,19 +188,22 @@ class TodoList(db.Model, BaseModel):
             'title': self.title,
             'creator': self.creator,
             'created_at': self.created_at,
-            'total_todo_count': self.count_todos(),
-            'open_todo_count': self.count_open(),
-            'finished_todo_count': self.count_finished(),
+            'total_todo_count': self.todo_count,
+            'open_todo_count': self.open_count,
+            'finished_todo_count': self.finished_count,
             'todos': todos_url,
         }
 
-    def count_todos(self):
+    @property
+    def todo_count(self):
         return self.todos.order_by(None).count()
 
-    def count_finished(self):
+    @property
+    def finished_count(self):
         return self.todos.filter_by(is_finished=True).count()
 
-    def count_open(self):
+    @property
+    def open_count(self):
         return self.todos.filter_by(is_finished=False).count()
 
 
