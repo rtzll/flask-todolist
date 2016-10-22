@@ -5,6 +5,10 @@ import os
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
+def create_sqlite_uri(db_name):
+    return 'sqlite:///' + os.path.join(BASEDIR, db_name)
+
+
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret key, just for testing'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
@@ -18,14 +22,12 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR,
-                                                          'todolist-dev.db')
+    SQLALCHEMY_DATABASE_URI = create_sqlite_uri('todolist-dev.db')
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR,
-                                                          'todolist-test.db')
+    SQLALCHEMY_DATABASE_URI = create_sqlite_uri('todolist-test.db')
     WTF_CSRF_ENABLED = False
     import logging
     logging.basicConfig(
@@ -35,8 +37,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR,
-                                                          'todolist.db')
+    SQLALCHEMY_DATABASE_URI = create_sqlite_uri('todolist.db')
 
 
 config = {
