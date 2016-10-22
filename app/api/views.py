@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-
 from flask import jsonify, request, abort, url_for
 
 from app.api import api

@@ -2,7 +2,7 @@
 
 from flask import jsonify, make_response
 
-from . import api
+from app.api import api
 
 
 @api.errorhandler(400)
