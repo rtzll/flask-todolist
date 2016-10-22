@@ -106,8 +106,7 @@ class User(UserMixin, db.Model, BaseModel):
         hashed_password = generate_password_hash(password)
         if not check_length(hashed_password, 128):
             raise ValueError('not a valid password, hash is too long')
-        else:
-            self.password_hash = hashed_password
+        self.password_hash = hashed_password
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -169,21 +168,16 @@ class TodoList(db.Model, BaseModel):
 
     title = synonym('_title', descriptor=title)
 
-    def to_dict(self):
+    @property
+    def todos_url(self):
+        url = None
+        kwargs = dict(todolist_id=self.id, _external=True)
         if self.creator:
-            todos_url = url_for(
-                'api.get_user_todolist_todos',
-                todolist_id=self.id,
-                username=self.creator,
-                _external=True,
-            )
-        else:
-            todos_url = url_for(
-                'api.get_todolist_todos',
-                todolist_id=self.id,
-                _external=True,
-            )
+            kwargs['username'] = self.creator
+            url = 'api.get_user_todolist_todos'
+        return url_for(url or 'api.get_todolist_todos', **kwargs)
 
+    def to_dict(self):
         return {
             'title': self.title,
             'creator': self.creator,
@@ -191,7 +185,7 @@ class TodoList(db.Model, BaseModel):
             'total_todo_count': self.todo_count,
             'open_todo_count': self.open_count,
             'finished_todo_count': self.finished_count,
-            'todos': todos_url,
+            'todos': self.todos_url,
         }
 
     @property
@@ -225,7 +219,7 @@ class Todo(db.Model, BaseModel):
         self.created_at = created_at or datetime.utcnow()
 
     def __repr__(self):
-        return '<{0} todo: {1} by {2}>'.format(
+        return '<{0} Todo: {1} by {2}>'.format(
             self.status, self.description, self.creator or 'None')
 
     @property
