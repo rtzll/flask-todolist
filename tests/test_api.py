@@ -2,7 +2,6 @@
 
 import json
 import unittest
-from datetime import datetime
 
 from flask_testing import TestCase
 from flask import url_for
@@ -114,7 +113,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_with_to_long_username(self):
         user_data = {
             'username': 65 * 'a',
-            'email':  'adam@example.com',
+            'email': 'adam@example.com',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -125,7 +124,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_with_invalid_username(self):
         user_data = {
             'username': 'not a valid username',
-            'email':  'adam@example.com',
+            'email': 'adam@example.com',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -136,7 +135,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_without_username(self):
         user_data = {
             'username': '',
-            'email':  'adam@example.com',
+            'email': 'adam@example.com',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -147,7 +146,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_with_invalid_email(self):
         user_data = {
             'username': 'adam',
-            'email':  'adamexample.com',
+            'email': 'adamexample.com',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -158,7 +157,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_withoout_email(self):
         user_data = {
             'username': 'adam',
-            'email':  '',
+            'email': '',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -169,7 +168,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_with_too_long_email(self):
         user_data = {
             'username': 'adam',
-            'email':  53 * 'a' + '@example.com',
+            'email': 53 * 'a' + '@example.com',
             'password': 'correcthorsebatterystaple',
         }
         response = self.client.post(url_for('api.add_user'),
@@ -180,7 +179,7 @@ class TodolistAPITestCase(TestCase):
     def test_add_user_without_password(self):
         user_data = {
             'username': 'adam',
-            'email':  'adam@example.com',
+            'email': 'adam@example.com',
             'password': '',
         }
         response = self.client.post(url_for('api.add_user'),
