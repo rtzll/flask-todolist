@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from config import config
-
-from flask_login import AnonymousUserMixin
-
-
-class Anonymous(AnonymousUserMixin):
-
-    def __init__(self):
-        self.is_admin = False
 
 
 db = SQLAlchemy()
@@ -21,7 +14,6 @@ migrate = Migrate()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
-login_manager.anonymous_user = Anonymous
 
 
 def create_app(config_name):
