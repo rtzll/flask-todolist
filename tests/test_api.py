@@ -3,8 +3,9 @@
 import json
 import unittest
 
-from flask_testing import TestCase
 from flask import url_for
+from flask_testing import TestCase
+from flask_login import login_user
 
 from app import create_app, db
 from app.models import User, Todo, TodoList
@@ -69,6 +70,11 @@ class TodolistAPITestCase(TestCase):
         return self.client.post(url_for('api.add_user'),
                                 headers=self.get_headers(),
                                 data=json.dumps(user_data))
+
+    def create_admin(self):
+        new_user = self.setup_new_user('admin')
+        new_user['is_admin'] = True
+        return User.from_dict(new_user)
 
     def test_main_route(self):
         response = self.client.get(url_for('api.get_routes'))
@@ -687,6 +693,9 @@ class TodolistAPITestCase(TestCase):
     # test api delete calls
     @unittest.skip('because acquiring admin rights is currently an issue')
     def test_delete_user(self):
+        admin = self.create_admin()
+        login_user(admin)
+
         user = self.add_user('adam')
         user_id = user.id
 
@@ -702,6 +711,9 @@ class TodolistAPITestCase(TestCase):
 
     @unittest.skip('because acquiring admin rights is currently an issue')
     def test_delete_todolist(self):
+        admin = self.create_admin()
+        login_user(admin)
+
         todolist = self.add_todolist('new todolist')
         todolist_id = todolist.id
 
@@ -719,7 +731,9 @@ class TodolistAPITestCase(TestCase):
 
     @unittest.skip('because acquiring admin rights is currently an issue')
     def test_delete_todo(self):
-        # we need admin rights for this test
+        admin = self.create_admin()
+        login_user(admin)
+
         todolist = self.add_todolist('new todolist')
         todo = self.add_todo('new todo', todolist.id)
         todo_id = todo.id
