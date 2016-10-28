@@ -35,8 +35,7 @@ If you prefer to run it directly on your local machine, I suggest using
 anyway here the commands you have to enter:
 
     pip install -r requirements.txt
-    export FLASK_APP=todolist.py
-    flask run
+    FLASK_APP=todolist.py flask run
 
 To add some 'play' data you can run
 
