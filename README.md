@@ -12,7 +12,7 @@ CSS | [Skeleton](http://getskeleton.com/)
 JS  | [jQuery](https://jquery.com/)
 
 I've also build a quite similar app in Django:
-https://github.com/polyfunc/django-todolist
+https://github.com/rtzll/django-todolist
 
 
 ## Explore
@@ -65,8 +65,8 @@ Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
 
-[license-url]: https://github.com/polyfunc/flask-todolist/blob/master/LICENSE
+[license-url]: https://github.com/rtzll/flask-todolist/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 
-[travis-url]: https://travis-ci.org/polyfunc/flask-todolist
-[travis-image]: https://travis-ci.org/polyfunc/flask-todolist.svg?branch=master
+[travis-url]: https://travis-ci.org/rtzll/flask-todolist
+[travis-image]: https://travis-ci.org/rtzll/flask-todolist.svg?branch=master
