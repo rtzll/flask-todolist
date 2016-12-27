@@ -1,8 +1,9 @@
 version: '2'
 services:
   todolist:
+    container_name: todolist
     image: todolist
-    restart: always
+    # restart: always
     env_file: .env
     command: gunicorn todolist:app -w 2 -b :8000
     ports:
@@ -11,6 +12,7 @@ services:
       - migration
 
   migration:
+    container_name: migration
     build: .
     image: todolist
     env_file: .env
