@@ -1,5 +1,5 @@
 Flask==0.12
-Flask-Login==0.3.2
+Flask-Login==0.4.0
 Flask-SQLAlchemy==2.1
-Flask-WTF==0.12
-Flask-Migrate==2.0.0
+Flask-WTF==0.14.2
+Flask-Migrate==2.0.2
