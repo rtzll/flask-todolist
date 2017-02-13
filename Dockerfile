@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.5
 
 # from https://github.com/frol/docker-alpine-python3
 RUN apk add --no-cache python3 && \
