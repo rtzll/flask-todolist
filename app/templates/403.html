@@ -1,13 +1,4 @@
-{% extends "base.html" %}
+{% extends "error.html" %}
 
-{% block body %}
-<section class="header">
-  <h2 class="title">Forbidden</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      403
-    </div>
-  </div>
-</section>
-{% endblock %}
+{% block error_message %}Forbiddin{% endblock %}
+{% block error_code %}403{% endblock %}
