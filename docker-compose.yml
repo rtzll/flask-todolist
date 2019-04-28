@@ -6,10 +6,10 @@ services:
     # restart: always
     env_file: .env
     command: gunicorn todolist:app -w 2 -b :8000
+    volumes:
+      - .:/code
     ports:
       - "8000:8000"
-    depends_on:
-      - migration
 
   migration:
     container_name: migration
@@ -17,5 +17,5 @@ services:
     image: todolist
     env_file: .env
     command: flask db upgrade
-    volumes:
-      - .:/code
+    depends_on:
+      - todolist
