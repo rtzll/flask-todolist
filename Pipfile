@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+Flask-Testing = "*"
+blinker = "*"
+ForgeryPy = "*"
+
+[packages]
+flask-migrate = "*"
+Flask = "*"
+Flask-Login = "*"
+Flask-SQLAlchemy = "*"
+Flask-WTF = "*"

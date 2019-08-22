@@ -13,5 +13,8 @@ RUN echo "**** install Python ****" && \
 
 ADD . /code
 WORKDIR /code
+RUN pip install --upgrade pip 
 RUN pip install gunicorn
+RUN pip install pipenv
+RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
