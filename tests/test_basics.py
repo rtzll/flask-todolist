@@ -9,16 +9,15 @@ from app.models import User, Todo, TodoList
 
 
 class TodolistTestCase(unittest.TestCase):
-
     def setUp(self):
-        self.app = create_app('testing')
+        self.app = create_app("testing")
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
 
-        self.username_adam = 'adam'
-        self.shopping_list_title = 'shopping list'
-        self.read_todo_description = 'Read a book about TDD'
+        self.username_adam = "adam"
+        self.shopping_list_title = "shopping list"
+        self.read_todo_description = "Read a book about TDD"
 
     def tearDown(self):
         db.session.remove()
@@ -28,9 +27,9 @@ class TodolistTestCase(unittest.TestCase):
     @staticmethod
     def add_user(username):
         user_data = {
-            'email': username + '@example.com',
-            'username': username,
-            'password': 'correcthorsebatterystaple'
+            "email": username + "@example.com",
+            "username": username,
+            "password": "correcthorsebatterystaple",
         }
         user = User.from_dict(user_data)
         return User.query.filter_by(username=user.username).first()
@@ -38,9 +37,9 @@ class TodolistTestCase(unittest.TestCase):
     @staticmethod
     def add_todo(description, user, todolist_id=None):
         todo_data = {
-            'description': description,
-            'todolist_id': todolist_id or TodoList().save().id,
-            'creator': user.username
+            "description": description,
+            "todolist_id": todolist_id or TodoList().save().id,
+            "creator": user.username,
         }
         read_todo = Todo.from_dict(todo_data)
         return Todo.query.filter_by(id=read_todo.id).first()
@@ -49,35 +48,36 @@ class TodolistTestCase(unittest.TestCase):
         self.assertTrue(current_app is not None)
 
     def test_app_is_testing(self):
-        self.assertTrue(current_app.config['TESTING'])
+        self.assertTrue(current_app.config["TESTING"])
 
     def test_password_setter(self):
-        u = User(password='correcthorsebatterystaple')
+        u = User(password="correcthorsebatterystaple")
         self.assertTrue(u.password_hash is not None)
 
     def test_no_password_getter(self):
-        u = User(password='correcthorsebatterystaple')
+        u = User(password="correcthorsebatterystaple")
         with self.assertRaises(AttributeError):
             u.password
 
     def test_password_verification(self):
-        u = User(password='correcthorsebatterystaple')
-        self.assertTrue(u.verify_password('correcthorsebatterystaple'))
-        self.assertFalse(u.verify_password('incorrecthorsebatterystaple'))
+        u = User(password="correcthorsebatterystaple")
+        self.assertTrue(u.verify_password("correcthorsebatterystaple"))
+        self.assertFalse(u.verify_password("incorrecthorsebatterystaple"))
 
     def test_password_salts_are_random(self):
-        u = User(password='correcthorsebatterystaple')
-        u2 = User(password='correcthorsebatterystaple')
+        u = User(password="correcthorsebatterystaple")
+        u2 = User(password="correcthorsebatterystaple")
         self.assertNotEqual(u.password_hash, u2.password_hash)
 
     def test_adding_new_user(self):
         new_user = self.add_user(self.username_adam)
         self.assertEqual(new_user.username, self.username_adam)
-        self.assertEqual(new_user.email, self.username_adam + '@example.com')
+        self.assertEqual(new_user.email, self.username_adam + "@example.com")
 
     def test_adding_new_todo_without_user(self):
-        todo = Todo(description=self.read_todo_description,
-                    todolist_id=TodoList().save().id).save()
+        todo = Todo(
+            description=self.read_todo_description, todolist_id=TodoList().save().id
+        ).save()
         todo_from_db = Todo.query.filter_by(id=todo.id).first()
 
         self.assertEqual(todo_from_db.description, self.read_todo_description)
@@ -127,8 +127,9 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_adding_new_todolist_with_user(self):
         user = self.add_user(self.username_adam)
-        todolist = TodoList(title=self.shopping_list_title,
-                            creator=user.username).save()
+        todolist = TodoList(
+            title=self.shopping_list_title, creator=user.username
+        ).save()
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
         self.assertEqual(todolist_from_db.title, self.shopping_list_title)
@@ -136,25 +137,27 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_adding_two_todolists_with_the_same_title(self):
         user = self.add_user(self.username_adam)
-        ftodolist = TodoList(title=self.shopping_list_title,
-                             creator=user.username).save()
+        ftodolist = TodoList(
+            title=self.shopping_list_title, creator=user.username
+        ).save()
         first_todolist = TodoList.query.filter_by(id=ftodolist.id).first()
-        stodolist = TodoList(title=self.shopping_list_title,
-                             creator=user.username).save()
+        stodolist = TodoList(
+            title=self.shopping_list_title, creator=user.username
+        ).save()
         second_todolist = TodoList.query.filter_by(id=stodolist.id).first()
 
-        self.assertEqual(first_todolist.title,
-                         second_todolist.title)
+        self.assertEqual(first_todolist.title, second_todolist.title)
         self.assertEqual(first_todolist.creator, second_todolist.creator)
         self.assertNotEqual(first_todolist.id, second_todolist.id)
 
     def test_adding_todo_to_todolist(self):
         user = self.add_user(self.username_adam)
-        todolist = TodoList(title=self.shopping_list_title,
-                            creator=user.username).save()
+        todolist = TodoList(
+            title=self.shopping_list_title, creator=user.username
+        ).save()
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
-        todo_description = 'A book about TDD'
+        todo_description = "A book about TDD"
         todo = self.add_todo(todo_description, user, todolist_from_db.id)
 
         self.assertEqual(todolist_from_db.todo_count, 1)
@@ -165,11 +168,12 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_counting_todos_of_todolist(self):
         user = self.add_user(self.username_adam)
-        todolist = TodoList(title=self.shopping_list_title,
-                            creator=user.username).save()
+        todolist = TodoList(
+            title=self.shopping_list_title, creator=user.username
+        ).save()
         todolist_from_db = TodoList.query.filter_by(id=todolist.id).first()
 
-        todo_description = 'A book about TDD'
+        todo_description = "A book about TDD"
         todo = self.add_todo(todo_description, user, todolist_from_db.id)
 
         self.assertEqual(todolist.title, self.shopping_list_title)
@@ -200,7 +204,7 @@ class TodolistTestCase(unittest.TestCase):
 
     def test_delete_todo(self):
         todolist = TodoList(self.shopping_list_title).save()
-        todo = Todo('A book about TDD', todolist.id).save()
+        todo = Todo("A book about TDD", todolist.id).save()
         self.assertEqual(todolist.todo_count, 1)
         todo_id = todo.id
         todo.delete()

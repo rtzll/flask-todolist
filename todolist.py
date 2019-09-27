@@ -2,7 +2,7 @@
 
 from app import create_app
 
-app = create_app('development')
+app = create_app("development")
 
 
 @app.cli.command()
@@ -10,7 +10,8 @@ def test():
     """Runs the unit tests."""
     import unittest
     import sys
-    tests = unittest.TestLoader().discover('tests')
+
+    tests = unittest.TestLoader().discover("tests")
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.errors or result.failures:
         sys.exit(1)
@@ -23,4 +24,5 @@ def fill_db():
     WARNING: will delete existing data. For testing purposes only.
     """
     from utils.fake_generator import FakeGenerator
+
     FakeGenerator().start()  # side effect: deletes existing data
