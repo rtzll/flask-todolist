@@ -1,4 +1,4 @@
 -r requirements.txt
-Flask-Testing==0.6.2
+Flask-Testing==0.8.0
 blinker==1.4
 ForgeryPy==0.1
