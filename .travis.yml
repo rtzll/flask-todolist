@@ -4,6 +4,7 @@ python:
   - "2.7"
   - "3.6"
   - "3.7"
+  - "3.8"
 env:
   - FLASK_APP=todolist.py
 install:
