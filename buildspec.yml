@@ -1,0 +1,17 @@
+
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+        docker login -username=usama911
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $todolist:$app .
+      - docker tag $todolist:$app $usama911/$todolist:$app  
+     
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $usama911/$todolist:$app
