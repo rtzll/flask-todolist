@@ -1,28 +1,14 @@
-version: 0.2 
+version: 0.2
 
-phases: 
+phases:
   install:
-    runtime-versions:
-        docker: 18
     commands:
-
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   pre_build:
     commands:
-    - echo Logging in to Amazon ECR....
-    
-    
-  
-  build: 
-    commands: 
-    - echo Build started on `date`
-    - echo Building the Docker image...
-    - docker build -t todolist:app .
-
-    - docker tag todolist:app $registry.hub.docker.com/usama911:$todolist
-  post_build: 
-    commands: 
-    - echo Build completed on `date` 
-    - echo pushing to repo
-    - docker push $registry.hub.docker.com/usama911:$todolist
-    
-  
+      - docker build -t todolist:app .
+  build:
+    commands:
+      - docker images
+      - docker run helloworld echo "Hello, World!" 
