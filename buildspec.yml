@@ -1,35 +1,28 @@
-version: 0.2
+version: 0.2 
 
-
-phases:
+phases: 
   install:
+    runtime-versions:
+        docker: 18
     commands:
-      - echo Entered the install phase...
-      
-     
-    finally:
-      - echo This always runs even if the update or install command fails 
+
   pre_build:
     commands:
-      - echo Entered the pre_build phase...
-      
-    finally:
-      - echo This always runs even if the login command fails 
-  build:
-    commands:
-      - docker build -t $todolist:$app .
-      - docker tag $todolist:$app $todolist:$app
-      - echo Entered the build phase...
-      - echo Build started on `date`
-      
-      
+    - echo Logging in to Amazon ECR....
+    
+    
+  
+  build: 
+    commands: 
+    - echo Build started on `date`
+    - echo Building the Docker image...
+    - docker build -t todolist:app .
 
-    finally:
-      - echo This always runs even if the install command fails
-  post_build:
-    commands:
-      - echo Entered the post_build phase...
-      - echo Build completed on `date`
-
-
+    - docker tag todolist:app $registry.hub.docker.com/usama911:$todolist
+  post_build: 
+    commands: 
+    - echo Build completed on `date` 
+    - echo pushing to repo
+    - docker push $registry.hub.docker.com/usama911:$todolist
+    
   
