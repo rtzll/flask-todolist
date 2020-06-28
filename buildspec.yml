@@ -8,7 +8,7 @@
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t $todolist:$app .
+      - docker build -t app .
       
 
      
