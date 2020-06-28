@@ -5,13 +5,14 @@ phases:
   install:
     commands:
       - echo Entered the install phase...
+      - docker login --username usama911 --password 018ad3b9-7741-49d7-815b-39a073084d29 docker.io/usama911/todolist
      
     finally:
       - echo This always runs even if the update or install command fails 
   pre_build:
     commands:
       - echo Entered the pre_build phase...
-      - docker login –username usama911
+      - docker login –username usama9
     finally:
       - echo This always runs even if the login command fails 
   build:
