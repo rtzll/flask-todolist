@@ -1,16 +1,34 @@
 version: 0.2
-
-phases:
+phases: 
   install:
-    commands:
-       
-      - ls /usr/bin | grep docker
-
-      
-  pre_build:
-    commands:
-      - docker build -t todolist:app .
-  build:
-    commands:
-      - docker images
-      - docker run helloworld echo "Hello, World!" 
+    runtime-versions:
+        docker: 18     
+    commands: 
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  pre_build: 
+    commands: 
+    - echo Logging in to Amazon ECR.... 
+    
+    # update the following line with your own region
+    
+    - todolist:app
+    - REPOSITORY_URI=https://registry.hub.docker.com/usama911/todolist:app 
+  build: 
+    commands: 
+    - echo Build started on `date` 
+    - echo Building the Docker image... 
+    # update the following line with the name of your own ECR repository
+    - docker build -t $todolist:app .
+    # update the following line with the URI of your own ECR repository (view the Push Commands in the console)
+    - docker tag $todolist:app $todolist:$app 
+  post_build: 
+    commands: 
+    - echo Build completed on `date` 
+    - echo pushing to repo
+    # update the following line with the URI of your own ECR repository
+    - docker push $todolist:app
+  
+artifacts:
+  files:
+    - imageDetail.json
