@@ -17,8 +17,8 @@ phases:
       - echo This always runs even if the login command fails 
   build:
     commands:
-      - docker build -t todolist:app .
-      - docker tag todolist:app todolist:app
+      - docker build -t $todolist:$app .
+      - docker tag $todolist:$app $todolist:$app
       - echo Entered the build phase...
       - echo Build started on `date`
       
