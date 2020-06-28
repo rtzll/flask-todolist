@@ -2,7 +2,8 @@
   pre_build:
     commands:
       - echo Logging in to Docker Hub...
-        docker login -username=usama911
+      - docker login --username usama911 --password 018ad3b9-7741-49d7-815b-39a073084d29 docker.io/usama911/todolist
+
   build:
     commands:
       - echo Build started on `date`
