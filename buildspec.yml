@@ -9,7 +9,8 @@
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $todolist:$app .
-      - docker tag $usama911/$todolist:$app  
+      - docker tag $todolist:$app $todolist:$app
+
      
   post_build:
     commands:
