@@ -1,19 +1,30 @@
+version: 0.2
 
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+     
+    finally:
+      - echo This always runs even if the update or install command fails 
   pre_build:
     commands:
-      - echo Logging in to Docker Hub...
-      
-
+      - echo Entered the pre_build phase...
+      - docker login –u usama911 –p $usama1620
+    finally:
+      - echo This always runs even if the login command fails 
   build:
     commands:
+      - echo Entered the build phase...
       - echo Build started on `date`
-      - echo Building the Docker image...
-      
-      
 
-     
+    finally:
+      - echo This always runs even if the install command fails
   post_build:
     commands:
+      - echo Entered the post_build phase...
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      
+
+
+  
