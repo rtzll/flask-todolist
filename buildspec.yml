@@ -5,7 +5,7 @@ phases:
   install:
     commands:
       - echo Entered the install phase...
-      - docker login --username usama911 --password-stdin
+      
      
     finally:
       - echo This always runs even if the update or install command fails 
