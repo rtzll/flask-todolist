@@ -11,13 +11,16 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
-      - docker login –u usama911 –p $usama1620
+      - docker login –u usama911 -p usama1620
     finally:
       - echo This always runs even if the login command fails 
   build:
     commands:
+      - docker build -t todolist:app .
       - echo Entered the build phase...
       - echo Build started on `date`
+      
+      
 
     finally:
       - echo This always runs even if the install command fails
