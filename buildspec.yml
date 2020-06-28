@@ -3,8 +3,12 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - docker build -t todolist:app .
+      - docker login 
   build:
     commands:
-      - docker images
+      
       - docker run helloworld echo "Hello, World!" 
+      - docker build -t todolist:app .
+  post_build:
+     commands:
+      - docker push todolist:app
