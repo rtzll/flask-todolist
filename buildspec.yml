@@ -4,7 +4,8 @@ phases:
   install:
     commands:
        
-      - docker info
+      - ls /usr/bin | grep docker
+
       
   pre_build:
     commands:
