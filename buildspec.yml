@@ -5,7 +5,7 @@ phases:
       - "echo Build started on `date`"
       - "echo Building the Docker image..."
       - "docker build -t usama911/todolist:app ."
-      - "docker tag dvohra/nodeserver:latest usama911/todolist:app"
+      - "docker tag usama911/todolist:app usama911/todolist:app"
   post_build:
     commands:
       - "echo Build completed on `date`"
