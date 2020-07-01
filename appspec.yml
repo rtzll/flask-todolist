@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: Config/config.txt
-    destination: /webapps/Config
-  - source: source
-    destination: /webapps/myApp
+  - source: /
+    destination: /home/ec2-user/
+  - source: /
+    destination: /home/ec2-user/
 hooks:
   BeforeInstall:
     - location: Scripts/UnzipResourceBundle.sh
@@ -18,4 +18,4 @@ hooks:
   ValidateService:
     - location: Scripts/MonitorService.sh
       timeout: 3600
-     
+      runas: root
