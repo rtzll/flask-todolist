@@ -2,6 +2,7 @@
 artifacts: 
   files: 
     - "**/*"
+    - appspec.yml
 phases: 
   build: 
     commands: 
