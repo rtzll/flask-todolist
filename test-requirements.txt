@@ -2,3 +2,4 @@
 Flask-Testing==0.8.0
 blinker==1.4
 ForgeryPy==0.1
+python-dotenv==0.14.0
