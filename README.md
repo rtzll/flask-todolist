@@ -16,7 +16,7 @@ https://github.com/rtzll/django-todolist
 
 
 ## Explore
-Try it out! (Works with Python 2 and 3.)
+Try it out!
 ### Docker
 Using `docker-compose` you can simple run:
 
@@ -30,9 +30,7 @@ use for deployment, instead of just running `flask run`.)
 
 ### Manually
 If you prefer to run it directly on your local machine, I suggest using
-[virtualenv](https://virtualenv.pypa.io/en/stable/) (maybe have a look at
-[virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/stable/)),
-anyway here the commands you have to enter:
+[venv](https://docs.python.org/3/library/venv.html).
 
     pip install -r requirements.txt
     FLASK_APP=todolist.py flask run
@@ -40,12 +38,12 @@ anyway here the commands you have to enter:
 To add some 'play' data you can run
 
     pip install -r test-requirements.txt
-    flask fill_db
+    flask fill-db
 
 Now you can browse the API:
 http://localhost:5000/api/users
 
-Pick a user, login as the user. Default password after fill_db is
+Pick a user, login as the user. Default password after `fill-db` is
 *correcthorsebatterystaple*.
 Click around, there is not too much, but I like the overview under:
 http://localhost:5000/todolists
