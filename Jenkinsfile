@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Build on dev') {
+        stage('Build and test on dev') {
             
               
             steps {
@@ -41,7 +41,7 @@ sudo docker images '''
                  }
              }
          }
-         stage("Run Unit tests on stage branch ") {
+         stage("Run Functional tests on stage branch ") {
           
             steps {
                 sh label: '', script: '''git checkout origin/stage
