@@ -21,7 +21,10 @@ sudo docker images '''
             }
        
          }
-         stage("Starting and tesing app") {
+         stage("Starting and tesing app on dev branch") {
+             when {
+                 branch 'dev'
+             }    
              steps {
                  sh label: '', script: ''' sudo docker-compose build
  sudo docker-compose up -d
@@ -36,12 +39,20 @@ sudo docker images '''
                  }
              }
          }
-         stage("Run Unit tests") {
+         stage("Run Unit tests on stage branch ") {
+             when {
+                 branch 'stage'
+             }    
             steps {
-                sh label: '', script: '  pytest  ./tests/test_basics.py'
+                sh label: '', script: '''git checkout stage
+git merge dev'''
+                sh label: '', script: 'sudo docker-compose ps'
             }
          }  
          stage("Stopping app") {
+             when {
+                 branch 'stage'
+             }    
             steps {
                 sh label: '', script: '''sudo docker-compose down
 '''
