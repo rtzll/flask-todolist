@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Build') {
+            
             when {
+                beforeAgent true
                 branch 'dev'
             }    
             steps {
@@ -26,6 +28,7 @@ sudo docker images '''
          }
          stage("Starting and tesing app on dev branch") {
              when {
+                 beforeAgent true
                  branch 'dev'
              }    
              steps {
@@ -44,6 +47,7 @@ sudo docker images '''
          }
          stage("Run Unit tests on stage branch ") {
              when {
+                 beforeAgent true
                  branch 'stage'
              }    
             steps {
@@ -54,6 +58,7 @@ git merge dev'''
          }  
          stage("Stopping app") {
              when {
+                 beforeAgent true
                  branch 'stage'
              }    
             steps {
