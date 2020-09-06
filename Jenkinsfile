@@ -33,7 +33,7 @@ sudo docker images '''
                  success {
                      echo "App started successfully:)"
                  }
-                 faliure {
+                 failure {
                           echo "App failed :("
                  }
              }
