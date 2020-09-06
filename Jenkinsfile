@@ -49,7 +49,7 @@ sudo docker images '''
                 sh label: '', script: '''git config --global user.email "usamazahid0123@gmail.com"
 git config --global user.name "Usama42"'''
                 sh label: '', script: 'git merge origin/dev'
-                sh label: '', script: '''git branch status
+                sh label: '', script: '''git branch 
 '''
                 sh label: '', script: 'sudo docker-compose ps'
             }
@@ -57,7 +57,7 @@ git config --global user.name "Usama42"'''
          stage("Stopping app") {
            
             steps {
-                sh label: '', script: '''git branch status
+                sh label: '', script: '''git branch 
 '''
                 sh label: '', script: '''sudo docker-compose down
 '''
