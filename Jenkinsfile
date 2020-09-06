@@ -21,5 +21,33 @@ sudo docker images '''
             }
        
          }
+         stage("Start test app") {
+             steps {
+                 sh label: '', script: ''' sudo docker-compose build
+ sudo docker-compose up -d
+ sudo ./scripts/test_cont.ps1'''
+             }    
+             post {
+                 success {
+                     echo "App started successfully:)"
+                 }
+                 failure {
+                          echo "App failed :("
+                 }
+             }
+         }
+         stage("Run tests") {
+            steps {
+                sh label: '', script: '  pytest  ./tests/test_basics.py'
+            }
+         }  
+         stage("Stop test app") {
+            steps {
+                sh label: '', script: '''sudo docker-compose down
+'''
+            }
+         }   
+                     
+                     
     }
 }
