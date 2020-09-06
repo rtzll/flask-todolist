@@ -23,12 +23,9 @@ sudo docker images '''
          }
          stage("Start test app") {
              steps {
-                 pwsh(script: """
-                     sudo docker-compose build
-                     sudo docker-compose up -d
-                     ./scripts/test_cont.ps1
-                     """)
-             }
+                 sh label: '', script: ''' sudo docker-compose build
+ sudo docker-compose up -d
+ ./scripts/test_cont.ps1'''
              post {
                  success {
                      echo "App started successfully:)"
@@ -40,16 +37,13 @@ sudo docker images '''
          }
          stage("Run tests") {
             steps {
-               pwsh(script: """
-                  pytest ./tests/test_basics.py
-                     """)
+                sh label: '', script: '  pytest  ./tests/test_basics.py'
             }
          }  
          stage("Stop test app") {
             steps {
-               pwsh(script: """
-                  sudo docker-compose down
-                     """)
+                sh label: '', script: '''sudo docker-compose down
+'''
             }
          }   
                      
