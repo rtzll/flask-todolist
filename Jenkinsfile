@@ -26,6 +26,7 @@ sudo docker images '''
                  sh label: '', script: ''' sudo docker-compose build
  sudo docker-compose up -d
  ./scripts/test_cont.ps1'''
+             }    
              post {
                  success {
                      echo "App started successfully:)"
