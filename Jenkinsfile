@@ -25,7 +25,7 @@ sudo docker images '''
              steps {
                  sh label: '', script: ''' sudo docker-compose build
  sudo docker-compose up -d
- ./scripts/test_cont.sh '''
+ sudo docker-compose ps '''
              }    
              post {
                  success {
