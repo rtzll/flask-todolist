@@ -44,8 +44,8 @@ sudo docker images '''
          stage("Run Unit tests on stage branch ") {
           
             steps {
-                sh label: '', script: '''git checkout stage
-git merge dev'''
+                sh label: '', script: '''git checkout origin/stage
+git merge origin/dev'''
                 sh label: '', script: '''git branch status
 '''
                 sh label: '', script: 'sudo docker-compose ps'
@@ -60,6 +60,15 @@ git merge dev'''
 '''
             }
          }   
+         stage("Deploy to prod") {
+           
+            steps {
+                sh label: '', script: '''git checkout origin/prod                
+git merge origin/stage'''
+                sh label: '', script: '''sudo docker-compose ps
+'''
+            }
+         }  
                      
                      
     }
