@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('dev') {
+        stage('Build') {
             steps {
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 if [ -n "$OLD" ]; then
@@ -21,7 +21,7 @@ sudo docker images '''
             }
        
          }
-         stage("Start test app") {
+         stage("Starting and tesing app") {
              steps {
                  sh label: '', script: ''' sudo docker-compose build
  sudo docker-compose up -d
@@ -36,12 +36,12 @@ sudo docker images '''
                  }
              }
          }
-         stage("Run tests") {
+         stage("Run Unit tests") {
             steps {
                 sh label: '', script: '  pytest  ./tests/test_basics.py'
             }
          }  
-         stage("Stop test app") {
+         stage("Stopping app") {
             steps {
                 sh label: '', script: '''sudo docker-compose down
 '''
