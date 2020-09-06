@@ -4,11 +4,25 @@ pipeline {
     stages {
         stage('dev') {
             steps {
-                sh label: '', script: 'ls -l'
-                sh label: '', script: 'docker --version'
+                sh label: '', script: '''CONTAINER_NAME="migration"
+'''
+                sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
+'''
+                sh label: '', script: '''fi
+CONTAINER_NAME1="todolist"
+OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME1")"
+if [ -n "$OLD" ]; then
+  sudo docker stop $OLD && sudo docker rm $OLD
+fi'''
+                sh label: '', script: 'CONTAINER_NAME1="todolist"'
+                sh label: '', script: 'OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME1")"'
+                sh label: '', script: '''if [ -n "$OLD" ]; then
+  sudo docker stop $OLD && sudo docker rm $OLD
+fi'''
+                sh label: '', script: 'echo "Building the code"'
                 sh label: '', script: 'sudo docker build -t todolist:app .'
-                sh label: '', script: 'sudo docker images ls'
-               
+                sh label: '', script: 'echo "Testing"'
+                sh label: '', script: 'sudo docker images'
             }
        
          }
