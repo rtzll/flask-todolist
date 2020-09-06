@@ -1,5 +1,4 @@
-$count = 0
-do {
+    count = 0
     $count++
     echo "[$env:STAGE_NAME] Staring container [Attempt: $count]"
     $testStart = Invoke-WebRequest -Uri http://localhost:8000
@@ -9,8 +8,7 @@ do {
     } else {
         Start-Sleep -Seconds 1
     }
-} until ($started -or ($count -eq 3))
 
-if (!$started) {
+    if (!$started) {
     exit 1
-} 
+    } 
