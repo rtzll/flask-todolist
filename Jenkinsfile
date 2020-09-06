@@ -9,9 +9,11 @@ pipeline {
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 '''
                 sh label: '', script: '''fi
-CONTAINER_NAME1="todolist"
-OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME1")"
-if [ -n "$OLD" ]; then
+                sh label: '', script: '''CONTAINER_NAME1="todolist"
+'''
+                sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME1")"
+'''                
+                sh label: '', script: ''' if [ -n "$OLD" ]; then
   sudo docker stop $OLD && sudo docker rm $OLD
 fi'''
                 sh label: '', script: 'CONTAINER_NAME1="todolist"'
