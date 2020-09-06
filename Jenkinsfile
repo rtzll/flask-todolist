@@ -3,6 +3,9 @@ pipeline {
 
     stages {
         stage('Build') {
+            when {
+                branch 'dev'
+            }    
             steps {
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 if [ -n "$OLD" ]; then
