@@ -7,7 +7,7 @@ pipeline {
               
             steps {
               // sh label: '', script: '''git checkout origin/dev
-'''
+
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 if [ -n "$OLD" ]; then
   sudo docker stop $OLD && sudo docker rm $OLD
@@ -44,7 +44,7 @@ sudo docker images '''
          stage("Run Functional tests  ") {
           
             steps {
-                sh label: '', script: 'sudo docker-compose ps'
+                sh label: '', script: './tests/test.sh'
             }
          }  
          stage("Stopping app") {
@@ -57,8 +57,10 @@ sudo docker images '''
          stage("Deploy to prod") {
            
             steps {
-                sh label: '', script: '''sudo docker-compose ps
+                sh label: '', script: '''docker login --username usama911 --password 722e8d94-09f8-41d6-b719-b8d6055807e3
 '''
+                sh label: '', script: 'docker tag todolist:app usama911/todolist:app'
+                sh label: '', script: 'docker push usama911/todolist:app'
             }
          }  
                      
