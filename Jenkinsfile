@@ -48,7 +48,7 @@ sudo docker images '''
                  }
              }
          }
-         stage("Run Functional tests  ") {
+         stage("Test") {
             options {
                 timeout(time: 5, unit: "MINUTES")
             }
@@ -65,7 +65,7 @@ sudo docker images '''
 '''
             }
          }   
-         stage("Deploy to prod") {
+         stage("Deploy") {
            
             steps {
                 sh label: '', script: '''sudo docker login --username usama911 --password 722e8d94-09f8-41d6-b719-b8d6055807e3
