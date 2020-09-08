@@ -3,7 +3,10 @@ pipeline {
 
     stages {
         stage('Build ') {
-            
+           options {
+                timeout(time: 15, unit: "SECONDS")
+            }
+
               
             steps {
               // sh label: '', script: '''git checkout origin/dev
@@ -26,6 +29,10 @@ sudo docker images '''
        
          }
          stage("Starting app") {
+            options {
+                timeout(time: 15, unit: "SECONDS")
+            }
+
              
              steps {
                  sh label: '', script: ''' sudo docker-compose build
@@ -42,6 +49,10 @@ sudo docker images '''
              }
          }
          stage("Run Functional tests  ") {
+            options {
+                timeout(time: 15, unit: "SECONDS")
+            }
+
           
             steps {
                 sh label: '', script: './tests/test.sh'
