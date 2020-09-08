@@ -44,7 +44,7 @@ sudo docker images '''
          stage("Run Functional tests  ") {
           
             steps {
-                sh label: '', script: 'sudo docker-compose ps'
+                sh label: '', script: './tests/test.sh'
             }
          }  
          stage("Stopping app") {
