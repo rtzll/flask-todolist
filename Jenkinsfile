@@ -56,6 +56,8 @@ sudo docker images '''
           
             steps {
                 sh label: '', script: './tests/test.sh'
+                sh label: '', script: '''sudo pytest tests/test_basics.py 
+'''
             }
          }  
          stage("Stopping app") {
