@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build ') {
            options {
-                timeout(time: 15, unit: "SECONDS")
+                timeout(time: 5, unit: "MINUTES")
             }
 
               
@@ -30,7 +30,7 @@ sudo docker images '''
          }
          stage("Starting app") {
             options {
-                timeout(time: 15, unit: "SECONDS")
+                timeout(time: 5, unit: "MINUTES")
             }
 
              
@@ -50,7 +50,7 @@ sudo docker images '''
          }
          stage("Run Functional tests  ") {
             options {
-                timeout(time: 15, unit: "SECONDS")
+                timeout(time: 5, unit: "MINUTES")
             }
 
           
