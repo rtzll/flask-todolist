@@ -7,7 +7,7 @@ pipeline {
               
             steps {
               // sh label: '', script: '''git checkout origin/dev
-'''
+
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 if [ -n "$OLD" ]; then
   sudo docker stop $OLD && sudo docker rm $OLD
