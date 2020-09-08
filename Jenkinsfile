@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Build and test on dev') {
+        stage('Build ') {
             
               
             steps {
-                sh label: '', script: '''git checkout origin/dev
+              // sh label: '', script: '''git checkout origin/dev
 '''
                 sh label: '', script: '''OLD="$(sudo docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
 if [ -n "$OLD" ]; then
@@ -25,7 +25,7 @@ sudo docker images '''
             }
        
          }
-         stage("Starting and tesing app on dev branch") {
+         stage("Starting app") {
              
              steps {
                  sh label: '', script: ''' sudo docker-compose build
@@ -41,24 +41,15 @@ sudo docker images '''
                  }
              }
          }
-         stage("Run Functional tests on stage branch ") {
+         stage("Run Functional tests  ") {
           
             steps {
-                sh label: '', script: '''git checkout origin/stage
-'''   
-                sh label: '', script: '''git config --global user.email "usamazahid0123@gmail.com"
-git config --global user.name "Usama42"'''
-                sh label: '', script: 'git merge origin/dev'
-                sh label: '', script: '''git branch 
-'''
                 sh label: '', script: 'sudo docker-compose ps'
             }
          }  
          stage("Stopping app") {
            
             steps {
-                sh label: '', script: '''git branch 
-'''
                 sh label: '', script: '''sudo docker-compose down
 '''
             }
@@ -66,11 +57,6 @@ git config --global user.name "Usama42"'''
          stage("Deploy to prod") {
            
             steps {
-                sh label: '', script: '''git checkout origin/prod                
-'''
-                sh label: '', script: '''git config --global user.email "usamazahid0123@gmail.com"
-git config --global user.name "Usama42"'''
-                sh label: '', script: 'git merge origin/stage'
                 sh label: '', script: '''sudo docker-compose ps
 '''
             }
