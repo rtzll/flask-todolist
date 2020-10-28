@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
-from flask import request, abort, url_for
+from flask import abort, request, url_for
 
 from app.api import api
-from app.models import User, Todo, TodoList
 from app.decorators import admin_required
+from app.models import Todo, TodoList, User
 
 
 @api.route("/")

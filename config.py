@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -9,7 +7,7 @@ def create_sqlite_uri(db_name):
     return "sqlite:///" + os.path.join(BASEDIR, db_name)
 
 
-class Config(object):
+class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "secret key, just for testing"
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True

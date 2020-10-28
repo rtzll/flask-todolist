@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from app import create_app
 
 app = create_app("development")
@@ -8,8 +6,8 @@ app = create_app("development")
 @app.cli.command()
 def test():
     """Runs the unit tests."""
-    import unittest
     import sys
+    import unittest
 
     tests = unittest.TestLoader().discover("tests")
     result = unittest.TextTestRunner(verbosity=2).run(tests)

@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-
 import random
-import forgery_py
-
 from datetime import datetime
 
+import forgery_py
+
 from app import db
-from app.models import User, Todo, TodoList
+from app.models import Todo, TodoList, User
 
 
-class FakeGenerator(object):
+class FakeGenerator:
     def __init__(self):
         # in case the tables haven't been created already
         db.drop_all()

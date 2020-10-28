@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from config import config
-
 
 db = SQLAlchemy()
 migrate = Migrate()

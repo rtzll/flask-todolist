@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from flask import render_template, redirect, request, url_for
+from flask import redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app.main import main

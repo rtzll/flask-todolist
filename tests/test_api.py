@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
 import json
 import unittest
 
 from flask import url_for
-from flask_testing import TestCase
 from flask_login import login_user
+from flask_testing import TestCase
 
 from app import create_app, db
-from app.models import User, Todo, TodoList
+from app.models import Todo, TodoList, User
 
 
 class TodolistAPITestCase(TestCase):

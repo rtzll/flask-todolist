@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
+from flask import render_template, request
 
-from flask import request, render_template
-
-from . import utils
 from .. import api
+from . import utils
 
 
 @utils.app_errorhandler(403)

@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import re
 from datetime import datetime
 
-from sqlalchemy.orm import synonym
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 from flask_login import UserMixin
+from sqlalchemy.orm import synonym
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, login_manager
 
@@ -63,12 +61,12 @@ class User(UserMixin, db.Model, BaseModel):
     todolists = db.relationship("TodoList", backref="user", lazy="dynamic")
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __repr__(self):
         if self.is_admin:
-            return "<Admin {0}>".format(self.username)
-        return "<User {0}>".format(self.username)
+            return f"<Admin {self.username}>"
+        return f"<User {self.username}>"
 
     @property
     def username(self):
@@ -78,7 +76,7 @@ class User(UserMixin, db.Model, BaseModel):
     def username(self, username):
         is_valid_length = check_length(username, 64)
         if not is_valid_length or not bool(USERNAME_REGEX.match(username)):
-            raise ValueError("{} is not a valid username".format(username))
+            raise ValueError(f"{username} is not a valid username")
         self._username = username
 
     username = synonym("_username", descriptor=username)
@@ -90,7 +88,7 @@ class User(UserMixin, db.Model, BaseModel):
     @email.setter
     def email(self, email):
         if not check_length(email, 64) or not bool(EMAIL_REGEX.match(email)):
-            raise ValueError("{} is not a valid email address".format(email))
+            raise ValueError(f"{email} is not a valid email address")
         self._email = email
 
     email = synonym("_email", descriptor=email)
@@ -152,7 +150,7 @@ class TodoList(db.Model, BaseModel):
         self.created_at = created_at or datetime.utcnow()
 
     def __repr__(self):
-        return "<Todolist: {0}>".format(self.title)
+        return f"<Todolist: {self.title}>"
 
     @property
     def title(self):
@@ -161,7 +159,7 @@ class TodoList(db.Model, BaseModel):
     @title.setter
     def title(self, title):
         if not check_length(title, 128):
-            raise ValueError("{} is not a valid title".format(title))
+            raise ValueError(f"{title} is not a valid title")
         self._title = title
 
     title = synonym("_title", descriptor=title)
@@ -216,7 +214,7 @@ class Todo(db.Model, BaseModel):
         self.created_at = created_at or datetime.utcnow()
 
     def __repr__(self):
-        return "<{0} Todo: {1} by {2}>".format(
+        return "<{} Todo: {} by {}>".format(
             self.status, self.description, self.creator or "None"
         )
 
