@@ -4,6 +4,12 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def create_sqlite_uri(db_name):
+    """
+    Create sqlite database uri.
+
+    Args:
+        db_name: (str): write your description
+    """
     return "sqlite:///" + os.path.join(BASEDIR, db_name)
 
 
@@ -15,6 +21,12 @@ class Config:
 
     @staticmethod
     def init_app(app):
+        """
+        Flask application.
+
+        Args:
+            app: (todo): write your description
+        """
         pass
 
 

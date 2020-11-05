@@ -60,6 +60,14 @@ def run_migrations_online():
     # when there are no changes to the schema
     # reference: http://alembic.readthedocs.org/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
+        """
+        Process the revision directories.
+
+        Args:
+            context: (todo): write your description
+            revision: (str): write your description
+            directives: (str): write your description
+        """
         if getattr(config.cmd_opts, "autogenerate", False):
             script = directives[0]
             if script.upgrade_ops.is_empty():

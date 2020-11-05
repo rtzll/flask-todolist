@@ -48,5 +48,11 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
 
 @utils.app_template_filter("in_seconds")
 def in_seconds(dt):
+    """
+    Return the number of seconds since the given datetime.
+
+    Args:
+        dt: (todo): write your description
+    """
     # return int((dt - datetime(1970, 1, 1)).total_seconds())
     return int(time.mktime(dt.timetuple()))

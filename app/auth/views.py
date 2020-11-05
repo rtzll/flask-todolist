@@ -8,6 +8,11 @@ from app.models import User
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    View function to log a user.
+
+    Args:
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user_by_email = User.query.filter_by(email=form.email_or_username.data).first()
@@ -29,12 +34,22 @@ def login():
 
 @auth.route("/logout")
 def logout():
+    """
+    Logout of the user.
+
+    Args:
+    """
     logout_user()
     return redirect(url_for("main.index"))
 
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    View function.
+
+    Args:
+    """
     form = RegistrationForm()
     if form.validate_on_submit():
         User(

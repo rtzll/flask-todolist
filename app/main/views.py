@@ -8,6 +8,11 @@ from app.models import Todo, TodoList
 
 @main.route("/")
 def index():
+    """
+    Render the page.
+
+    Args:
+    """
     form = TodoForm()
     if form.validate_on_submit():
         return redirect(url_for("main.new_todolist"))
@@ -17,6 +22,11 @@ def index():
 @main.route("/todolists/", methods=["GET", "POST"])
 @login_required
 def todolist_overview():
+    """
+    This view.
+
+    Args:
+    """
     form = TodoListForm()
     if form.validate_on_submit():
         return redirect(url_for("main.add_todolist"))
@@ -24,11 +34,22 @@ def todolist_overview():
 
 
 def _get_user():
+    """
+    Returns the user object for the user.
+
+    Args:
+    """
     return current_user.username if current_user.is_authenticated else None
 
 
 @main.route("/todolist/<int:id>/", methods=["GET", "POST"])
 def todolist(id):
+    """
+    Todo
+
+    Args:
+        id: (int): write your description
+    """
     todolist = TodoList.query.filter_by(id=id).first_or_404()
     form = TodoForm()
     if form.validate_on_submit():
@@ -39,6 +60,11 @@ def todolist(id):
 
 @main.route("/todolist/new/", methods=["POST"])
 def new_todolist():
+    """
+    Create a new todolist.
+
+    Args:
+    """
     form = TodoForm(todo=request.form.get("todo"))
     if form.validate():
         todolist = TodoList(creator=_get_user()).save()
@@ -49,6 +75,11 @@ def new_todolist():
 
 @main.route("/todolist/add/", methods=["POST"])
 def add_todolist():
+    """
+    Add a new list.
+
+    Args:
+    """
     form = TodoListForm(todo=request.form.get("title"))
     if form.validate():
         todolist = TodoList(form.title.data, _get_user()).save()
