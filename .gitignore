@@ -15,5 +15,6 @@ dist
 results
 venv
 
-# editor (vim + plugin)
+# editor
 .ropeproject
+.vscode
