@@ -1,21 +1,10 @@
-version: '2'
+version: "2"
 services:
   todolist:
     container_name: todolist
     image: todolist
-    # restart: always
+    build: .
     env_file: .env
-    command: gunicorn todolist:app -w 2 -b :8000
-    volumes:
-      - .:/code
+    command: sh -c "flask db upgrade && gunicorn todolist:app -w 2 -b :8000"
     ports:
       - "8000:8000"
-
-  migration:
-    container_name: migration
-    build: .
-    image: todolist
-    env_file: .env
-    command: flask db upgrade
-    depends_on:
-      - todolist
