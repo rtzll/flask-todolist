@@ -1,6 +1,6 @@
-Flask==1.1.2
+Flask==2.0.0
 Flask-Login==0.5.0
 Flask-SQLAlchemy==2.5.1
-Flask-Migrate==2.7.0
+Flask-Migrate==3.0.0
 Flask-WTF==0.14.3
 email_validator==1.1.2
