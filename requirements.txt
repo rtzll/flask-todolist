@@ -1,4 +1,4 @@
-Flask==2.1.2
+Flask==2.3.2
 Flask-Login==0.6.2
 python-dotenv==0.20.0
 Flask-SQLAlchemy==2.5.1
