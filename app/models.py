@@ -103,7 +103,7 @@ class User(UserMixin, db.Model, BaseModel):
             raise ValueError("no password given")
 
         hashed_password = generate_password_hash(password)
-        if not check_length(hashed_password, 162):
+        if len(hashed_password) > 256:
             raise ValueError("not a valid password, hash is too long")
         self.password_hash = hashed_password
 
