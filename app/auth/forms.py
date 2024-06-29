@@ -34,7 +34,9 @@ class RegistrationForm(FlaskForm):
             EqualTo("password_confirmation", message="Passwords must match."),
         ],
     )
-    password_confirmation = PasswordField("Confirm password", validators=[InputRequired()])
+    password_confirmation = PasswordField(
+        "Confirm password", validators=[InputRequired()]
+    )
     submit = SubmitField("Register")
 
     def validate_email(self, field):
