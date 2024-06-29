@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, UTC
 
 from flask import url_for
 from flask_login import UserMixin
@@ -103,7 +103,7 @@ class User(UserMixin, db.Model, BaseModel):
             raise ValueError("no password given")
 
         hashed_password = generate_password_hash(password)
-        if not check_length(hashed_password, 128):
+        if not check_length(hashed_password, 162):
             raise ValueError("not a valid password, hash is too long")
         self.password_hash = hashed_password
 
@@ -111,7 +111,7 @@ class User(UserMixin, db.Model, BaseModel):
         return check_password_hash(self.password_hash, password)
 
     def seen(self):
-        self.last_seen = datetime.utcnow()
+        self.last_seen = datetime.now(UTC)
         return self.save()
 
     def to_dict(self):
@@ -147,7 +147,7 @@ class TodoList(db.Model, BaseModel):
     def __init__(self, title=None, creator=None, created_at=None):
         self.title = title or "untitled"
         self.creator = creator
-        self.created_at = created_at or datetime.utcnow()
+        self.created_at = created_at or datetime.now(UTC)
 
     def __repr__(self):
         return f"<Todolist: {self.title}>"
@@ -211,7 +211,7 @@ class Todo(db.Model, BaseModel):
         self.description = description
         self.todolist_id = todolist_id
         self.creator = creator
-        self.created_at = created_at or datetime.utcnow()
+        self.created_at = created_at or datetime.now(UTC)
 
     def __repr__(self):
         return "<{} Todo: {} by {}>".format(
@@ -224,7 +224,7 @@ class Todo(db.Model, BaseModel):
 
     def finished(self):
         self.is_finished = True
-        self.finished_at = datetime.utcnow()
+        self.finished_at = datetime.now(UTC)
         self.save()
 
     def reopen(self):

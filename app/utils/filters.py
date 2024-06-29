@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import datetime, UTC
 
 from . import utils
 
@@ -14,7 +14,7 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
     3 days ago, 5 hours from now etc.
     """
 
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     # remove tzinfo
     dt = dt.replace(tzinfo=None)
     if now > dt:

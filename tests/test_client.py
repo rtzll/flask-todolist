@@ -16,6 +16,10 @@ class TodolistClientTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+    
+    def assert_302(self, response, location):
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.location, location)
 
     def register_user(self, name):
         response = self.client.post(
@@ -41,9 +45,9 @@ class TodolistClientTestCase(TestCase):
 
     def register_and_login(self, name):
         response = self.register_user(name)
-        self.assert_redirects(response, "/auth/login")
+        self.assert_302(response, "/auth/login")
         response = self.login_user(name)
-        self.assert_redirects(response, "/")
+        self.assert_302(response, "/")
 
     def test_home_page(self):
         response = self.client.get(url_for("main.index"))
@@ -79,12 +83,12 @@ class TodolistClientTestCase(TestCase):
         # register a new account
         response = self.register_user(self.username_alice)
         # expect redirect to login
-        self.assert_redirects(response, "/auth/login")
+        self.assert_302(response, "/auth/login")
 
         # login with the new account
         response = self.login_user(self.username_alice)
         # expect redirect to index
-        self.assert_redirects(response, "/")
+        self.assert_302(response, "/")
 
         # logout
         response = self.client.get(url_for("auth.logout"), follow_redirects=True)
