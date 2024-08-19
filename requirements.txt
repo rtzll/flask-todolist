@@ -49,7 +49,7 @@ markupsafe==2.1.5
     #   wtforms
 python-dotenv==1.0.1
     # via -r requirements.in
-sqlalchemy==2.0.31
+sqlalchemy==2.0.32
     # via
     #   alembic
     #   flask-sqlalchemy
