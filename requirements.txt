@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.13.2
+alembic==1.13.3
     # via flask-migrate
 blinker==1.8.2
     # via flask
@@ -31,7 +31,7 @@ flask-sqlalchemy==3.1.1
     #   flask-migrate
 flask-wtf==1.2.1
     # via -r requirements.in
-idna==3.7
+idna==3.10
     # via email-validator
 itsdangerous==2.2.0
     # via
@@ -49,7 +49,7 @@ markupsafe==2.1.5
     #   wtforms
 python-dotenv==1.0.1
     # via -r requirements.in
-sqlalchemy==2.0.32
+sqlalchemy==2.0.35
     # via
     #   alembic
     #   flask-sqlalchemy
@@ -57,7 +57,7 @@ typing-extensions==4.12.2
     # via
     #   alembic
     #   sqlalchemy
-werkzeug==3.0.3
+werkzeug==3.0.4
     # via
     #   flask
     #   flask-login
