@@ -31,6 +31,8 @@ flask-sqlalchemy==3.1.1
     #   flask-migrate
 flask-wtf==1.2.1
     # via -r requirements.in
+greenlet==3.1.1
+    # via sqlalchemy
 idna==3.10
     # via email-validator
 itsdangerous==2.2.0
@@ -57,7 +59,7 @@ typing-extensions==4.12.2
     # via
     #   alembic
     #   sqlalchemy
-werkzeug==3.0.4
+werkzeug==3.0.6
     # via
     #   flask
     #   flask-login
