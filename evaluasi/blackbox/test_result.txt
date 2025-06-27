@@ -1,0 +1,24 @@
+❌ Test Failed: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[name="email_or_username"]"}
+  (Session info: chrome=138.0.7204.49); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+#0 0x6424c0e1e26a <unknown>
+#1 0x6424c08c8ab0 <unknown>
+#2 0x6424c091a6f0 <unknown>
+#3 0x6424c091a8e1 <unknown>
+#4 0x6424c0968b94 <unknown>
+#5 0x6424c09401cd <unknown>
+#6 0x6424c0965fee <unknown>
+#7 0x6424c093ff73 <unknown>
+#8 0x6424c090caeb <unknown>
+#9 0x6424c090d751 <unknown>
+#10 0x6424c0de2b7b <unknown>
+#11 0x6424c0de6959 <unknown>
+#12 0x6424c0dc9959 <unknown>
+#13 0x6424c0de7518 <unknown>
+#14 0x6424c0dae10f <unknown>
+#15 0x6424c0e0b918 <unknown>
+#16 0x6424c0e0baf6 <unknown>
+#17 0x6424c0e1d586 <unknown>
+#18 0x7b5010ceaaa4 <unknown>
+#19 0x7b5010d77c3c <unknown>
+
