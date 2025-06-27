@@ -1,0 +1,27 @@
+@startuml
+actor User
+boundary API_Server
+control TodoController
+entity UserModel
+entity TodoListModel
+entity TodoModel
+database Database
+
+User -> API_Server : POST /user/{username}/todolist/{id}/\n{description}
+API_Server -> TodoController : add_user_todolist_todo()
+TodoController -> Database : get User by username
+Database --> TodoController : User object
+TodoController -> Database : get TodoList by id
+Database --> TodoController : TodoList object
+
+alt User dan TodoList valid
+    TodoController -> TodoModel : create Todo object
+    TodoModel -> Database : INSERT INTO todos ...
+    Database --> TodoModel : success
+    TodoController --> API_Server : return todo data (201)
+    API_Server --> User : response JSON
+else error
+    TodoController --> API_Server : abort(400)
+    API_Server --> User : error message
+end
+@enduml

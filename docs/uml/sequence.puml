@@ -1,0 +1,35 @@
+@startuml
+actor User
+boundary WebApp
+control LoginForm
+control AuthController
+entity UserModel
+database Database
+
+User -> WebApp : akses /login (GET)
+WebApp -> LoginForm : tampilkan form
+
+User -> WebApp : submit form (POST: username/email + password)
+WebApp -> AuthController : login()
+AuthController -> LoginForm : validate_on_submit()
+LoginForm --> AuthController : form data valid
+
+AuthController -> Database : query user by email
+Database --> AuthController : user_by_email
+AuthController -> UserModel : verify_password()
+
+alt password benar
+    AuthController -> flask_login : login_user()
+    WebApp -> User : redirect to /index
+else coba username
+    AuthController -> Database : query user by username
+    Database --> AuthController : user_by_name
+    AuthController -> UserModel : verify_password()
+    alt password benar
+        AuthController -> flask_login : login_user()
+        WebApp -> User : redirect to /index
+    else
+        WebApp -> User : kembali ke login.html
+    end
+end
+@enduml

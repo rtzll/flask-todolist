@@ -30,7 +30,7 @@ def login():
 @auth.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("main.index"))
+    return redirect(url_for("main.index")) #redirect ke halaman utama
 
 
 @auth.route("/register", methods=["GET", "POST"])
