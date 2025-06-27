@@ -1,0 +1,7 @@
+Proyek asli menggunakan lisensi MIT yang bersifat permisif.
+
+Seluruh perubahan yang dilakukan — termasuk modifikasi antarmuka, penambahan fitur, pengujian black-box, dan penerapan continuous integration — kompatibel dengan lisensi ini.
+
+Lisensi MIT mengizinkan penggunaan, modifikasi, dan distribusi ulang selama mencantumkan lisensi dan pemilik asli. Oleh karena itu, semua pengubahan yang dilakukan legal dan sah.
+
+ya pengubahan saya telah kompatibel
