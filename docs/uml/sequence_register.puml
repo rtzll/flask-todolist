@@ -1,0 +1,15 @@
+@startuml register_sequence
+
+actor User
+participant "Register Page" as Page
+participant "Flask App (/auth.register)" as RegisterRoute
+participant "User Model" as UserModel
+database "Database" as DB
+
+User -> Page : Masukkan username, email, password
+Page -> RegisterRoute : POST /auth/register
+RegisterRoute -> DB : Simpan user baru
+DB --> RegisterRoute : Konfirmasi
+RegisterRoute -> Page : Redirect ke /auth/login
+
+@enduml

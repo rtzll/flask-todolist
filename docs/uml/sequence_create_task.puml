@@ -1,0 +1,16 @@
+@startuml create_task_sequence
+
+actor User
+participant "Task Form Page" as Page
+participant "Flask App (/tasks)" as Route
+participant "Task Model" as Model
+database "Database" as DB
+
+User -> Page : Isi form (title)
+Page -> Route : POST /tasks
+Route -> Model : Buat Task(title, user_id)
+Model -> DB : INSERT INTO tasks
+DB --> Model : Commit berhasil
+Route -> Page : Redirect ke /todolist_overview
+
+@enduml

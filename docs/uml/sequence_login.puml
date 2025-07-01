@@ -1,0 +1,20 @@
+@startuml login_sequence
+
+actor User
+participant "Login Page" as Page
+participant "Flask App (/auth.login)" as LoginRoute
+participant "User Model" as UserModel
+database "Database" as DB
+
+User -> Page : Masukkan email & password
+Page -> LoginRoute : POST /auth/login
+LoginRoute -> DB : Query user by email
+DB --> LoginRoute : User record
+LoginRoute -> LoginRoute : Validasi password
+alt Sukses
+    LoginRoute -> Page : Redirect ke "/"
+else Gagal
+    LoginRoute -> Page : Tampilkan pesan error
+end
+
+@enduml
