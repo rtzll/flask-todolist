@@ -1,8 +1,5 @@
 # Flask-Todolist
 
-[![License][license-image]][license-url]
-[![Build Status][travis-image]][travis-url]
-
 Flask-Todolist is a simple To Do List web application with the most basic
 features of most web apps, i.e. accounts/login, API and (somewhat) interactive
 UI.
@@ -62,9 +59,3 @@ Login               | [Flask-Login](https://flask-login.readthedocs.org/en/lates
 Testing             | [Flask-Testing](https://pythonhosted.org/Flask-Testing/)
 
 I tried out some more, but for the scope of this endeavor the above mentioned extensions sufficed.
-
-[license-url]: https://github.com/rtzll/flask-todolist/blob/master/LICENSE
-[license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-
-[travis-url]: https://travis-ci.org/rtzll/flask-todolist
-[travis-image]: https://travis-ci.org/rtzll/flask-todolist.svg?branch=master
