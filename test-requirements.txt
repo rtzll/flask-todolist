@@ -1,3 +1,0 @@
--r requirements.txt
-Flask-Testing==0.8.1
-ForgeryPy==0.1

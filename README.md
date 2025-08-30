@@ -26,16 +26,18 @@ And the application will run on http://localhost:8000/
 use for deployment, instead of just running `flask run`.)
 
 ### Manually
-If you prefer to run it directly on your local machine, I suggest using
-[venv](https://docs.python.org/3/library/venv.html).
+If you prefer to run it directly on your local machine, you can use [uv](https://docs.astral.sh/uv/) for dependency management.
 
-    pip install -r requirements.txt
-    FLASK_APP=todolist.py flask run
+    uv sync
+    FLASK_APP=todolist.py uv run flask run
 
 To add some 'play' data you can run
 
-    pip install -r test-requirements.txt
-    flask fill-db
+    uv run flask fill-db
+
+To run the test suite:
+
+    uv run python -m unittest discover tests/ -v
 
 Now you can browse the API:
 http://localhost:5000/api/users

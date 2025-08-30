@@ -15,6 +15,9 @@ dist
 results
 venv
 
+# uv
+uv.lock
+
 # editor
 .ropeproject
 .vscode
