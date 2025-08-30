@@ -7,6 +7,6 @@ services:
     env_file: 
       - .env
     command: >
-      sh -c "flask db upgrade && gunicorn todolist:app -w 2 -b :8000"
+      sh -c "uv run flask db upgrade && uv run gunicorn todolist:app -w 2 -b :8000"
     ports:
       - "8000:8000"
