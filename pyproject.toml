@@ -1,7 +1,7 @@
 [project]
 name = "flask-todolist"
 version = "0.1.0"
-description = "Add your description here"
+description = "A simple to-do list web application built with Flask"
 requires-python = ">=3.12"
 dependencies = [
     "email-validator>=2.3.0",
