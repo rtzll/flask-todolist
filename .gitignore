@@ -1,23 +1,16 @@
-# python related files
+# Python
 *.pyc
 *.pyo
 *.egg
 *.egg-info
 __pycache__
-
-# sqlite db
-*.db
-
-# test, build, etc
 build
-docs/_build
 dist
-results
 venv
 
-# uv
-uv.lock
+# Database
+*.db
 
-# editor
+# Editor
 .ropeproject
 .vscode
