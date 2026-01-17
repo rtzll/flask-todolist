@@ -102,4 +102,7 @@ def test_empty_todo_stays_on_todolist_view(client, url_for, templates):
     )
     assert response.status_code == 200
     assert "todolist.html" in templates
-    assert b"Todos should neither be empty nor be longer than 128 characters." in response.data
+    assert (
+        b"Todos should neither be empty nor be longer than 128 characters."
+        in response.data
+    )

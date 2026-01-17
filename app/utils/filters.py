@@ -35,7 +35,6 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
     )
 
     for period, singular, plural in periods:
-
         if period:
             return "%d %s %s" % (
                 period,

@@ -35,7 +35,9 @@ def add_todolist(title, username=None):
 
 def add_todo(description, todolist_id, username=None):
     todolist = TodoList.query.filter_by(id=todolist_id).first()
-    todo = Todo(description=description, todolist_id=todolist.id, creator=username).save()
+    todo = Todo(
+        description=description, todolist_id=todolist.id, creator=username
+    ).save()
     return Todo.query.filter_by(id=todo.id).first()
 
 
@@ -68,6 +70,7 @@ def login_user(client, url_for, username):
         url_for("auth.login"),
         data={"email_or_username": username, "password": PASSWORD},
     )
+
 
 def assert_404_response(response):
     assert response.status_code == 404
@@ -410,7 +413,9 @@ def test_add_todolist_todo(client, url_for):
         ),
     )
     assert post_response.status_code == 201
-    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    response = client.get(
+        url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
+    )
     assert response.status_code == 200
     json_response = json.loads(response.data.decode("utf-8"))
 
@@ -537,7 +542,9 @@ def test_get_todolist_todos(client, url_for):
     add_todo("first", new_todolist.id)
     add_todo("second", new_todolist.id)
 
-    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    response = client.get(
+        url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
+    )
     assert response.status_code == 200
 
     json_response = json.loads(response.data.decode("utf-8"))
@@ -557,7 +564,9 @@ def test_get_todolist_todos_when_todolist_does_not_exist(client, url_for):
 def test_get_todolist_todos_when_todolist_has_no_todos(client, url_for):
     todolist_title = "new todolist"
     new_todolist = add_todolist(todolist_title)
-    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    response = client.get(
+        url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
+    )
     assert response.status_code == 200
 
     todos = json.loads(response.data.decode("utf-8"))["todos"]

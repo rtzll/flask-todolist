@@ -70,7 +70,9 @@ def test_adding_new_user(app):
 
 
 def test_adding_new_todo_without_user(app):
-    todo = Todo(description=READ_TODO_DESCRIPTION, todolist_id=TodoList().save().id).save()
+    todo = Todo(
+        description=READ_TODO_DESCRIPTION, todolist_id=TodoList().save().id
+    ).save()
     todo_from_db = Todo.query.filter_by(id=todo.id).first()
 
     assert todo_from_db.description == READ_TODO_DESCRIPTION
