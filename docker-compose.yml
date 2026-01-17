@@ -4,9 +4,18 @@ services:
     image: todolist
     build: 
       context: .
+      target: base
     env_file: 
       - .env
     command: >
       sh -c "uv run flask db upgrade && uv run gunicorn todolist:app -w 2 -b :8000"
     ports:
       - "8000:8000"
+  tests:
+    container_name: todolist-tests
+    image: todolist-dev
+    build:
+      context: .
+      target: dev
+    command: >
+      sh -c "uv run pytest -v"
