@@ -1,13 +1,11 @@
-FROM python:3.12-alpine
-
-RUN apk add build-base
+FROM python:3.14-alpine AS base
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-ADD . /code
 WORKDIR /code
 
-# Install dependencies using uv
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
-RUN uv pip install gunicorn
+
+COPY . .
