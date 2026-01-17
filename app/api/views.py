@@ -3,6 +3,7 @@ from flask import abort, request, url_for
 from app.api import api
 from app.decorators import admin_required
 from app.models import Todo, TodoList, User
+from app import db
 
 
 @api.route("/")
@@ -47,7 +48,7 @@ def get_user_todolists(username):
 @api.route("/user/<string:username>/todolist/<int:todolist_id>/")
 def get_user_todolist(username, todolist_id):
     user = User.query.filter_by(username=username).first()
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     if not user or username != todolist.creator:
         abort(404)
     return todolist.to_dict()
@@ -73,7 +74,7 @@ def get_todolists():
 
 @api.route("/todolist/<int:todolist_id>/")
 def get_todolist(todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     return todolist.to_dict()
 
 
@@ -88,13 +89,13 @@ def add_todolist():
 
 @api.route("/todolist/<int:todolist_id>/todos/")
 def get_todolist_todos(todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     return {"todos": [todo.to_dict() for todo in todolist.todos]}
 
 
 @api.route("/user/<string:username>/todolist/<int:todolist_id>/todos/")
 def get_user_todolist_todos(username, todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     if todolist.creator != username:
         abort(404)
     return {"todos": [todo.to_dict() for todo in todolist.todos]}
@@ -103,7 +104,7 @@ def get_user_todolist_todos(username, todolist_id):
 @api.route("/user/<string:username>/todolist/<int:todolist_id>/", methods=["POST"])
 def add_user_todolist_todo(username, todolist_id):
     user = User.query.filter_by(username=username).first_or_404()
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     try:
         todo = Todo(
             description=request.json.get("description"),
@@ -117,7 +118,7 @@ def add_user_todolist_todo(username, todolist_id):
 
 @api.route("/todolist/<int:todolist_id>/", methods=["POST"])
 def add_todolist_todo(todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     try:
         todo = Todo(
             description=request.json.get("description"), todolist_id=todolist.id
@@ -129,13 +130,13 @@ def add_todolist_todo(todolist_id):
 
 @api.route("/todo/<int:todo_id>/")
 def get_todo(todo_id):
-    todo = Todo.query.get_or_404(todo_id)
+    todo = db.get_or_404(Todo, todo_id)
     return todo.to_dict()
 
 
 @api.route("/todo/<int:todo_id>/", methods=["PUT"])
 def update_todo_status(todo_id):
-    todo = Todo.query.get_or_404(todo_id)
+    todo = db.get_or_404(Todo, todo_id)
     try:
         if request.json.get("is_finished"):
             todo.finished()
@@ -148,7 +149,7 @@ def update_todo_status(todo_id):
 
 @api.route("/todolist/<int:todolist_id>/", methods=["PUT"])
 def change_todolist_title(todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     try:
         todolist.title = request.json.get("title")
         todolist.save()
@@ -160,7 +161,7 @@ def change_todolist_title(todolist_id):
 @api.route("/user/<string:username>/", methods=["DELETE"])
 @admin_required
 def delete_user(username):
-    user = User.query.get_or_404(username=username)
+    user = User.query.filter_by(username=username).first_or_404()
     try:
         if username == request.json.get("username"):
             user.delete()
@@ -174,7 +175,7 @@ def delete_user(username):
 @api.route("/todolist/<int:todolist_id>/", methods=["DELETE"])
 @admin_required
 def delete_todolist(todolist_id):
-    todolist = TodoList.query.get_or_404(todolist_id)
+    todolist = db.get_or_404(TodoList, todolist_id)
     try:
         if todolist_id == request.json.get("todolist_id"):
             todolist.delete()
@@ -188,7 +189,7 @@ def delete_todolist(todolist_id):
 @api.route("/todo/<int:todo_id>/", methods=["DELETE"])
 @admin_required
 def delete_todo(todo_id):
-    todo = Todo.query.get_or_404(todo_id)
+    todo = db.get_or_404(Todo, todo_id)
     try:
         if todo_id == request.json.get("todo_id"):
             todo.delete()
