@@ -83,3 +83,23 @@ def test_register_and_login_and_logout(client, url_for, templates):
     response = client.get(url_for("auth.logout"), follow_redirects=True)
     assert response.status_code == 200
     assert "index.html" in templates
+
+
+def test_empty_todo_stays_on_todolist_view(client, url_for, templates):
+    register_and_login(client, url_for, USERNAME_ALICE)
+    response = client.post(
+        url_for("main.new_todolist"),
+        data={"todo": "initial todo"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert "todolist.html" in templates
+
+    response = client.post(
+        url_for("main.todolist", id=1),
+        data={"todo": ""},
+        follow_redirects=False,
+    )
+    assert response.status_code == 200
+    assert "todolist.html" in templates
+    assert b"Todos should neither be empty nor be longer than 128 characters." in response.data
