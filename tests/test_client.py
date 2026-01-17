@@ -1,97 +1,85 @@
-from flask import url_for
-from flask_testing import TestCase
-
-from app import create_app, db
 from app.models import User
 
 
-class TodolistClientTestCase(TestCase):
-    def create_app(self):
-        return create_app("testing")
+USERNAME_ALICE = "alice"
+PASSWORD = "correcthorsebatterystaple"
 
-    def setUp(self):
-        db.create_all()
-        self.username_alice = "alice"
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+def assert_redirect(response, location):
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith(location)
 
-    def assert_302(self, response, location):
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.location, location)
 
-    def register_user(self, name):
-        response = self.client.post(
-            url_for("auth.register"),
-            data={
-                "username": name,
-                "email": name + "@example.com",
-                "password": "correcthorsebatterystaple",
-                "password_confirmation": "correcthorsebatterystaple",
-            },
-        )
-        return response
+def register_user(client, url_for, name):
+    return client.post(
+        url_for("auth.register"),
+        data={
+            "username": name,
+            "email": name + "@example.com",
+            "password": PASSWORD,
+            "password_confirmation": PASSWORD,
+        },
+    )
 
-    def login_user(self, name):
-        response = self.client.post(
-            url_for("auth.login"),
-            data={
-                "email_or_username": name + "@example.com",
-                "password": "correcthorsebatterystaple",
-            },
-        )
-        return response
 
-    def register_and_login(self, name):
-        response = self.register_user(name)
-        self.assert_302(response, "/auth/login")
-        response = self.login_user(name)
-        self.assert_302(response, "/")
+def login_user(client, url_for, name):
+    return client.post(
+        url_for("auth.login"),
+        data={
+            "email_or_username": name + "@example.com",
+            "password": PASSWORD,
+        },
+    )
 
-    def test_home_page(self):
-        response = self.client.get(url_for("main.index"))
-        self.assert_200(response)
-        self.assert_template_used("index.html")
 
-    def test_register_page(self):
-        response = self.client.get(url_for("auth.register"))
-        self.assert_200(response)
-        self.assert_template_used("register.html")
+def register_and_login(client, url_for, name):
+    response = register_user(client, url_for, name)
+    assert_redirect(response, "/auth/login")
+    response = login_user(client, url_for, name)
+    assert_redirect(response, "/")
 
-    def test_login_page(self):
-        response = self.client.get(url_for("auth.login"))
-        self.assert_200(response)
-        self.assert_template_used("login.html")
 
-    def test_overview_page(self):
-        self.register_and_login(self.username_alice)
-        response = self.client.get(url_for("main.todolist_overview"))
-        # expect not redirect as user is logged in
-        self.assert_200(response)
-        self.assert_template_used("overview.html")
+def test_home_page(client, url_for, templates):
+    response = client.get(url_for("main.index"))
+    assert response.status_code == 200
+    assert "index.html" in templates
 
-    def test_last_seen_update_after_login(self):
-        self.register_user(self.username_alice)
-        user = User.query.filter_by(username=self.username_alice).first()
-        before = user.last_seen
-        self.login_user(self.username_alice)
-        after = user.last_seen
-        self.assertNotEqual(before, after)
 
-    def test_register_and_login_and_logout(self):
-        # register a new account
-        response = self.register_user(self.username_alice)
-        # expect redirect to login
-        self.assert_302(response, "/auth/login")
+def test_register_page(client, url_for, templates):
+    response = client.get(url_for("auth.register"))
+    assert response.status_code == 200
+    assert "register.html" in templates
 
-        # login with the new account
-        response = self.login_user(self.username_alice)
-        # expect redirect to index
-        self.assert_302(response, "/")
 
-        # logout
-        response = self.client.get(url_for("auth.logout"), follow_redirects=True)
-        # follow redirect to index
-        self.assert_200(response)
-        self.assert_template_used("index.html")
+def test_login_page(client, url_for, templates):
+    response = client.get(url_for("auth.login"))
+    assert response.status_code == 200
+    assert "login.html" in templates
+
+
+def test_overview_page(client, url_for, templates):
+    register_and_login(client, url_for, USERNAME_ALICE)
+    response = client.get(url_for("main.todolist_overview"))
+    assert response.status_code == 200
+    assert "overview.html" in templates
+
+
+def test_last_seen_update_after_login(client, url_for):
+    register_user(client, url_for, USERNAME_ALICE)
+    user = User.query.filter_by(username=USERNAME_ALICE).first()
+    before = user.last_seen
+    login_user(client, url_for, USERNAME_ALICE)
+    after = user.last_seen
+    assert before != after
+
+
+def test_register_and_login_and_logout(client, url_for, templates):
+    response = register_user(client, url_for, USERNAME_ALICE)
+    assert_redirect(response, "/auth/login")
+
+    response = login_user(client, url_for, USERNAME_ALICE)
+    assert_redirect(response, "/")
+
+    response = client.get(url_for("auth.logout"), follow_redirects=True)
+    assert response.status_code == 200
+    assert "index.html" in templates

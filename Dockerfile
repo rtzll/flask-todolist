@@ -9,3 +9,6 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 COPY . .
+
+FROM base AS dev
+RUN uv sync --frozen --dev

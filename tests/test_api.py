@@ -1,796 +1,803 @@
 import json
-import unittest
 
-from flask import url_for
-from flask_login import login_user
-from flask_testing import TestCase
+import pytest
 
-from app import create_app, db
 from app.models import Todo, TodoList, User
 
 
-class TodolistAPITestCase(TestCase):
-    def create_app(self):
-        return create_app("testing")
+USERNAME_ALICE = "alice"
+PASSWORD = "correcthorsebatterystaple"
 
-    def setUp(self):
-        db.create_all()
-        self.username_alice = "alice"
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+def setup_new_user(username):
+    return {
+        "username": username,
+        "email": username + "@example.com",
+        "password": PASSWORD,
+    }
 
-    def assert404Response(self, response):
-        self.assert_404(response)
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["error"], "Not found")
 
-    def assert400Response(self, response):
-        self.assert_400(response)
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["error"], "Bad Request")
+def get_headers():
+    return {"Accept": "application/json", "Content-Type": "application/json"}
 
-    @staticmethod
-    def setup_new_user(username):
-        user_data = {
-            "username": username,
-            "email": username + "@example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        return user_data
 
-    @staticmethod
-    def get_headers():
-        return {"Accept": "application/json", "Content-Type": "application/json"}
+def add_user(username):
+    user_data = setup_new_user(username)
+    User.from_dict(user_data)
+    return User.query.filter_by(username=username).first()
 
-    def add_user(self, username):
-        user_data = self.setup_new_user(username)
-        User.from_dict(user_data)
-        return User.query.filter_by(username=username).first()
 
-    @staticmethod
-    def add_todolist(title, username=None):
-        todolist = TodoList(title=title, creator=username).save()
-        return TodoList.query.filter_by(id=todolist.id).first()
+def add_todolist(title, username=None):
+    todolist = TodoList(title=title, creator=username).save()
+    return TodoList.query.filter_by(id=todolist.id).first()
 
-    def add_todo(self, description, todolist_id, username=None):
-        todolist = TodoList.query.filter_by(id=todolist_id).first()
-        todo = Todo(
-            description=description, todolist_id=todolist.id, creator=username
-        ).save()
-        return Todo.query.filter_by(id=todo.id).first()
 
-    def add_user_through_json_post(self, username):
-        user_data = self.setup_new_user(username)
-        return self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+def add_todo(description, todolist_id, username=None):
+    todolist = TodoList.query.filter_by(id=todolist_id).first()
+    todo = Todo(description=description, todolist_id=todolist.id, creator=username).save()
+    return Todo.query.filter_by(id=todo.id).first()
+
+
+def add_user_through_json_post(client, url_for, username):
+    user_data = setup_new_user(username)
+    return client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+
+
+def create_admin():
+    new_user = setup_new_user("admin")
+    new_user["is_admin"] = True
+    return User.from_dict(new_user)
+
+
+def assert_404_response(response):
+    assert response.status_code == 404
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["error"] == "Not found"
+
+
+def assert_400_response(response):
+    assert response.status_code == 400
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["error"] == "Bad Request"
+
+
+def test_main_route(client, url_for):
+    response = client.get(url_for("api.get_routes"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert "users" in json_response
+    assert "todolists" in json_response
+
+
+def test_not_found(client):
+    response = client.get("/api/not/found")
+    assert_404_response(response)
+
+
+def test_add_user(client, url_for):
+    post_response = add_user_through_json_post(client, url_for, USERNAME_ALICE)
+    assert post_response.headers["Content-Type"] == "application/json"
+    assert post_response.status_code == 201
+
+    response = client.get(url_for("api.get_users"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    users = json_response["users"]
+    assert users[0]["username"] == USERNAME_ALICE
+
+
+def test_add_user_only_using_the_username(client, url_for):
+    user_data = {"username": USERNAME_ALICE}
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_only_using_the_username_and_email(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": USERNAME_ALICE + "@example.com",
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_to_long_username(client, url_for):
+    user_data = {
+        "username": 65 * "a",
+        "email": USERNAME_ALICE + "@example.com",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_invalid_username(client, url_for):
+    user_data = {
+        "username": "not a valid username",
+        "email": USERNAME_ALICE + "@example.com",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_without_username(client, url_for):
+    user_data = {
+        "username": "",
+        "email": USERNAME_ALICE + "@example.com",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_invalid_email(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": USERNAME_ALICE + "example.com",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_withoout_email(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": "",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_too_long_email(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": 53 * "a" + "@example.com",
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_without_password(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": USERNAME_ALICE + "@example.com",
+        "password": "",
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_extra_fields(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "email": USERNAME_ALICE + "@example.com",
+        "password": PASSWORD,
+        "extra-field": "will be ignored",
+    }
+    post_response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert post_response.headers["Content-Type"] == "application/json"
+    assert post_response.status_code == 201
+
+    response = client.get(url_for("api.get_users"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["users"][0]["username"] == USERNAME_ALICE
+
+
+def test_add_user_only_using_the_username_and_password(client, url_for):
+    user_data = {
+        "username": USERNAME_ALICE,
+        "password": PASSWORD,
+    }
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(user_data),
+    )
+    assert_400_response(response)
+
+
+def test_add_todolist(client, url_for):
+    post_response = client.post(
+        url_for("api.add_todolist"),
+        headers=get_headers(),
+        data=json.dumps({"title": "todolist"}),
+    )
+    assert post_response.status_code == 201
+
+    response = client.get(url_for("api.get_todolist", todolist_id=1))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["title"] == "todolist"
+
+
+def test_add_todolist_without_title(client, url_for):
+    response = client.post(url_for("api.add_todolist"), headers=get_headers())
+    assert_400_response(response)
+
+
+def test_add_todolist_with_too_long_title(client, url_for):
+    response = client.post(
+        url_for("api.add_todolist"),
+        headers=get_headers(),
+        data=json.dumps({"title": 129 * "t"}),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_todolist(client, url_for):
+    add_user(USERNAME_ALICE)
+    post_response = client.post(
+        url_for("api.add_user_todolist", username=USERNAME_ALICE),
+        headers=get_headers(),
+        data=json.dumps({"title": "todolist"}),
+    )
+    assert post_response.status_code == 201
+
+    response = client.get(url_for("api.get_user_todolists", username=USERNAME_ALICE))
+    assert response.status_code == 200
+    json_response = json.loads(response.data.decode("utf-8"))
+
+    todolists = json_response["todolists"]
+    assert todolists[0]["title"] == "todolist"
+    assert todolists[0]["creator"] == USERNAME_ALICE
+    assert len(todolists) == 1
+
+
+def test_add_user_todolist_when_user_does_not_exist(client, url_for):
+    post_response = client.post(
+        url_for("api.add_user_todolist", username=USERNAME_ALICE),
+        headers=get_headers(),
+        data=json.dumps({"title": "todolist"}),
+    )
+    assert_404_response(post_response)
+
+
+def test_add_user_todolist_todo(client, url_for):
+    todolist_title = "new todolist"
+    add_user(USERNAME_ALICE)
+    new_todolist = add_todolist(todolist_title, USERNAME_ALICE)
+
+    post_response = client.post(
+        url_for(
+            "api.add_user_todolist_todo",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
+        ),
+        headers=get_headers(),
+        data=json.dumps(
+            {
+                "description": "new todo",
+                "creator": USERNAME_ALICE,
+                "todolist_id": new_todolist.id,
+            }
+        ),
+    )
+    assert post_response.status_code == 201
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
         )
+    )
+    assert response.status_code == 200
+    json_response = json.loads(response.data.decode("utf-8"))
 
-    def create_admin(self):
-        new_user = self.setup_new_user("admin")
-        new_user["is_admin"] = True
-        return User.from_dict(new_user)
+    todos = json_response["todos"]
+    assert todos[0]["description"] == "new todo"
+    assert todos[0]["creator"] == USERNAME_ALICE
+    assert len(todos) == 1
 
-    def test_main_route(self):
-        response = self.client.get(url_for("api.get_routes"))
-        self.assert_200(response)
 
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertTrue("users" in json_response)
-        self.assertTrue("todolists" in json_response)
+def test_add_user_todolist_todo_when_todolist_does_not_exist(client, url_for):
+    add_user(USERNAME_ALICE)
+    post_response = client.post(
+        url_for(
+            "api.add_user_todolist_todo",
+            username=USERNAME_ALICE,
+            todolist_id=1,
+        ),
+        headers=get_headers(),
+        data=json.dumps(
+            {
+                "description": "new todo",
+                "creator": USERNAME_ALICE,
+                "todolist_id": 1,
+            }
+        ),
+    )
+    assert_404_response(post_response)
 
-    def test_not_found(self):
-        response = self.client.get("/api/not/found")
-        self.assert404Response(response)
 
-    # test api post calls
-    def test_add_user(self):
-        post_response = self.add_user_through_json_post(self.username_alice)
-        self.assertEqual(post_response.headers["Content-Type"], "application/json")
-        self.assert_status(post_response, 201)
+def test_add_user_todolist_todo_without_todo_data(client, url_for):
+    todolist_title = "new todolist"
+    add_user(USERNAME_ALICE)
+    new_todolist = add_todolist(todolist_title, USERNAME_ALICE)
 
-        response = self.client.get(url_for("api.get_users"))
-        self.assert_200(response)
+    post_response = client.post(
+        url_for(
+            "api.add_user_todolist_todo",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
+        ),
+        headers=get_headers(),
+    )
+    assert_400_response(post_response)
 
-        json_response = json.loads(response.data.decode("utf-8"))
-        users = json_response["users"]
-        self.assertEqual(users[0]["username"], self.username_alice)
 
-    def test_add_user_only_using_the_username(self):
-        user_data = {"username": self.username_alice}
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+def test_add_todolist_todo(client, url_for):
+    new_todolist = TodoList().save()
+
+    post_response = client.post(
+        url_for("api.add_todolist_todo", todolist_id=new_todolist.id),
+        headers=get_headers(),
+        data=json.dumps(
+            {
+                "description": "new todo",
+                "creator": "null",
+                "todolist_id": new_todolist.id,
+            }
+        ),
+    )
+    assert post_response.status_code == 201
+    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    assert response.status_code == 200
+    json_response = json.loads(response.data.decode("utf-8"))
+
+    todos = json_response["todos"]
+    assert todos[0]["description"] == "new todo"
+    assert todos[0]["creator"] is None
+    assert len(todos) == 1
+
+
+def test_add_todolist_todo_when_todolist_does_not_exist(client, url_for):
+    post_response = client.post(
+        url_for("api.add_todolist_todo", todolist_id=1),
+        headers=get_headers(),
+        data=json.dumps(
+            {"description": "new todo", "creator": "null", "todolist_id": 1}
+        ),
+    )
+    assert_404_response(post_response)
+
+
+def test_add_todolist_todo_without_todo_data(client, url_for):
+    new_todolist = TodoList().save()
+    post_response = client.post(
+        url_for("api.add_todolist_todo", todolist_id=new_todolist.id),
+        headers=get_headers(),
+    )
+    assert_400_response(post_response)
+
+
+def test_get_users(client, url_for):
+    add_user(USERNAME_ALICE)
+    response = client.get(url_for("api.get_users"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["users"][0]["username"] == USERNAME_ALICE
+
+
+def test_get_users_when_no_users_exist(client, url_for):
+    response = client.get(url_for("api.get_users"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["users"] == []
+
+
+def test_get_user(client, url_for):
+    add_user(USERNAME_ALICE)
+    response = client.get(url_for("api.get_user", username=USERNAME_ALICE))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["username"] == USERNAME_ALICE
+
+
+def test_get_user_when_user_does_not_exist(client, url_for):
+    response = client.get(url_for("api.get_user", username=USERNAME_ALICE))
+    assert_404_response(response)
+
+
+def test_get_todolists(client, url_for):
+    todolist_title = "new todolist "
+    add_user(USERNAME_ALICE)
+    add_todolist(todolist_title + "1", USERNAME_ALICE)
+    add_todolist(todolist_title + "2", USERNAME_ALICE)
+
+    response = client.get(url_for("api.get_todolists"))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    todolists = json_response["todolists"]
+    assert todolists[0]["title"] == "new todolist 1"
+    assert todolists[0]["creator"] == USERNAME_ALICE
+    assert todolists[1]["title"] == "new todolist 2"
+    assert todolists[1]["creator"] == USERNAME_ALICE
+    assert len(todolists) == 2
+
+
+def test_get_todolists_when_no_todolists_exist(client, url_for):
+    response = client.get(url_for("api.get_todolists"))
+    assert response.status_code == 200
+
+    todolists = json.loads(response.data.decode("utf-8"))["todolists"]
+    assert todolists == []
+
+
+def test_get_user_todolists(client, url_for):
+    todolist_title = "new todolist "
+    add_user(USERNAME_ALICE)
+    add_todolist(todolist_title + "1", USERNAME_ALICE)
+    add_todolist(todolist_title + "2", USERNAME_ALICE)
+
+    response = client.get(url_for("api.get_user_todolists", username=USERNAME_ALICE))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    todolists = json_response["todolists"]
+
+    assert todolists[0]["title"] == "new todolist 1"
+    assert todolists[0]["creator"] == USERNAME_ALICE
+    assert todolists[1]["title"] == "new todolist 2"
+    assert todolists[1]["creator"] == USERNAME_ALICE
+    assert len(todolists) == 2
+
+
+def test_get_user_todolists_when_user_does_not_exist(client, url_for):
+    response = client.get(url_for("api.get_user_todolists", username=USERNAME_ALICE))
+    assert_404_response(response)
+
+
+def test_get_user_todolists_when_user_has_no_todolists(client, url_for):
+    add_user(USERNAME_ALICE)
+    response = client.get(url_for("api.get_user_todolists", username=USERNAME_ALICE))
+    assert response.status_code == 200
+
+    todolists = json.loads(response.data.decode("utf-8"))["todolists"]
+    assert todolists == []
+
+
+def test_get_todolist_todos(client, url_for):
+    todolist_title = "new todolist"
+    new_todolist = add_todolist(todolist_title)
+
+    add_todo("first", new_todolist.id)
+    add_todo("second", new_todolist.id)
+
+    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    todos = json_response["todos"]
+    assert todos[0]["description"] == "first"
+    assert todos[0]["creator"] is None
+    assert todos[1]["description"] == "second"
+    assert todos[1]["creator"] is None
+    assert len(todos) == 2
+
+
+def test_get_todolist_todos_when_todolist_does_not_exist(client, url_for):
+    response = client.get(url_for("api.get_todolist_todos", todolist_id=1))
+    assert_404_response(response)
+
+
+def test_get_todolist_todos_when_todolist_has_no_todos(client, url_for):
+    todolist_title = "new todolist"
+    new_todolist = add_todolist(todolist_title)
+    response = client.get(url_for("api.get_todolist_todos", todolist_id=new_todolist.id))
+    assert response.status_code == 200
+
+    todos = json.loads(response.data.decode("utf-8"))["todos"]
+    assert todos == []
+
+
+def test_get_user_todolist_todos(client, url_for):
+    todolist_title = "new todolist"
+    add_user(USERNAME_ALICE)
+    new_todolist = add_todolist(todolist_title, USERNAME_ALICE)
+
+    add_todo("first", new_todolist.id, USERNAME_ALICE)
+    add_todo("second", new_todolist.id, USERNAME_ALICE)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
         )
-        self.assert400Response(response)
+    )
+    assert response.status_code == 200
 
-    def test_add_user_only_using_the_username_and_email(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": self.username_alice + "@example.com",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+    json_response = json.loads(response.data.decode("utf-8"))
+    todos = json_response["todos"]
+    assert todos[0]["description"] == "first"
+    assert todos[0]["creator"] == USERNAME_ALICE
+    assert todos[1]["description"] == "second"
+    assert todos[1]["creator"] == USERNAME_ALICE
+    assert len(todos) == 2
+
+
+def test_get_user_todolist_todos_when_user_does_not_exist(client, url_for):
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=USERNAME_ALICE,
+            todolist_id=1,
         )
-        self.assert400Response(response)
+    )
+    assert_404_response(response)
 
-    def test_add_user_with_to_long_username(self):
-        user_data = {
-            "username": 65 * "a",
-            "email": self.username_alice + "@example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+
+def test_get_user_todolist_todos_when_todolist_does_not_exist(client, url_for):
+    add_user(USERNAME_ALICE)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=USERNAME_ALICE,
+            todolist_id=1,
         )
-        self.assert400Response(response)
+    )
+    assert_404_response(response)
 
-    def test_add_user_with_invalid_username(self):
-        user_data = {
-            "username": "not a valid username",
-            "email": self.username_alice + "@example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+
+def test_get_user_todolist_todos_when_todolist_has_no_todos(client, url_for):
+    todolist_title = "new todolist"
+    add_user(USERNAME_ALICE)
+    new_todolist = add_todolist(todolist_title, USERNAME_ALICE)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
         )
-        self.assert400Response(response)
+    )
+    assert response.status_code == 200
 
-    def test_add_user_without_username(self):
-        user_data = {
-            "username": "",
-            "email": self.username_alice + "@example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+    todos = json.loads(response.data.decode("utf-8"))["todos"]
+    assert todos == []
+
+
+def test_get_different_user_todolist_todos(client, url_for):
+    first_username = USERNAME_ALICE
+    second_username = "bob"
+    todolist_title = "new todolist"
+    first_user = add_user(first_username)
+    add_user(second_username)
+    new_todolist = add_todolist(todolist_title, second_username)
+
+    add_todo("first", new_todolist.id, second_username)
+    add_todo("second", new_todolist.id, second_username)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username=first_user.username,
+            todolist_id=new_todolist.id,
         )
-        self.assert400Response(response)
+    )
+    assert_404_response(response)
 
-    def test_add_user_with_invalid_email(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": self.username_alice + "example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
+
+def test_get_user_todolist(client, url_for):
+    todolist_title = "new todolist"
+    add_user(USERNAME_ALICE)
+    new_todolist = add_todolist(todolist_title, USERNAME_ALICE)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist",
+            username=USERNAME_ALICE,
+            todolist_id=new_todolist.id,
         )
-        self.assert400Response(response)
-
-    def test_add_user_withoout_email(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": "",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
-        )
-        self.assert400Response(response)
-
-    def test_add_user_with_too_long_email(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": 53 * "a" + "@example.com",
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
-        )
-        self.assert400Response(response)
-
-    def test_add_user_without_password(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": self.username_alice + "@example.com",
-            "password": "",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
-        )
-        self.assert400Response(response)
-
-    def test_add_user_with_extra_fields(self):
-        user_data = {
-            "username": self.username_alice,
-            "email": self.username_alice + "@example.com",
-            "password": "correcthorsebatterystaple",
-            "extra-field": "will be ignored",
-        }
-        post_response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
-        )
-        self.assertEqual(post_response.headers["Content-Type"], "application/json")
-        self.assert_status(post_response, 201)
-
-        response = self.client.get(url_for("api.get_users"))
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["users"][0]["username"], self.username_alice)
-
-    def test_add_user_only_using_the_username_and_password(self):
-        user_data = {
-            "username": self.username_alice,
-            "password": "correcthorsebatterystaple",
-        }
-        response = self.client.post(
-            url_for("api.add_user"),
-            headers=self.get_headers(),
-            data=json.dumps(user_data),
-        )
-        self.assert400Response(response)
-
-    def test_add_todolist(self):
-        post_response = self.client.post(
-            url_for("api.add_todolist"),
-            headers=self.get_headers(),
-            data=json.dumps({"title": "todolist"}),
-        )
-        self.assert_status(post_response, 201)
-
-        # the expected id of the todolist is 1, as it is the first to be added
-        response = self.client.get(url_for("api.get_todolist", todolist_id=1))
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["title"], "todolist")
-
-    def test_add_todolist_without_title(self):
-        response = self.client.post(
-            url_for("api.add_todolist"), headers=self.get_headers()
-        )
-        # opposed to the form, the title is a required argument
-        self.assert400Response(response)
-
-    def test_add_todolist_with_too_long_title(self):
-        response = self.client.post(
-            url_for("api.add_todolist"),
-            headers=self.get_headers(),
-            data=json.dumps({"title": 129 * "t"}),
-        )
-        self.assert400Response(response)
-
-    def test_add_user_todolist(self):
-        self.add_user(self.username_alice)
-        post_response = self.client.post(
-            url_for("api.add_user_todolist", username=self.username_alice),
-            headers=self.get_headers(),
-            data=json.dumps({"title": "todolist"}),
-        )
-        self.assert_status(post_response, 201)
-
-        response = self.client.get(
-            url_for("api.get_user_todolists", username=self.username_alice)
-        )
-        self.assert_200(response)
-        json_response = json.loads(response.data.decode("utf-8"))
-
-        # check title, creator are set correctly and a total of one todolist
-        todolists = json_response["todolists"]
-        self.assertEqual(todolists[0]["title"], "todolist")
-        self.assertEqual(todolists[0]["creator"], self.username_alice)
-        self.assertEqual(len(todolists), 1)
-
-    def test_add_user_todolist_when_user_does_not_exist(self):
-        post_response = self.client.post(
-            url_for("api.add_user_todolist", username=self.username_alice),
-            headers=self.get_headers(),
-            data=json.dumps({"title": "todolist"}),
-        )
-        self.assert404Response(post_response)
-
-    def test_add_user_todolist_todo(self):
-        todolist_title = "new todolist"
-        self.add_user(self.username_alice)
-        new_todolist = self.add_todolist(todolist_title, self.username_alice)
-
-        post_response = self.client.post(
-            url_for(
-                "api.add_user_todolist_todo",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            ),
-            headers=self.get_headers(),
-            data=json.dumps(
-                {
-                    "description": "new todo",
-                    "creator": self.username_alice,
-                    "todolist_id": new_todolist.id,
-                }
-            ),
-        )
-        self.assert_status(post_response, 201)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            )
-        )
-        self.assert_200(response)
-        json_response = json.loads(response.data.decode("utf-8"))
-
-        # check title, creator are set correctly and a total of one todo
-        todos = json_response["todos"]
-        self.assertEqual(todos[0]["description"], "new todo")
-        self.assertEqual(todos[0]["creator"], self.username_alice)
-        self.assertEqual(len(todos), 1)
-
-    def test_add_user_todolist_todo_when_todolist_does_not_exist(self):
-        self.add_user(self.username_alice)
-        post_response = self.client.post(
-            url_for(
-                "api.add_user_todolist_todo",
-                username=self.username_alice,
-                todolist_id=1,
-            ),
-            headers=self.get_headers(),
-            data=json.dumps(
-                {
-                    "description": "new todo",
-                    "creator": self.username_alice,
-                    "todolist_id": 1,
-                }
-            ),
-        )
-        self.assert404Response(post_response)
-
-    def test_add_user_todolist_todo_without_todo_data(self):
-        todolist_title = "new todolist"
-        self.add_user(self.username_alice)
-        new_todolist = self.add_todolist(todolist_title, self.username_alice)
-
-        post_response = self.client.post(
-            url_for(
-                "api.add_user_todolist_todo",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            ),
-            headers=self.get_headers(),
-        )
-        self.assert400Response(post_response)
-
-    def test_add_todolist_todo(self):
-        new_todolist = TodoList().save()  # todolist with default title
-
-        post_response = self.client.post(
-            url_for("api.add_todolist_todo", todolist_id=new_todolist.id),
-            headers=self.get_headers(),
-            data=json.dumps(
-                {
-                    "description": "new todo",
-                    "creator": "null",
-                    "todolist_id": new_todolist.id,
-                }
-            ),
-        )
-        self.assert_status(post_response, 201)
-        response = self.client.get(
-            url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
-        )
-        self.assert_200(response)
-        json_response = json.loads(response.data.decode("utf-8"))
-
-        # check title, creator are set correctly and a total of one todo
-        todos = json_response["todos"]
-        self.assertEqual(todos[0]["description"], "new todo")
-        self.assertEqual(todos[0]["creator"], None)
-        self.assertEqual(len(todos), 1)
-
-    def test_add_todolist_todo_when_todolist_does_not_exist(self):
-        post_response = self.client.post(
-            url_for("api.add_todolist_todo", todolist_id=1),
-            headers=self.get_headers(),
-            data=json.dumps(
-                {"description": "new todo", "creator": "null", "todolist_id": 1}
-            ),
-        )
-        self.assert404Response(post_response)
-
-    def test_add_todolist_todo_without_todo_data(self):
-        new_todolist = TodoList().save()
-        post_response = self.client.post(
-            url_for("api.add_todolist_todo", todolist_id=new_todolist.id),
-            headers=self.get_headers(),
-        )
-        self.assert400Response(post_response)
-
-    # test api get calls
-    def test_get_users(self):
-        self.add_user(self.username_alice)
-        response = self.client.get(url_for("api.get_users"))
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["users"][0]["username"], self.username_alice)
-
-    def test_get_users_when_no_users_exist(self):
-        response = self.client.get(url_for("api.get_users"))
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["users"], [])
-
-    def test_get_user(self):
-        self.add_user(self.username_alice)
-        response = self.client.get(
-            url_for("api.get_user", username=self.username_alice)
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["username"], self.username_alice)
-
-    def test_get_user_when_user_does_not_exist(self):
-        response = self.client.get(
-            url_for("api.get_user", username=self.username_alice)
-        )
-        self.assert404Response(response)
-
-    def test_get_todolists(self):
-        todolist_title = "new todolist "
-        self.add_user(self.username_alice)
-        self.add_todolist(todolist_title + "1", self.username_alice)
-        self.add_todolist(todolist_title + "2", self.username_alice)
-
-        response = self.client.get(url_for("api.get_todolists"))
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        todolists = json_response["todolists"]
-        self.assertEqual(todolists[0]["title"], "new todolist 1")
-        self.assertEqual(todolists[0]["creator"], self.username_alice)
-        self.assertEqual(todolists[1]["title"], "new todolist 2")
-        self.assertEqual(todolists[1]["creator"], self.username_alice)
-        self.assertEqual(len(todolists), 2)
-
-    def test_get_todolists_when_no_todolists_exist(self):
-        response = self.client.get(url_for("api.get_todolists"))
-        self.assert_200(response)
-
-        todolists = json.loads(response.data.decode("utf-8"))["todolists"]
-        self.assertEqual(todolists, [])
-
-    def test_get_user_todolists(self):
-        todolist_title = "new todolist "
-        self.add_user(self.username_alice)
-        self.add_todolist(todolist_title + "1", self.username_alice)
-        self.add_todolist(todolist_title + "2", self.username_alice)
-
-        response = self.client.get(
-            url_for("api.get_user_todolists", username=self.username_alice)
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        todolists = json_response["todolists"]
-
-        self.assertEqual(todolists[0]["title"], "new todolist 1")
-        self.assertEqual(todolists[0]["creator"], self.username_alice)
-        self.assertEqual(todolists[1]["title"], "new todolist 2")
-        self.assertEqual(todolists[1]["creator"], self.username_alice)
-        self.assertEqual(len(todolists), 2)
-
-    def test_get_user_todolists_when_user_does_not_exist(self):
-        response = self.client.get(
-            url_for("api.get_user_todolists", username=self.username_alice)
-        )
-        self.assert404Response(response)
-
-    def test_get_user_todolists_when_user_has_no_todolists(self):
-        self.add_user(self.username_alice)
-        response = self.client.get(
-            url_for("api.get_user_todolists", username=self.username_alice)
-        )
-        self.assert_200(response)
-
-        todolists = json.loads(response.data.decode("utf-8"))["todolists"]
-        self.assertEqual(todolists, [])
-
-    def test_get_todolist_todos(self):
-        todolist_title = "new todolist"
-        new_todolist = self.add_todolist(todolist_title)
-
-        self.add_todo("first", new_todolist.id)
-        self.add_todo("second", new_todolist.id)
-
-        response = self.client.get(
-            url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        todos = json_response["todos"]
-        self.assertEqual(todos[0]["description"], "first")
-        self.assertEqual(todos[0]["creator"], None)
-        self.assertEqual(todos[1]["description"], "second")
-        self.assertEqual(todos[1]["creator"], None)
-        self.assertEqual(len(todos), 2)
-
-    def test_get_todolist_todos_when_todolist_does_not_exist(self):
-        response = self.client.get(url_for("api.get_todolist_todos", todolist_id=1))
-        self.assert404Response(response)
-
-    def test_get_todolist_todos_when_todolist_has_no_todos(self):
-        todolist_title = "new todolist"
-        new_todolist = self.add_todolist(todolist_title)
-        response = self.client.get(
-            url_for("api.get_todolist_todos", todolist_id=new_todolist.id)
-        )
-        self.assert_200(response)
-
-        todos = json.loads(response.data.decode("utf-8"))["todos"]
-        self.assertEqual(todos, [])
-
-    def test_get_user_todolist_todos(self):
-        todolist_title = "new todolist"
-        self.add_user(self.username_alice)
-        new_todolist = self.add_todolist(todolist_title, self.username_alice)
-
-        self.add_todo("first", new_todolist.id, self.username_alice)
-        self.add_todo("second", new_todolist.id, self.username_alice)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            )
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        todos = json_response["todos"]
-        self.assertEqual(todos[0]["description"], "first")
-        self.assertEqual(todos[0]["creator"], self.username_alice)
-        self.assertEqual(todos[1]["description"], "second")
-        self.assertEqual(todos[1]["creator"], self.username_alice)
-        self.assertEqual(len(todos), 2)
-
-    def test_get_user_todolist_todos_when_user_does_not_exist(self):
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=self.username_alice,
-                todolist_id=1,
-            )
-        )
-        self.assert404Response(response)
-
-    def test_get_user_todolist_todos_when_todolist_does_not_exist(self):
-        self.add_user(self.username_alice)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=self.username_alice,
-                todolist_id=1,
-            )
-        )
-        self.assert404Response(response)
-
-    def test_get_user_todolist_todos_when_todolist_has_no_todos(self):
-        todolist_title = "new todolist"
-        self.add_user(self.username_alice)
-        new_todolist = self.add_todolist(todolist_title, self.username_alice)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            )
-        )
-        self.assert_200(response)
-
-        todos = json.loads(response.data.decode("utf-8"))["todos"]
-        self.assertEqual(todos, [])
-
-    def test_get_different_user_todolist_todos(self):
-        first_username = self.username_alice
-        second_username = "bob"
-        todolist_title = "new todolist"
-        first_user = self.add_user(first_username)
-        self.add_user(second_username)
-        new_todolist = self.add_todolist(todolist_title, second_username)
-
-        self.add_todo("first", new_todolist.id, second_username)
-        self.add_todo("second", new_todolist.id, second_username)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist_todos",
-                username=first_user,
-                todolist_id=new_todolist.id,
-            )
-        )
-        self.assert404Response(response)
-
-    def test_get_user_todolist(self):
-        todolist_title = "new todolist"
-        self.add_user(self.username_alice)
-        new_todolist = self.add_todolist(todolist_title, self.username_alice)
-
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist",
-                username=self.username_alice,
-                todolist_id=new_todolist.id,
-            )
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(json_response["title"], todolist_title)
-        self.assertEqual(json_response["creator"], self.username_alice)
-
-    def test_get_user_todolist_when_user_does_not_exist(self):
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist", username=self.username_alice, todolist_id=1
-            )
-        )
-        self.assert404Response(response)
-
-    def test_get_user_todolist_when_todolist_does_not_exist(self):
-        self.add_user(self.username_alice)
-        response = self.client.get(
-            url_for(
-                "api.get_user_todolist", username=self.username_alice, todolist_id=1
-            )
-        )
-        self.assert404Response(response)
-
-    # test api put call
-    def test_update_todo_status_to_finished(self):
-        todolist = self.add_todolist("new todolist")
-        todo = self.add_todo("first", todolist.id)
-        self.assertFalse(todo.is_finished)
-
-        self.client.put(
-            url_for("api.update_todo_status", todo_id=todo.id),
-            headers=self.get_headers(),
-            data=json.dumps({"is_finished": True}),
-        )
-
-        todo = Todo.query.get(todo.id)
-        self.assertTrue(todo.is_finished)
-
-    def test_update_todo_status_to_open(self):
-        todolist = self.add_todolist("new todolist")
-        todo = self.add_todo("first", todolist.id)
-        todo.finished()
-        self.assertTrue(todo.is_finished)
-
-        self.client.put(
-            url_for("api.update_todo_status", todo_id=todo.id),
-            headers=self.get_headers(),
-            data=json.dumps({"is_finished": False}),
-        )
-        todo = Todo.query.get(todo.id)
-        self.assertFalse(todo.is_finished)
-        self.assertTrue(todo.finished_at is None)
-
-    def test_change_todolist_title(self):
-        todolist = self.add_todolist("new todolist")
-
-        response = self.client.put(
-            url_for("api.change_todolist_title", todolist_id=todolist.id),
-            headers=self.get_headers(),
-            data=json.dumps({"title": "changed title"}),
-        )
-        self.assert_200(response)
-
-        json_response = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(json_response["title"], "changed title")
-
-    def test_change_todolist_title_too_long_title(self):
-        todolist = self.add_todolist("new todolist")
-
-        response = self.client.put(
-            url_for("api.change_todolist_title", todolist_id=todolist.id),
-            headers=self.get_headers(),
-            data=json.dumps({"title": 129 * "t"}),
-        )
-        self.assert_400(response)
-
-    def test_change_todolist_title_empty_title(self):
-        todolist = self.add_todolist("new todolist")
-
-        response = self.client.put(
-            url_for("api.change_todolist_title", todolist_id=todolist.id),
-            headers=self.get_headers(),
-            data=json.dumps({"title": ""}),
-        )
-        self.assert_400(response)
-
-    def test_change_todolist_title_without_title(self):
-        todolist = self.add_todolist("new todolist")
-
-        response = self.client.put(
-            url_for("api.change_todolist_title", todolist_id=todolist.id),
-            headers=self.get_headers(),
-        )
-        self.assert_400(response)
-
-    # test api delete calls
-    @unittest.skip("because acquiring admin rights is currently an issue")
-    def test_delete_user(self):
-        admin = self.create_admin()
-        login_user(admin)
-
-        user = self.add_user(self.username_alice)
-        user_id = user.id
-
-        response = self.client.delete(
-            url_for("api.delete_user", user_id=user_id),
-            headers=self.get_headers(),
-            data=json.dumps({"user_id": user_id}),
-        )
-        self.assert_200(response)
-
-        response = self.client.get(url_for("api.get_user", user_id=user_id))
-        self.assert_404(response)
-
-    @unittest.skip("because acquiring admin rights is currently an issue")
-    def test_delete_todolist(self):
-        admin = self.create_admin()
-        login_user(admin)
-
-        todolist = self.add_todolist("new todolist")
-        todolist_id = todolist.id
-
-        response = self.client.delete(
-            url_for("api.delete_todolist", todolist_id=todolist_id),
-            headers=self.get_headers(),
-            data=json.dumps({"todolist_id": todolist_id}),
-        )
-        self.assert_200(response)
-
-        response = self.client.get(url_for("api.get_todolist", todolist_id=todolist_id))
-        self.assert_404(response)
-
-    @unittest.skip("because acquiring admin rights is currently an issue")
-    def test_delete_todo(self):
-        admin = self.create_admin()
-        login_user(admin)
-
-        todolist = self.add_todolist("new todolist")
-        todo = self.add_todo("new todo", todolist.id)
-        todo_id = todo.id
-
-        response = self.client.delete(
-            url_for("api.delete_todo", todo_id=todo_id),
-            headers=self.get_headers(),
-            data=json.dumps({"todo_id": todo_id}),
-        )
-        self.assert_200(response)
-
-        response = self.client.get(url_for("api.get_todo", todo_id=todo_id))
-        self.assert_404(response)
+    )
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["title"] == todolist_title
+    assert json_response["creator"] == USERNAME_ALICE
+
+
+def test_get_user_todolist_when_user_does_not_exist(client, url_for):
+    response = client.get(
+        url_for("api.get_user_todolist", username=USERNAME_ALICE, todolist_id=1)
+    )
+    assert_404_response(response)
+
+
+def test_get_user_todolist_when_todolist_does_not_exist(client, url_for):
+    add_user(USERNAME_ALICE)
+    response = client.get(
+        url_for("api.get_user_todolist", username=USERNAME_ALICE, todolist_id=1)
+    )
+    assert_404_response(response)
+
+
+def test_update_todo_status_to_finished(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("first", todolist.id)
+    assert not todo.is_finished
+
+    client.put(
+        url_for("api.update_todo_status", todo_id=todo.id),
+        headers=get_headers(),
+        data=json.dumps({"is_finished": True}),
+    )
+
+    todo = Todo.query.get(todo.id)
+    assert todo.is_finished
+
+
+def test_update_todo_status_to_open(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("first", todolist.id)
+    todo.finished()
+    assert todo.is_finished
+
+    client.put(
+        url_for("api.update_todo_status", todo_id=todo.id),
+        headers=get_headers(),
+        data=json.dumps({"is_finished": False}),
+    )
+    todo = Todo.query.get(todo.id)
+    assert not todo.is_finished
+    assert todo.finished_at is None
+
+
+def test_change_todolist_title(client, url_for):
+    todolist = add_todolist("new todolist")
+
+    response = client.put(
+        url_for("api.change_todolist_title", todolist_id=todolist.id),
+        headers=get_headers(),
+        data=json.dumps({"title": "changed title"}),
+    )
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert json_response["title"] == "changed title"
+
+
+def test_change_todolist_title_too_long_title(client, url_for):
+    todolist = add_todolist("new todolist")
+
+    response = client.put(
+        url_for("api.change_todolist_title", todolist_id=todolist.id),
+        headers=get_headers(),
+        data=json.dumps({"title": 129 * "t"}),
+    )
+    assert response.status_code == 400
+
+
+def test_change_todolist_title_empty_title(client, url_for):
+    todolist = add_todolist("new todolist")
+
+    response = client.put(
+        url_for("api.change_todolist_title", todolist_id=todolist.id),
+        headers=get_headers(),
+        data=json.dumps({"title": ""}),
+    )
+    assert response.status_code == 400
+
+
+def test_change_todolist_title_without_title(client, url_for):
+    todolist = add_todolist("new todolist")
+
+    response = client.put(
+        url_for("api.change_todolist_title", todolist_id=todolist.id),
+        headers=get_headers(),
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
+def test_delete_user(client, url_for):
+    admin = create_admin()
+
+    user = add_user(USERNAME_ALICE)
+    user_id = user.id
+
+    response = client.delete(
+        url_for("api.delete_user", user_id=user_id),
+        headers=get_headers(),
+        data=json.dumps({"user_id": user_id}),
+    )
+    assert response.status_code == 200
+
+    response = client.get(url_for("api.get_user", user_id=user_id))
+    assert response.status_code == 404
+
+
+@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
+def test_delete_todolist(client, url_for):
+    create_admin()
+
+    todolist = add_todolist("new todolist")
+    todolist_id = todolist.id
+
+    response = client.delete(
+        url_for("api.delete_todolist", todolist_id=todolist_id),
+        headers=get_headers(),
+        data=json.dumps({"todolist_id": todolist_id}),
+    )
+    assert response.status_code == 200
+
+    response = client.get(url_for("api.get_todolist", todolist_id=todolist_id))
+    assert response.status_code == 404
+
+
+@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
+def test_delete_todo(client, url_for):
+    create_admin()
+
+    todolist = add_todolist("new todolist")
+    todo = add_todo("new todo", todolist.id)
+    todo_id = todo.id
+
+    response = client.delete(
+        url_for("api.delete_todo", todo_id=todo_id),
+        headers=get_headers(),
+        data=json.dumps({"todo_id": todo_id}),
+    )
+    assert response.status_code == 200
+
+    response = client.get(url_for("api.get_todo", todo_id=todo_id))
+    assert response.status_code == 404
