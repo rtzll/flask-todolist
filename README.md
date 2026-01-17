@@ -43,6 +43,10 @@ To run the test suite:
 
     uv run pytest -v
 
+To run the test suite using Docker:
+
+    docker-compose run --rm tests
+
 Now you can browse the API: http://localhost:5000/api/users
 
 Pick a user, login as the user. Default password after `fill-db` is
