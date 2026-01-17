@@ -1,5 +1,6 @@
 from flask import current_app
 
+from app import db
 from app.models import Todo, TodoList, User
 
 
@@ -185,14 +186,14 @@ def test_delete_user(app):
     user = add_user(USERNAME_ADAM)
     user_id = user.id
     user.delete()
-    assert User.query.get(user_id) is None
+    assert db.session.get(User, user_id) is None
 
 
 def test_delete_todolist(app):
     todolist = TodoList(SHOPPING_LIST_TITLE).save()
     todolist_id = todolist.id
     todolist.delete()
-    assert TodoList.query.get(todolist_id) is None
+    assert db.session.get(TodoList, todolist_id) is None
 
 
 def test_delete_todo(app):
@@ -201,5 +202,5 @@ def test_delete_todo(app):
     assert todolist.todo_count == 1
     todo_id = todo.id
     todo.delete()
-    assert Todo.query.get(todo_id) is None
+    assert db.session.get(Todo, todo_id) is None
     assert todolist.todo_count == 0

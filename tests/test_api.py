@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from app import db
 from app.models import Todo, TodoList, User
 
 
@@ -682,7 +683,7 @@ def test_update_todo_status_to_finished(client, url_for):
         data=json.dumps({"is_finished": True}),
     )
 
-    todo = Todo.query.get(todo.id)
+    todo = db.session.get(Todo, todo.id)
     assert todo.is_finished
 
 
@@ -697,7 +698,7 @@ def test_update_todo_status_to_open(client, url_for):
         headers=get_headers(),
         data=json.dumps({"is_finished": False}),
     )
-    todo = Todo.query.get(todo.id)
+    todo = db.session.get(Todo, todo.id)
     assert not todo.is_finished
     assert todo.finished_at is None
 
