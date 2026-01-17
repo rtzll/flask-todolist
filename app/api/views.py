@@ -162,39 +162,30 @@ def change_todolist_title(todolist_id):
 @admin_required
 def delete_user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    try:
-        if username == request.json.get("username"):
-            user.delete()
-            return {}
-        else:
-            abort(400)
-    except:
+    payload = request.get_json(silent=True) or {}
+    if username != payload.get("username"):
         abort(400)
+    user.delete()
+    return {}
 
 
 @api.route("/todolist/<int:todolist_id>/", methods=["DELETE"])
 @admin_required
 def delete_todolist(todolist_id):
     todolist = db.get_or_404(TodoList, todolist_id)
-    try:
-        if todolist_id == request.json.get("todolist_id"):
-            todolist.delete()
-            return jsonify()
-        else:
-            abort(400)
-    except:
+    payload = request.get_json(silent=True) or {}
+    if todolist_id != payload.get("todolist_id"):
         abort(400)
+    todolist.delete()
+    return {}
 
 
 @api.route("/todo/<int:todo_id>/", methods=["DELETE"])
 @admin_required
 def delete_todo(todo_id):
     todo = db.get_or_404(Todo, todo_id)
-    try:
-        if todo_id == request.json.get("todo_id"):
-            todo.delete()
-            return jsonify()
-        else:
-            abort(400)
-    except:
+    payload = request.get_json(silent=True) or {}
+    if todo_id != payload.get("todo_id"):
         abort(400)
+    todo.delete()
+    return {}

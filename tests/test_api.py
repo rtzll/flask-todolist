@@ -54,6 +54,21 @@ def create_admin():
     return User.from_dict(new_user)
 
 
+def create_admin_user():
+    return User(
+        username="admin",
+        email="admin@example.com",
+        password=PASSWORD,
+        is_admin=True,
+    ).save()
+
+
+def login_user(client, url_for, username):
+    return client.post(
+        url_for("auth.login"),
+        data={"email_or_username": username, "password": PASSWORD},
+    )
+
 def assert_404_response(response):
     assert response.status_code == 404
     json_response = json.loads(response.data.decode("utf-8"))
@@ -749,56 +764,45 @@ def test_change_todolist_title_without_title(client, url_for):
     assert response.status_code == 400
 
 
-@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
 def test_delete_user(client, url_for):
-    admin = create_admin()
+    admin = create_admin_user()
+    login_user(client, url_for, admin.username)
 
     user = add_user(USERNAME_ALICE)
-    user_id = user.id
 
     response = client.delete(
-        url_for("api.delete_user", user_id=user_id),
+        url_for("api.delete_user", username=user.username),
         headers=get_headers(),
-        data=json.dumps({"user_id": user_id}),
+        data=json.dumps({"username": user.username}),
     )
     assert response.status_code == 200
-
-    response = client.get(url_for("api.get_user", user_id=user_id))
-    assert response.status_code == 404
+    assert db.session.get(User, user.id) is None
 
 
-@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
 def test_delete_todolist(client, url_for):
-    create_admin()
+    admin = create_admin_user()
+    login_user(client, url_for, admin.username)
 
     todolist = add_todolist("new todolist")
-    todolist_id = todolist.id
-
     response = client.delete(
-        url_for("api.delete_todolist", todolist_id=todolist_id),
+        url_for("api.delete_todolist", todolist_id=todolist.id),
         headers=get_headers(),
-        data=json.dumps({"todolist_id": todolist_id}),
+        data=json.dumps({"todolist_id": todolist.id}),
     )
     assert response.status_code == 200
-
-    response = client.get(url_for("api.get_todolist", todolist_id=todolist_id))
-    assert response.status_code == 404
+    assert db.session.get(TodoList, todolist.id) is None
 
 
-@pytest.mark.skip(reason="because acquiring admin rights is currently an issue")
 def test_delete_todo(client, url_for):
-    create_admin()
+    admin = create_admin_user()
+    login_user(client, url_for, admin.username)
 
     todolist = add_todolist("new todolist")
     todo = add_todo("new todo", todolist.id)
-    todo_id = todo.id
-
     response = client.delete(
-        url_for("api.delete_todo", todo_id=todo_id),
+        url_for("api.delete_todo", todo_id=todo.id),
         headers=get_headers(),
-        data=json.dumps({"todo_id": todo_id}),
+        data=json.dumps({"todo_id": todo.id}),
     )
     assert response.status_code == 200
-
-    response = client.get(url_for("api.get_todo", todo_id=todo_id))
-    assert response.status_code == 404
+    assert db.session.get(Todo, todo.id) is None
