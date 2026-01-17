@@ -9,13 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@v5
         with:
-          version: "latest"
-      - name: Set up Python
-        run: uv python install
+          enable-cache: true
+      - name: Install Python
+        run: uv python install 3.14
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --frozen --dev
       - name: Run tests
-        run: uv run python -m unittest discover tests/ -v
+        run: uv run pytest -v
