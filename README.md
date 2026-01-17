@@ -41,7 +41,7 @@ To add some 'play' data you can run
 
 To run the test suite:
 
-    uv run python -m unittest discover tests/ -v
+    uv run pytest -v
 
 Now you can browse the API: http://localhost:5000/api/users
 
