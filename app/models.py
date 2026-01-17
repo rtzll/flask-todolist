@@ -54,8 +54,8 @@ class User(UserMixin, db.Model, BaseModel):
     _username = db.Column("username", db.String(64), unique=True)
     _email = db.Column("email", db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
-    member_since = db.Column(db.DateTime, default=datetime.utcnow)
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    member_since = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    last_seen = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     is_admin = db.Column(db.Boolean, default=False)
 
     todolists = db.relationship("TodoList", backref="user", lazy="dynamic")
@@ -140,7 +140,7 @@ class TodoList(db.Model, BaseModel):
     __tablename__ = "todolist"
     id = db.Column(db.Integer, primary_key=True)
     _title = db.Column("title", db.String(128))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     creator = db.Column(db.String(64), db.ForeignKey("user.username"))
     todos = db.relationship("Todo", backref="todolist", lazy="dynamic")
 
@@ -201,7 +201,7 @@ class Todo(db.Model, BaseModel):
     __tablename__ = "todo"
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, index=True, default=lambda: datetime.now(UTC))
     finished_at = db.Column(db.DateTime, index=True, default=None)
     is_finished = db.Column(db.Boolean, default=False)
     creator = db.Column(db.String(64), db.ForeignKey("user.username"))
