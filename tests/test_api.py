@@ -1,7 +1,5 @@
 import json
 
-import pytest
-
 from app import db
 from app.models import Todo, TodoList, User
 

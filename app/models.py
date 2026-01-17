@@ -16,7 +16,7 @@ def check_length(attribute, length):
     """Checks the attribute's length."""
     try:
         return bool(attribute) and len(attribute) <= length
-    except:
+    except TypeError:
         return False
 
 

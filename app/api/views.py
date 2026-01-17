@@ -1,4 +1,5 @@
 from flask import abort, request, url_for
+from sqlalchemy.exc import IntegrityError
 
 from app.api import api
 from app.decorators import admin_required
@@ -27,13 +28,16 @@ def get_user(username):
 
 @api.route("/user/", methods=["POST"])
 def add_user():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
         user = User(
-            username=request.json.get("username"),
-            email=request.json.get("email"),
-            password=request.json.get("password"),
+            username=payload.get("username"),
+            email=payload.get("email"),
+            password=payload.get("password"),
         ).save()
-    except:
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return user.to_dict(), 201
 
@@ -57,11 +61,12 @@ def get_user_todolist(username, todolist_id):
 @api.route("/user/<string:username>/todolist/", methods=["POST"])
 def add_user_todolist(username):
     user = User.query.filter_by(username=username).first_or_404()
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
-        todolist = TodoList(
-            title=request.json.get("title"), creator=user.username
-        ).save()
-    except:
+        todolist = TodoList(title=payload.get("title"), creator=user.username).save()
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return todolist.to_dict(), 201
 
@@ -80,9 +85,12 @@ def get_todolist(todolist_id):
 
 @api.route("/todolist/", methods=["POST"])
 def add_todolist():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
-        todolist = TodoList(title=request.json.get("title")).save()
-    except:
+        todolist = TodoList(title=payload.get("title")).save()
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return todolist.to_dict(), 201
 
@@ -105,13 +113,16 @@ def get_user_todolist_todos(username, todolist_id):
 def add_user_todolist_todo(username, todolist_id):
     user = User.query.filter_by(username=username).first_or_404()
     todolist = db.get_or_404(TodoList, todolist_id)
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
         todo = Todo(
-            description=request.json.get("description"),
+            description=payload.get("description"),
             todolist_id=todolist.id,
             creator=user.username,
         ).save()
-    except:
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return todo.to_dict(), 201
 
@@ -119,11 +130,14 @@ def add_user_todolist_todo(username, todolist_id):
 @api.route("/todolist/<int:todolist_id>/", methods=["POST"])
 def add_todolist_todo(todolist_id):
     todolist = db.get_or_404(TodoList, todolist_id)
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
         todo = Todo(
-            description=request.json.get("description"), todolist_id=todolist.id
+            description=payload.get("description"), todolist_id=todolist.id
         ).save()
-    except:
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return todo.to_dict(), 201
 
@@ -137,12 +151,15 @@ def get_todo(todo_id):
 @api.route("/todo/<int:todo_id>/", methods=["PUT"])
 def update_todo_status(todo_id):
     todo = db.get_or_404(Todo, todo_id)
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
-        if request.json.get("is_finished"):
+        if payload.get("is_finished"):
             todo.finished()
         else:
             todo.reopen()
-    except:
+    except (AttributeError, ValueError):
         abort(400)
     return todo.to_dict()
 
@@ -150,10 +167,13 @@ def update_todo_status(todo_id):
 @api.route("/todolist/<int:todolist_id>/", methods=["PUT"])
 def change_todolist_title(todolist_id):
     todolist = db.get_or_404(TodoList, todolist_id)
+    payload = request.get_json(silent=True)
+    if payload is None:
+        abort(400)
     try:
-        todolist.title = request.json.get("title")
+        todolist.title = payload.get("title")
         todolist.save()
-    except:
+    except (AttributeError, IntegrityError, ValueError):
         abort(400)
     return todolist.to_dict()
 

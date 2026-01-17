@@ -29,3 +29,6 @@ testpaths = ["tests"]
 line-length = 88
 target-version = "py314"
 exclude = ["migrations"]
+
+[tool.ruff.lint]
+ignore = ["E402", "F401"]
