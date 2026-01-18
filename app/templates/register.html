@@ -25,7 +25,7 @@
           </dd>
           {% set email_class = "u-full-width" + (" input-error" if form.email.errors else "") %}
           <dd class="field-group">
-            {{ form.email(class_=email_class, placeholder="Email", maxlength=64) }}
+            {{ form.email(class_=email_class, type="email", placeholder="Email", maxlength=64) }}
             {% if form.email.errors %}
               <div class="field-errors">
                 {% for error in form.email.errors %}
