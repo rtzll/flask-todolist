@@ -5,6 +5,32 @@
   word-wrap: break-word;
 }
 
+.has-error {
+  background: #fff4f4;
+  border: 1px solid #f1b7b7;
+  border-radius: 4px;
+  color: #b23b3b;
+  margin-bottom: 1.5rem;
+  padding: 0.7rem 1rem;
+  text-align: left;
+}
+
+.field-errors {
+  color: #b23b3b;
+  list-style: none;
+  margin: 0.4rem 0 1.2rem;
+  text-align: left;
+}
+
+.field-errors li {
+  margin-bottom: 0.2rem;
+}
+
+.input-error {
+  border-color: #e76a6a;
+  box-shadow: 0 0 0 1px rgba(231, 106, 106, 0.25);
+}
+
 h2.title {
   word-wrap: break-word;
 }

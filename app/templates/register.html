@@ -12,10 +12,42 @@
       <form method=post>
         {{ form.hidden_tag() }}
         <dl>
-          <dd>{{ form.username(class_="u-full-width", placeholder="Username", maxlength=64) }}
-          <dd>{{ form.email(class_="u-full-width", placeholder="Email", maxlength=64) }}
-          <dd>{{ form.password(class_="u-full-width", placeholder="Password") }}
-          <dd>{{ form.password_confirmation(class_="u-full-width", placeholder="Confirm your Password") }}
+          {% set username_class = "u-full-width" + (" input-error" if form.username.errors else "") %}
+          <dd>{{ form.username(class_=username_class, placeholder="Username", maxlength=64) }}
+          {% if form.username.errors %}
+            <ul class="field-errors">
+              {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% set email_class = "u-full-width" + (" input-error" if form.email.errors else "") %}
+          <dd>{{ form.email(class_=email_class, placeholder="Email", maxlength=64) }}
+          {% if form.email.errors %}
+            <ul class="field-errors">
+              {% for error in form.email.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% set password_class = "u-full-width" + (" input-error" if form.password.errors else "") %}
+          <dd>{{ form.password(class_=password_class, placeholder="Password") }}
+          {% if form.password.errors %}
+            <ul class="field-errors">
+              {% for error in form.password.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% set password_confirmation_class = "u-full-width" + (" input-error" if form.password_confirmation.errors else "") %}
+          <dd>{{ form.password_confirmation(class_=password_confirmation_class, placeholder="Confirm your Password") }}
+          {% if form.password_confirmation.errors %}
+            <ul class="field-errors">
+              {% for error in form.password_confirmation.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
           <dt>{{ form.submit }}
         </dl>
       </form>
