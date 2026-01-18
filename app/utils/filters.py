@@ -14,9 +14,11 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
     3 days ago, 5 hours from now etc.
     """
 
-    now = datetime.now(UTC)
-    # remove tzinfo
-    dt = dt.replace(tzinfo=None)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=None)
+    else:
+        dt = dt.astimezone(UTC).replace(tzinfo=None)
+    now = datetime.utcnow()
     if now > dt:
         diff = now - dt
         dt_is_past = True
@@ -47,5 +49,6 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
 
 @utils.app_template_filter("in_seconds")
 def in_seconds(dt):
-    # return int((dt - datetime(1970, 1, 1)).total_seconds())
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(UTC).replace(tzinfo=None)
     return int(time.mktime(dt.timetuple()))
