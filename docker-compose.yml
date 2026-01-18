@@ -17,5 +17,7 @@ services:
     build:
       context: .
       target: dev
+    profiles:
+      - test
     command: >
       sh -c "uv run pytest -v"

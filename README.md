@@ -45,7 +45,7 @@ To run the test suite:
 
 To run the test suite using Docker:
 
-    docker-compose run --rm tests
+    docker-compose --profile test run --rm tests
 
 Now you can browse the API: http://localhost:5000/api/users
 
