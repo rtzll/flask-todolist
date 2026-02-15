@@ -9,7 +9,8 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 logger = logging.getLogger("alembic.env")
 
 # add your model's MetaData object here
@@ -18,9 +19,10 @@ logger = logging.getLogger("alembic.env")
 # target_metadata = mymodel.Base.metadata
 from flask import current_app
 
-config.set_main_option(
-    "sqlalchemy.url", current_app.config.get("SQLALCHEMY_DATABASE_URI")
-)
+database_uri = current_app.config.get("SQLALCHEMY_DATABASE_URI")
+if not isinstance(database_uri, str):
+    raise RuntimeError("SQLALCHEMY_DATABASE_URI must be configured for migrations")
+config.set_main_option("sqlalchemy.url", database_uri)
 target_metadata = current_app.extensions["migrate"].db.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -67,7 +69,7 @@ def run_migrations_online():
                 logger.info("No changes in schema detected.")
 
     engine = engine_from_config(
-        config.get_section(config.config_ini_section),
+        config.get_section(config.config_ini_section) or {},
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

@@ -33,7 +33,10 @@ def todolist(id):
     todolist = db.get_or_404(TodoList, id)
     form = TodoForm()
     if form.validate_on_submit():
-        Todo(form.todo.data, todolist.id, _get_user()).save()
+        todo_text = form.todo.data
+        if todo_text is None:
+            return render_template("todolist.html", todolist=todolist, form=form)
+        Todo(todo_text, todolist.id, _get_user()).save()
         return redirect(url_for("main.todolist", id=id))
     return render_template("todolist.html", todolist=todolist, form=form)
 
@@ -42,8 +45,11 @@ def todolist(id):
 def new_todolist():
     form = TodoForm(todo=request.form.get("todo"))
     if form.validate():
+        todo_text = form.todo.data
+        if todo_text is None:
+            return redirect(url_for("main.index"))
         todolist = TodoList(creator=_get_user()).save()
-        Todo(form.todo.data, todolist.id).save()
+        Todo(todo_text, todolist.id).save()
         return redirect(url_for("main.todolist", id=todolist.id))
     return redirect(url_for("main.index"))
 

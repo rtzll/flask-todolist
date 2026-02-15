@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping
+from collections.abc import Mapping, Sized
 from datetime import UTC, datetime
 from typing import Any, Self
 
@@ -19,10 +19,7 @@ USERNAME_REGEX = re.compile(r"^\S+$")
 
 def check_length(attribute: object, length: int) -> bool:
     """Checks the attribute's length."""
-    try:
-        return bool(attribute) and len(attribute) <= length
-    except TypeError:
-        return False
+    return bool(attribute) and isinstance(attribute, Sized) and len(attribute) <= length
 
 
 class BaseModel:
@@ -82,7 +79,10 @@ class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibl
 
     @property
     def username(self) -> str:
-        return self._username
+        value = self._username
+        if value is None:
+            raise ValueError("username is not set")
+        return value
 
     @username.setter
     def username(self, username: str) -> None:
@@ -91,11 +91,14 @@ class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibl
             raise ValueError(f"{username} is not a valid username")
         self._username = username
 
-    username = synonym("_username", descriptor=username)
+    username = synonym("_username", descriptor=username)  # pyright: ignore[reportAssignmentType]
 
     @property
     def email(self) -> str:
-        return self._email
+        value = self._email
+        if value is None:
+            raise ValueError("email is not set")
+        return value
 
     @email.setter
     def email(self, email: str) -> None:
@@ -103,7 +106,7 @@ class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibl
             raise ValueError(f"{email} is not a valid email address")
         self._email = email
 
-    email = synonym("_email", descriptor=email)
+    email = synonym("_email", descriptor=email)  # pyright: ignore[reportAssignmentType]
 
     @property
     def password(self) -> str:
@@ -177,7 +180,10 @@ class TodoList(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariab
 
     @property
     def title(self) -> str:
-        return self._title
+        value = self._title
+        if value is None:
+            raise ValueError("title is not set")
+        return value
 
     @title.setter
     def title(self, title: str) -> None:
@@ -185,16 +191,18 @@ class TodoList(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariab
             raise ValueError(f"{title} is not a valid title")
         self._title = title
 
-    title = synonym("_title", descriptor=title)
+    title = synonym("_title", descriptor=title)  # pyright: ignore[reportAssignmentType]
 
     @property
     def todos_url(self) -> str:
-        url = None
-        kwargs = dict(todolist_id=self.id, _external=True)
         if self.creator:
-            kwargs["username"] = self.creator
-            url = "api.get_user_todolist_todos"
-        return url_for(url or "api.get_todolist_todos", **kwargs)
+            return url_for(
+                "api.get_user_todolist_todos",
+                username=self.creator,
+                todolist_id=self.id,
+                _external=True,
+            )
+        return url_for("api.get_todolist_todos", todolist_id=self.id, _external=True)
 
     def to_dict(self) -> dict[str, Any]:
         return {

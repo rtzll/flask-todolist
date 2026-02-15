@@ -1,3 +1,5 @@
+# pyright: reportOptionalMemberAccess=false
+
 import json
 
 from app import db
@@ -8,7 +10,7 @@ USERNAME_ALICE = "alice"
 PASSWORD = "correcthorsebatterystaple"
 
 
-def setup_new_user(username):
+def setup_new_user(username: str) -> dict[str, str | bool]:
     return {
         "username": username,
         "email": username + "@example.com",

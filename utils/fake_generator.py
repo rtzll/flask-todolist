@@ -43,8 +43,11 @@ class FakeGenerator:
         assert todolists != []
         for _ in range(count):
             todolist = random.choice(todolists)
+            description = forgery_py.forgery.lorem_ipsum.words()
+            if isinstance(description, list):
+                description = " ".join(description)
             todo = Todo(
-                description=forgery_py.forgery.lorem_ipsum.words(),
+                description=description,
                 todolist_id=todolist.id,
                 creator=todolist.creator,
                 created_at=self.generate_fake_date(),

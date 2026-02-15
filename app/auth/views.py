@@ -29,20 +29,19 @@ def _get_safe_redirect_target():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        password = form.password.data
+        if password is None:
+            return render_template("login.html", form=form)
         user_by_email = db.session.execute(
             select(User).filter_by(email=form.email_or_username.data)
         ).scalar_one_or_none()
         user_by_name = db.session.execute(
             select(User).filter_by(username=form.email_or_username.data)
         ).scalar_one_or_none()
-        if user_by_email is not None and user_by_email.verify_password(
-            form.password.data
-        ):
+        if user_by_email is not None and user_by_email.verify_password(password):
             login_user(user_by_email.seen())
             return redirect(_get_safe_redirect_target())
-        if user_by_name is not None and user_by_name.verify_password(
-            form.password.data
-        ):
+        if user_by_name is not None and user_by_name.verify_password(password):
             login_user(user_by_name.seen())
             return redirect(_get_safe_redirect_target())
     return render_template("login.html", form=form)

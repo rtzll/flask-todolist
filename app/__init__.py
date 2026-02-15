@@ -1,3 +1,5 @@
+# pyright: reportImportCycles=false
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -10,7 +12,7 @@ migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
-login_manager.login_view = "auth.login"
+login_manager.login_view = "auth.login"  # pyright: ignore[reportAttributeAccessIssue]
 
 
 def create_app(config_name="default"):

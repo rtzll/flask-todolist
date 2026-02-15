@@ -1,3 +1,5 @@
+# pyright: reportOptionalMemberAccess=false
+
 from flask import current_app
 
 from app import db

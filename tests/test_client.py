@@ -1,3 +1,5 @@
+# pyright: reportOptionalMemberAccess=false
+
 from app.models import User
 
 
