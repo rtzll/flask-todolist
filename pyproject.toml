@@ -26,6 +26,10 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.basedpyright]
+include = ["app", "utils", "config.py", "todolist.py"]
+exclude = ["tests"]
+
 [tool.ruff]
 line-length = 88
 target-version = "py314"
