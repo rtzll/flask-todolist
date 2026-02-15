@@ -113,6 +113,8 @@ def get_user_todolist_todos(username, todolist_id):
 def add_user_todolist_todo(username, todolist_id):
     user = User.query.filter_by(username=username).first_or_404()
     todolist = db.get_or_404(TodoList, todolist_id)
+    if todolist.creator != user.username:
+        abort(404)
     payload = request.get_json(silent=True)
     if payload is None:
         abort(400)

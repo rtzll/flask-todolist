@@ -392,6 +392,33 @@ def test_add_user_todolist_todo(client, url_for):
     assert len(todos) == 1
 
 
+def test_add_user_todolist_todo_rejects_other_users_todolist(client, url_for):
+    add_user(USERNAME_ALICE)
+    add_user("bob")
+    bobs_todolist = add_todolist("bob list", "bob")
+
+    post_response = client.post(
+        url_for(
+            "api.add_user_todolist_todo",
+            username=USERNAME_ALICE,
+            todolist_id=bobs_todolist.id,
+        ),
+        headers=get_headers(),
+        data=json.dumps({"description": "should fail"}),
+    )
+    assert_404_response(post_response)
+
+    response = client.get(
+        url_for(
+            "api.get_user_todolist_todos",
+            username="bob",
+            todolist_id=bobs_todolist.id,
+        )
+    )
+    assert response.status_code == 200
+    assert json.loads(response.data.decode("utf-8"))["todos"] == []
+
+
 def test_add_user_todolist_todo_when_todolist_does_not_exist(client, url_for):
     add_user(USERNAME_ALICE)
     post_response = client.post(
