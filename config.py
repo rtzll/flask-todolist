@@ -34,7 +34,16 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todolist.db")
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or create_sqlite_uri(
+        "todolist.db"
+    )
+
+    @staticmethod
+    def init_app(app):
+        Config.init_app(app)
+        if not os.environ.get("SECRET_KEY"):
+            raise RuntimeError("SECRET_KEY must be set for production")
 
 
 config = {

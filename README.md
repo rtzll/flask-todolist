@@ -33,7 +33,7 @@ If you prefer to run it directly on your local machine, you can use
 [uv](https://docs.astral.sh/uv/) for dependency management.
 
     uv sync
-    FLASK_APP=todolist.py uv run flask run
+    APP_CONFIG=development FLASK_APP=todolist.py uv run flask run
 
 To add some 'play' data you can run
 
