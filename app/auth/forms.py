@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
+from sqlalchemy import select
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
-from wtforms.validators import Email, EqualTo, Length, Regexp, InputRequired
+from wtforms.validators import Email, EqualTo, InputRequired, Length, Regexp
 
+from app import db
 from app.models import User
 
 
@@ -40,9 +42,13 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
+        if db.session.execute(
+            select(User).filter_by(email=field.data)
+        ).scalar_one_or_none():
             raise ValidationError("Email already registered.")
 
     def validate_username(self, field):
-        if User.query.filter_by(username=field.data).first():
+        if db.session.execute(
+            select(User).filter_by(username=field.data)
+        ).scalar_one_or_none():
             raise ValidationError("Username already in use.")

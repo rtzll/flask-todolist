@@ -1,10 +1,11 @@
 from flask import abort, request, url_for
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
+from app import db
 from app.api import api
 from app.decorators import admin_required
 from app.models import Todo, TodoList, User
-from app import db
 
 
 @api.route("/")
@@ -17,12 +18,13 @@ def get_routes():
 
 @api.route("/users/")
 def get_users():
-    return {"users": [user.to_dict() for user in User.query.all()]}
+    users = db.session.execute(select(User)).scalars().all()
+    return {"users": [user.to_dict() for user in users]}
 
 
 @api.route("/user/<string:username>/")
 def get_user(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(select(User).filter_by(username=username))
     return user.to_dict()
 
 
@@ -44,14 +46,16 @@ def add_user():
 
 @api.route("/user/<string:username>/todolists/")
 def get_user_todolists(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(select(User).filter_by(username=username))
     todolists = user.todolists
     return {"todolists": [todolist.to_dict() for todolist in todolists]}
 
 
 @api.route("/user/<string:username>/todolist/<int:todolist_id>/")
 def get_user_todolist(username, todolist_id):
-    user = User.query.filter_by(username=username).first()
+    user = db.session.execute(
+        select(User).filter_by(username=username)
+    ).scalar_one_or_none()
     todolist = db.get_or_404(TodoList, todolist_id)
     if not user or username != todolist.creator:
         abort(404)
@@ -60,7 +64,7 @@ def get_user_todolist(username, todolist_id):
 
 @api.route("/user/<string:username>/todolist/", methods=["POST"])
 def add_user_todolist(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(select(User).filter_by(username=username))
     payload = request.get_json(silent=True)
     if payload is None:
         abort(400)
@@ -73,7 +77,7 @@ def add_user_todolist(username):
 
 @api.route("/todolists/")
 def get_todolists():
-    todolists = TodoList.query.all()
+    todolists = db.session.execute(select(TodoList)).scalars().all()
     return {"todolists": [todolist.to_dict() for todolist in todolists]}
 
 
@@ -111,7 +115,7 @@ def get_user_todolist_todos(username, todolist_id):
 
 @api.route("/user/<string:username>/todolist/<int:todolist_id>/", methods=["POST"])
 def add_user_todolist_todo(username, todolist_id):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(select(User).filter_by(username=username))
     todolist = db.get_or_404(TodoList, todolist_id)
     if todolist.creator != user.username:
         abort(404)
@@ -183,7 +187,7 @@ def change_todolist_title(todolist_id):
 @api.route("/user/<string:username>/", methods=["DELETE"])
 @admin_required
 def delete_user(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(select(User).filter_by(username=username))
     payload = request.get_json(silent=True) or {}
     if username != payload.get("username"):
         abort(400)

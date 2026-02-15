@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
+from app import db
 from app.main import main
 from app.main.forms import TodoForm, TodoListForm
 from app.models import Todo, TodoList
@@ -29,7 +30,7 @@ def _get_user():
 
 @main.route("/todolist/<int:id>/", methods=["GET", "POST"])
 def todolist(id):
-    todolist = TodoList.query.filter_by(id=id).first_or_404()
+    todolist = db.get_or_404(TodoList, id)
     form = TodoForm()
     if form.validate_on_submit():
         Todo(form.todo.data, todolist.id, _get_user()).save()

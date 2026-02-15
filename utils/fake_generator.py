@@ -1,7 +1,8 @@
 import random
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 import forgery_py
+from sqlalchemy import select
 
 from app import db
 from app.models import Todo, TodoList, User
@@ -27,7 +28,7 @@ class FakeGenerator:
 
     def generate_fake_todolists(self, count):
         # for the creator relation we need users
-        users = User.query.all()
+        users = db.session.execute(select(User)).scalars().all()
         assert users != []
         for _ in range(count):
             TodoList(
@@ -38,7 +39,7 @@ class FakeGenerator:
 
     def generate_fake_todo(self, count):
         # for the todolist relation we need todolists
-        todolists = TodoList.query.all()
+        todolists = db.session.execute(select(TodoList)).scalars().all()
         assert todolists != []
         for _ in range(count):
             todolist = random.choice(todolists)

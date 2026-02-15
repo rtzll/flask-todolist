@@ -2,7 +2,9 @@ from urllib.parse import urljoin, urlsplit
 
 from flask import redirect, render_template, request, url_for
 from flask_login import login_user, logout_user
+from sqlalchemy import select
 
+from app import db
 from app.auth import auth
 from app.auth.forms import LoginForm, RegistrationForm
 from app.models import User
@@ -15,7 +17,10 @@ def _get_safe_redirect_target():
 
     host_url = urlsplit(request.host_url)
     redirect_url = urlsplit(urljoin(request.host_url, next_url))
-    if redirect_url.scheme in {"http", "https"} and redirect_url.netloc == host_url.netloc:
+    if (
+        redirect_url.scheme in {"http", "https"}
+        and redirect_url.netloc == host_url.netloc
+    ):
         return next_url
     return url_for("main.index")
 
@@ -24,10 +29,12 @@ def _get_safe_redirect_target():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user_by_email = User.query.filter_by(email=form.email_or_username.data).first()
-        user_by_name = User.query.filter_by(
-            username=form.email_or_username.data
-        ).first()
+        user_by_email = db.session.execute(
+            select(User).filter_by(email=form.email_or_username.data)
+        ).scalar_one_or_none()
+        user_by_name = db.session.execute(
+            select(User).filter_by(username=form.email_or_username.data)
+        ).scalar_one_or_none()
         if user_by_email is not None and user_by_email.verify_password(
             form.password.data
         ):
