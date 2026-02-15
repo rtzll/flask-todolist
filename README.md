@@ -43,6 +43,10 @@ To run the test suite:
 
     uv run pytest -v
 
+To run type checks:
+
+    uv run basedpyright --level error
+
 To run the test suite using Docker:
 
     docker-compose --profile test run --rm tests
