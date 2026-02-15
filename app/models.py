@@ -31,6 +31,7 @@ class BaseModel:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            raise
 
     def delete(self):
         """Deletes this model from the db (through db.session)"""

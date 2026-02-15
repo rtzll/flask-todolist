@@ -109,6 +109,38 @@ def test_add_user(client, url_for):
     assert users[0]["username"] == USERNAME_ALICE
 
 
+def test_add_user_with_duplicate_username_returns_400(client, url_for):
+    add_user_through_json_post(client, url_for, USERNAME_ALICE)
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(
+            {
+                "username": USERNAME_ALICE,
+                "email": "another@example.com",
+                "password": PASSWORD,
+            }
+        ),
+    )
+    assert_400_response(response)
+
+
+def test_add_user_with_duplicate_email_returns_400(client, url_for):
+    add_user_through_json_post(client, url_for, USERNAME_ALICE)
+    response = client.post(
+        url_for("api.add_user"),
+        headers=get_headers(),
+        data=json.dumps(
+            {
+                "username": "another_user",
+                "email": USERNAME_ALICE + "@example.com",
+                "password": PASSWORD,
+            }
+        ),
+    )
+    assert_400_response(response)
+
+
 def test_add_user_only_using_the_username(client, url_for):
     user_data = {"username": USERNAME_ALICE}
     response = client.post(
