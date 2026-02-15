@@ -8,7 +8,7 @@ def create_sqlite_uri(db_name):
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "secret key, just for testing"
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -20,11 +20,13 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "development-secret-key"
     SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todolist-dev.db")
 
 
 class TestingConfig(Config):
     TESTING = True
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "testing-secret-key"
     SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todolist-test.db")
     WTF_CSRF_ENABLED = False
     import logging
@@ -42,7 +44,7 @@ class ProductionConfig(Config):
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-        if not os.environ.get("SECRET_KEY"):
+        if not app.config.get("SECRET_KEY"):
             raise RuntimeError("SECRET_KEY must be set for production")
 
 
