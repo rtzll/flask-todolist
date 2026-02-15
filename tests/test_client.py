@@ -73,6 +73,30 @@ def test_last_seen_update_after_login(client, url_for):
     assert before != after
 
 
+def test_login_redirects_to_internal_next_target(client, url_for):
+    register_user(client, url_for, USERNAME_ALICE)
+    response = client.post(
+        f"{url_for('auth.login')}?next={url_for('main.todolist_overview')}",
+        data={
+            "email_or_username": USERNAME_ALICE + "@example.com",
+            "password": PASSWORD,
+        },
+    )
+    assert_redirect(response, "/todolists/")
+
+
+def test_login_rejects_external_next_target(client, url_for):
+    register_user(client, url_for, USERNAME_ALICE)
+    response = client.post(
+        f"{url_for('auth.login')}?next=https://evil.example",
+        data={
+            "email_or_username": USERNAME_ALICE + "@example.com",
+            "password": PASSWORD,
+        },
+    )
+    assert_redirect(response, "/")
+
+
 def test_register_and_login_and_logout(client, url_for, templates):
     response = register_user(client, url_for, USERNAME_ALICE)
     assert_redirect(response, "/auth/login")

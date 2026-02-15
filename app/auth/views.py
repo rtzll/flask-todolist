@@ -1,9 +1,23 @@
+from urllib.parse import urljoin, urlsplit
+
 from flask import redirect, render_template, request, url_for
 from flask_login import login_user, logout_user
 
 from app.auth import auth
 from app.auth.forms import LoginForm, RegistrationForm
 from app.models import User
+
+
+def _get_safe_redirect_target():
+    next_url = request.args.get("next")
+    if not next_url:
+        return url_for("main.index")
+
+    host_url = urlsplit(request.host_url)
+    redirect_url = urlsplit(urljoin(request.host_url, next_url))
+    if redirect_url.scheme in {"http", "https"} and redirect_url.netloc == host_url.netloc:
+        return next_url
+    return url_for("main.index")
 
 
 @auth.route("/login", methods=["GET", "POST"])
@@ -18,12 +32,12 @@ def login():
             form.password.data
         ):
             login_user(user_by_email.seen())
-            return redirect(request.args.get("next") or url_for("main.index"))
+            return redirect(_get_safe_redirect_target())
         if user_by_name is not None and user_by_name.verify_password(
             form.password.data
         ):
             login_user(user_by_name.seen())
-            return redirect(request.args.get("next") or url_for("main.index"))
+            return redirect(_get_safe_redirect_target())
     return render_template("login.html", form=form)
 
 
