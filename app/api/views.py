@@ -39,7 +39,7 @@ def add_user():
             email=payload.get("email"),
             password=payload.get("password"),
         ).save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return user.to_dict(), 201
 
@@ -70,7 +70,7 @@ def add_user_todolist(username):
         abort(400)
     try:
         todolist = TodoList(title=payload.get("title"), creator=user.username).save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return todolist.to_dict(), 201
 
@@ -94,7 +94,7 @@ def add_todolist():
         abort(400)
     try:
         todolist = TodoList(title=payload.get("title")).save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return todolist.to_dict(), 201
 
@@ -128,7 +128,7 @@ def add_user_todolist_todo(username, todolist_id):
             todolist_id=todolist.id,
             creator=user.username,
         ).save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return todo.to_dict(), 201
 
@@ -143,7 +143,7 @@ def add_todolist_todo(todolist_id):
         todo = Todo(
             description=payload.get("description"), todolist_id=todolist.id
         ).save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return todo.to_dict(), 201
 
@@ -165,7 +165,7 @@ def update_todo_status(todo_id):
             todo.finished()
         else:
             todo.reopen()
-    except (AttributeError, ValueError):
+    except AttributeError, ValueError:
         abort(400)
     return todo.to_dict()
 
@@ -179,7 +179,7 @@ def change_todolist_title(todolist_id):
     try:
         todolist.title = payload.get("title")
         todolist.save()
-    except (AttributeError, IntegrityError, ValueError):
+    except AttributeError, IntegrityError, ValueError:
         abort(400)
     return todolist.to_dict()
 
