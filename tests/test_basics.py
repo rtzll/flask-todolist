@@ -206,3 +206,55 @@ def test_delete_todo(app):
     todo.delete()
     assert db.session.get(Todo, todo_id) is None
     assert todolist.todo_count == 0
+
+
+def test_todo_duration_format(app):
+    from datetime import UTC, datetime, timedelta
+
+    todolist = TodoList(SHOPPING_LIST_TITLE).save()
+    created_time = datetime(2024, 1, 1, 10, 0, 0, tzinfo=UTC)
+    finished_time = created_time + timedelta(seconds=3661)
+    
+    todo = Todo("Test duration", todolist.id, created_at=created_time)
+    todo.is_finished = True
+    todo.finished_at = finished_time
+    
+    duration = todo.duration
+    assert duration is not None
+    assert "1h" in duration
+    assert "1m" in duration
+    assert "1s" in duration
+
+
+def test_todo_duration_only_seconds(app):
+    from datetime import UTC, datetime, timedelta
+
+    todolist = TodoList(SHOPPING_LIST_TITLE).save()
+    created_time = datetime(2024, 1, 1, 10, 0, 0, tzinfo=UTC)
+    finished_time = created_time + timedelta(seconds=30)
+    
+    todo = Todo("Test duration", todolist.id, created_at=created_time)
+    todo.is_finished = True
+    todo.finished_at = finished_time
+    
+    duration = todo.duration
+    assert duration is not None
+    assert duration == "30s"
+
+
+def test_todo_duration_with_days(app):
+    from datetime import UTC, datetime, timedelta
+
+    todolist = TodoList(SHOPPING_LIST_TITLE).save()
+    created_time = datetime(2024, 1, 1, 10, 0, 0, tzinfo=UTC)
+    finished_time = created_time + timedelta(days=2, hours=3, minutes=30)
+    
+    todo = Todo("Test duration", todolist.id, created_at=created_time)
+    todo.is_finished = True
+    todo.finished_at = finished_time
+    
+    duration = todo.duration
+    assert duration is not None
+    assert "2d" in duration
+    assert "3h" in duration
+    assert "30m" in duration

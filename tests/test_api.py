@@ -872,3 +872,93 @@ def test_delete_todo(client, url_for):
     )
     assert response.status_code == 200
     assert db.session.get(Todo, todo.id) is None
+
+
+def test_todo_created_at_is_set(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    assert todo.created_at is not None
+    assert todo.finished_at is None
+
+
+def test_todo_finished_at_is_set_when_completed(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    assert todo.finished_at is None
+    todo.finished()
+    assert todo.finished_at is not None
+
+
+def test_todo_finished_at_is_cleared_when_reopened(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    todo.finished()
+    assert todo.finished_at is not None
+    
+    todo.reopen()
+    assert todo.finished_at is None
+
+
+def test_todo_duration_is_none_when_not_finished(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    assert todo.duration is None
+
+
+def test_todo_duration_is_calculated_when_finished(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    todo.finished()
+    assert todo.duration is not None
+
+
+def test_todo_to_dict_includes_time_info(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    todo_dict = todo.to_dict()
+    assert "created_at" in todo_dict
+    assert "finished_at" not in todo_dict
+    assert "duration" not in todo_dict
+    
+    todo.finished()
+    todo_dict = todo.to_dict()
+    assert "created_at" in todo_dict
+    assert "finished_at" in todo_dict
+    assert "duration" in todo_dict
+
+
+def test_update_todo_status_returns_time_info(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    
+    response = client.put(
+        url_for("api.update_todo_status", todo_id=todo.id),
+        headers=get_headers(),
+        data=json.dumps({"is_finished": True}),
+    )
+    
+    assert response.status_code == 200
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert "created_at" in json_response
+    assert "finished_at" in json_response
+    assert "duration" in json_response
+
+
+def test_get_todo_returns_time_info(client, url_for):
+    todolist = add_todolist("new todolist")
+    todo = add_todo("test todo", todolist.id)
+    todo.finished()
+    
+    response = client.get(url_for("api.get_todo", todo_id=todo.id))
+    assert response.status_code == 200
+    
+    json_response = json.loads(response.data.decode("utf-8"))
+    assert "created_at" in json_response
+    assert "finished_at" in json_response
+    assert "duration" in json_response

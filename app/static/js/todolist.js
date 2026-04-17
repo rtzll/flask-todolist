@@ -2,11 +2,26 @@ $(document).ready(function() {
   $(':checkbox').on('click', changeTodoStatus);
 });
 
+function showNotification(message, type) {
+  var notification = $('<div class="todo-notification ' + type + '">' + message + '</div>');
+  $('body').append(notification);
+  notification.fadeIn(300);
+  setTimeout(function() {
+    notification.fadeOut(300, function() {
+      $(this).remove();
+    });
+  }, 3000);
+}
+
 function changeTodoStatus() {
-  if ($(this).is(':checked')) {
-    putNewStatus($(this).data('todo-id'), true);
+  var checkbox = $(this);
+  var todoId = checkbox.data('todo-id');
+  var wasChecked = checkbox.is(':checked');
+  
+  if (wasChecked) {
+    putNewStatus(todoId, true, checkbox);
   } else {
-    putNewStatus($(this).data('todo-id'), false);
+    putNewStatus(todoId, false, checkbox);
   }
 }
 
@@ -34,7 +49,7 @@ function getCookie(name) {
   return cookieValue;
 }
 
-function putNewStatus(todoID, isFinished) {
+function putNewStatus(todoID, isFinished, checkbox) {
 
   // setup ajax to csrf token
   var csrftoken = getCookie('csrftoken');
@@ -54,8 +69,20 @@ function putNewStatus(todoID, isFinished) {
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(todo),
-      success: function() {
-        location.reload();
+      success: function(response) {
+        if (isFinished) {
+          var duration = response.duration || 'just now';
+          showNotification('Congratulations! You completed: "' + response.description + '" (Duration: ' + duration + ')', 'success');
+        } else {
+          showNotification('Todo reopened: "' + response.description + '"', 'info');
+        }
+        setTimeout(function() {
+          location.reload();
+        }, 1500);
+      },
+      error: function() {
+        showNotification('Error updating todo status', 'error');
+        checkbox.prop('checked', !isFinished);
       }
     });
   });

@@ -5,6 +5,49 @@
   word-wrap: break-word;
 }
 
+.todo-item {
+  margin-bottom: 0.5rem;
+  padding: 0.3rem 0;
+}
+
+.todo-description {
+  font-weight: 500;
+}
+
+.todo-time-info {
+  display: block;
+  font-size: 0.85em;
+  color: #888;
+  margin-top: 0.2rem;
+  margin-left: 1.5rem;
+}
+
+.todo-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  max-width: 400px;
+  display: none;
+}
+
+.todo-notification.success {
+  background-color: #27ae60;
+}
+
+.todo-notification.info {
+  background-color: #3498db;
+}
+
+.todo-notification.error {
+  background-color: #e74c3c;
+}
+
 .has-error {
   background: #fff4f4;
   border: 1px solid #f1b7b7;

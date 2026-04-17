@@ -263,6 +263,27 @@ class Todo(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariableOv
     def status(self) -> str:
         return "finished" if self.is_finished else "open"
 
+    @property
+    def duration(self) -> str | None:
+        if not self.is_finished or not self.finished_at or not self.created_at:
+            return None
+        delta = self.finished_at - self.created_at
+        total_seconds = int(delta.total_seconds())
+        days = total_seconds // 86400
+        hours = (total_seconds % 86400) // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        parts = []
+        if days > 0:
+            parts.append(f"{days}d")
+        if hours > 0:
+            parts.append(f"{hours}h")
+        if minutes > 0:
+            parts.append(f"{minutes}m")
+        if seconds > 0 or not parts:
+            parts.append(f"{seconds}s")
+        return " ".join(parts)
+
     def finished(self) -> None:
         self.is_finished = True
         self.finished_at = datetime.now(UTC)
@@ -274,9 +295,15 @@ class Todo(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariableOv
         self.save()
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "description": self.description,
             "creator": self.creator,
-            "created_at": self.created_at,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
             "status": self.status,
         }
+        if self.is_finished:
+            result["finished_at"] = (
+                self.finished_at.isoformat() if self.finished_at else None
+            )
+            result["duration"] = self.duration
+        return result

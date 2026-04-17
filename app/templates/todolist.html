@@ -27,7 +27,13 @@
         <ul>
           {% for todo in todolist.todos %}
             {% if not todo.is_finished %}
-              <li><input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}"> {{ todo.description }}</li>
+              <li class="todo-item">
+                <input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}">
+                <span class="todo-description">{{ todo.description }}</span>
+                {% if todo.created_at %}
+                  <span class="todo-time-info">Created: {{ todo.created_at|humanize }}</span>
+                {% endif %}
+              </li>
             {% endif %}
           {% endfor %}
         </ul>
@@ -37,7 +43,15 @@
         <ul>
           {% for todo in todolist.todos %}
             {% if todo.is_finished %}
-              <li><input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}" checked="checked"> {{ todo.description }}</li>
+              <li class="todo-item">
+                <input type="checkbox" id="checkbox" data-todo-id="{{ todo.id }}" checked="checked">
+                <span class="todo-description">{{ todo.description }}</span>
+                <span class="todo-time-info">
+                  Created: {{ todo.created_at|humanize }}
+                  {% if todo.finished_at %} | Completed: {{ todo.finished_at|humanize }}{% endif %}
+                  {% if todo.duration %} | Duration: {{ todo.duration }}{% endif %}
+                </span>
+              </li>
             {% endif %}
           {% endfor %}
         </ul>
