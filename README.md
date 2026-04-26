@@ -47,6 +47,14 @@ To run type checks:
 
     uv run ty check
 
+You can also use [just](https://github.com/casey/just) for common tasks:
+
+    just check    # run lint, format check, typecheck, deps, and tests
+    just test
+    just lint
+    just fix      # auto-fix lint and format issues
+    just update   # upgrade all dependencies
+
 To run the test suite using Docker:
 
     docker-compose --profile test run --rm tests
