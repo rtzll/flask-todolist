@@ -22,5 +22,7 @@ jobs:
         run: uv run ruff check .
       - name: Type check
         run: uv run ty check
+      - name: Dependency check
+        run: uv run deptry .
       - name: Run tests
         run: uv run pytest -v

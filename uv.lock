@@ -47,6 +47,29 @@ wheels = [
 ]
 
 [[package]]
+name = "deptry"
+version = "0.25.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "packaging" },
+    { name = "requirements-parser" },
+    { name = "tomli", marker = "python_full_version < '3.15'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b8/b2/50ccc99362ae7757342978b7ecb3b98e47fade721fd617d74db1948ec3a1/deptry-0.25.1.tar.gz", hash = "sha256:45c8cd982c85cd4faae573ddff6920de7eec735336db6973f26a765ae7950f7d", size = 509748, upload-time = "2026-03-18T23:22:18.139Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/1d/b538dc635e873b25360d761cfe1fa0ccd7d6c69b698047e552f33401e60d/deptry-0.25.1-cp310-abi3-macosx_10_12_x86_64.whl", hash = "sha256:a4dd1148db24a1ddacfa8b840836c6019c2f864fcb7579dd089fd217606338c8", size = 1850319, upload-time = "2026-03-18T23:22:15.65Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/a9/511477a8f0ae4f6021d68a80bdca77e7ffb0722008dc24ee5d9ef49f5c88/deptry-0.25.1-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:c67c666d916ef12013c0772e40d78be0f21577a495d8d99ec5fcb18c332d393d", size = 1759259, upload-time = "2026-03-18T23:22:30.853Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/4b/c9f0bdda410912a6df79a789cb118fa29acae02a397794ead3c84adcda5c/deptry-0.25.1-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:58d39279828dbf4efc1abb40bf50a71b21499c36759bed5a8d8a3c0e3149b091", size = 1872012, upload-time = "2026-03-18T23:22:19.145Z" },
+    { url = "https://files.pythonhosted.org/packages/72/9c/6f6f9125bac74b5d5d2af89536cbdb3fa159b6466aa097b74e7e85e8e030/deptry-0.25.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:14bfcc28b4326ed8c6abb30691b19077d4ef8613cfba6c37ef5b1f471775bf6f", size = 1926575, upload-time = "2026-03-18T23:22:11.269Z" },
+    { url = "https://files.pythonhosted.org/packages/52/48/2a5e705a7f898295966ade67bd1223e2af96da433e25b39f6b9483ba2c7b/deptry-0.25.1-cp310-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:555f5f9a487899ec9bf301eecba1745e14d212c4b354f4d3a5fd691e907366d3", size = 2050816, upload-time = "2026-03-18T23:22:27.439Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/c6/50f189a894e1f3bf21266299112c8a06cb731838976e1b9a9cadd0b4a86e/deptry-0.25.1-cp310-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:18d21b3545ab2bfec53f3f45c6f5f201d55f713323327f8d12674505469ae6b7", size = 2145416, upload-time = "2026-03-18T23:22:24.682Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/6a/3f82f7a06217778282bc4456af1b4ffb3bc4b2c8e7891d00e8323f9ad0b8/deptry-0.25.1-cp310-abi3-win_amd64.whl", hash = "sha256:b59a560cb7dffb21832a98bb80d33d614cfb5630ea36ce21833eabf4eae3df99", size = 1718489, upload-time = "2026-03-18T23:22:28.589Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/7f/cd6b3ac8cf95f2f1c5c7a74ff6452e9098af89a9b56607381f677880641e/deptry-0.25.1-cp310-abi3-win_arm64.whl", hash = "sha256:6efffd8116fb9d2c45a251382ce4ce1c38dbb17179f581ec9231ed5390f7fc12", size = 1647020, upload-time = "2026-03-18T23:22:23.311Z" },
+]
+
+[[package]]
 name = "dnspython"
 version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -130,6 +153,7 @@ name = "flask-todolist"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "alembic" },
     { name = "email-validator" },
     { name = "flask" },
     { name = "flask-login" },
@@ -138,10 +162,14 @@ dependencies = [
     { name = "flask-wtf" },
     { name = "gunicorn" },
     { name = "python-dotenv" },
+    { name = "sqlalchemy" },
+    { name = "werkzeug" },
+    { name = "wtforms" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "deptry" },
     { name = "forgerypy" },
     { name = "pytest" },
     { name = "pytest-flask" },
@@ -151,22 +179,27 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "alembic", specifier = ">=1.18.4" },
     { name = "email-validator", specifier = ">=2.3.0" },
-    { name = "flask", specifier = ">=3.1.2" },
+    { name = "flask", specifier = ">=3.1.3" },
     { name = "flask-login", specifier = ">=0.6.3" },
     { name = "flask-migrate", specifier = ">=4.1.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
-    { name = "flask-wtf", specifier = ">=1.2.2" },
-    { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "flask-wtf", specifier = ">=1.3.0" },
+    { name = "gunicorn", specifier = ">=25.3.0" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "sqlalchemy", specifier = ">=2.0.49" },
+    { name = "werkzeug", specifier = ">=3.1.8" },
+    { name = "wtforms", specifier = ">=3.2.1" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "deptry", specifier = ">=0.25.1" },
     { name = "forgerypy", specifier = "==0.1" },
-    { name = "pytest", specifier = ">=8.3.0" },
+    { name = "pytest", specifier = ">=9.0.3" },
     { name = "pytest-flask", specifier = ">=1.3.0" },
-    { name = "ruff", specifier = ">=0.6.0" },
+    { name = "ruff", specifier = ">=0.15.12" },
     { name = "ty", specifier = ">=0.0.32" },
 ]
 
@@ -373,6 +406,18 @@ wheels = [
 ]
 
 [[package]]
+name = "requirements-parser"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/95/96/fb6dbfebb524d5601d359a47c78fe7ba1eef90fc4096404aa60c9a906fbb/requirements_parser-0.13.0.tar.gz", hash = "sha256:0843119ca2cb2331de4eb31b10d70462e39ace698fd660a915c247d2301a4418", size = 22630, upload-time = "2025-05-21T13:42:05.464Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/60/50fbb6ffb35f733654466f1a90d162bcbea358adc3b0871339254fbc37b2/requirements_parser-0.13.0-py3-none-any.whl", hash = "sha256:2b3173faecf19ec5501971b7222d38f04cb45bb9d87d0ad629ca71e2e62ded14", size = 14782, upload-time = "2025-05-21T13:42:04.007Z" },
+]
+
+[[package]]
 name = "ruff"
 version = "0.15.12"
 source = { registry = "https://pypi.org/simple" }
@@ -421,6 +466,33 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/c3/c80fcdb41905a2df650c2a3e0337198b6848876e63d66fe9188ef9003d24/sqlalchemy-2.0.49-cp314-cp314t-win32.whl", hash = "sha256:6270d717b11c5476b0cbb21eedc8d4dbb7d1a956fd6c15a23e96f197a6193158", size = 2149151, upload-time = "2026-04-03T17:02:07.281Z" },
     { url = "https://files.pythonhosted.org/packages/05/52/9f1a62feab6ed368aff068524ff414f26a6daebc7361861035ae00b05530/sqlalchemy-2.0.49-cp314-cp314t-win_amd64.whl", hash = "sha256:275424295f4256fd301744b8f335cff367825d270f155d522b30c7bf49903ee7", size = 2184178, upload-time = "2026-04-03T17:02:08.623Z" },
     { url = "https://files.pythonhosted.org/packages/e5/30/8519fdde58a7bdf155b714359791ad1dc018b47d60269d5d160d311fdc36/sqlalchemy-2.0.49-py3-none-any.whl", hash = "sha256:ec44cfa7ef1a728e88ad41674de50f6db8cfdb3e2af84af86e0041aaf02d43d0", size = 1942158, upload-time = "2026-04-03T16:53:44.135Z" },
+]
+
+[[package]]
+name = "tomli"
+version = "2.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/de/48c59722572767841493b26183a0d1cc411d54fd759c5607c4590b6563a6/tomli-2.4.1.tar.gz", hash = "sha256:7c7e1a961a0b2f2472c1ac5b69affa0ae1132c39adcb67aba98568702b9cc23f", size = 17543, upload-time = "2026-03-25T20:22:03.828Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/fb/9a5c8d27dbab540869f7c1f8eb0abb3244189ce780ba9cd73f3770662072/tomli-2.4.1-cp314-cp314-macosx_10_15_x86_64.whl", hash = "sha256:fd0409a3653af6c147209d267a0e4243f0ae46b011aa978b1080359fddc9b6cf", size = 155726, upload-time = "2026-03-25T20:21:42.23Z" },
+    { url = "https://files.pythonhosted.org/packages/62/05/d2f816630cc771ad836af54f5001f47a6f611d2d39535364f148b6a92d6b/tomli-2.4.1-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:a120733b01c45e9a0c34aeef92bf0cf1d56cfe81ed9d47d562f9ed591a9828ac", size = 149859, upload-time = "2026-03-25T20:21:43.386Z" },
+    { url = "https://files.pythonhosted.org/packages/ce/48/66341bdb858ad9bd0ceab5a86f90eddab127cf8b046418009f2125630ecb/tomli-2.4.1-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:559db847dc486944896521f68d8190be1c9e719fced785720d2216fe7022b662", size = 244713, upload-time = "2026-03-25T20:21:44.474Z" },
+    { url = "https://files.pythonhosted.org/packages/df/6d/c5fad00d82b3c7a3ab6189bd4b10e60466f22cfe8a08a9394185c8a8111c/tomli-2.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:01f520d4f53ef97964a240a035ec2a869fe1a37dde002b57ebc4417a27ccd853", size = 252084, upload-time = "2026-03-25T20:21:45.62Z" },
+    { url = "https://files.pythonhosted.org/packages/00/71/3a69e86f3eafe8c7a59d008d245888051005bd657760e96d5fbfb0b740c2/tomli-2.4.1-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:7f94b27a62cfad8496c8d2513e1a222dd446f095fca8987fceef261225538a15", size = 247973, upload-time = "2026-03-25T20:21:46.937Z" },
+    { url = "https://files.pythonhosted.org/packages/67/50/361e986652847fec4bd5e4a0208752fbe64689c603c7ae5ea7cb16b1c0ca/tomli-2.4.1-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:ede3e6487c5ef5d28634ba3f31f989030ad6af71edfb0055cbbd14189ff240ba", size = 256223, upload-time = "2026-03-25T20:21:48.467Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/9a/b4173689a9203472e5467217e0154b00e260621caa227b6fa01feab16998/tomli-2.4.1-cp314-cp314-win32.whl", hash = "sha256:3d48a93ee1c9b79c04bb38772ee1b64dcf18ff43085896ea460ca8dec96f35f6", size = 98973, upload-time = "2026-03-25T20:21:49.526Z" },
+    { url = "https://files.pythonhosted.org/packages/14/58/640ac93bf230cd27d002462c9af0d837779f8773bc03dee06b5835208214/tomli-2.4.1-cp314-cp314-win_amd64.whl", hash = "sha256:88dceee75c2c63af144e456745e10101eb67361050196b0b6af5d717254dddf7", size = 109082, upload-time = "2026-03-25T20:21:50.506Z" },
+    { url = "https://files.pythonhosted.org/packages/d5/2f/702d5e05b227401c1068f0d386d79a589bb12bf64c3d2c72ce0631e3bc49/tomli-2.4.1-cp314-cp314-win_arm64.whl", hash = "sha256:b8c198f8c1805dc42708689ed6864951fd2494f924149d3e4bce7710f8eb5232", size = 96490, upload-time = "2026-03-25T20:21:51.474Z" },
+    { url = "https://files.pythonhosted.org/packages/45/4b/b877b05c8ba62927d9865dd980e34a755de541eb65fffba52b4cc495d4d2/tomli-2.4.1-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:d4d8fe59808a54658fcc0160ecfb1b30f9089906c50b23bcb4c69eddc19ec2b4", size = 164263, upload-time = "2026-03-25T20:21:52.543Z" },
+    { url = "https://files.pythonhosted.org/packages/24/79/6ab420d37a270b89f7195dec5448f79400d9e9c1826df982f3f8e97b24fd/tomli-2.4.1-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:7008df2e7655c495dd12d2a4ad038ff878d4ca4b81fccaf82b714e07eae4402c", size = 160736, upload-time = "2026-03-25T20:21:53.674Z" },
+    { url = "https://files.pythonhosted.org/packages/02/e0/3630057d8eb170310785723ed5adcdfb7d50cb7e6455f85ba8a3deed642b/tomli-2.4.1-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:1d8591993e228b0c930c4bb0db464bdad97b3289fb981255d6c9a41aedc84b2d", size = 270717, upload-time = "2026-03-25T20:21:55.129Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/b4/1613716072e544d1a7891f548d8f9ec6ce2faf42ca65acae01d76ea06bb0/tomli-2.4.1-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:734e20b57ba95624ecf1841e72b53f6e186355e216e5412de414e3c51e5e3c41", size = 278461, upload-time = "2026-03-25T20:21:56.228Z" },
+    { url = "https://files.pythonhosted.org/packages/05/38/30f541baf6a3f6df77b3df16b01ba319221389e2da59427e221ef417ac0c/tomli-2.4.1-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:8a650c2dbafa08d42e51ba0b62740dae4ecb9338eefa093aa5c78ceb546fcd5c", size = 274855, upload-time = "2026-03-25T20:21:57.653Z" },
+    { url = "https://files.pythonhosted.org/packages/77/a3/ec9dd4fd2c38e98de34223b995a3b34813e6bdadf86c75314c928350ed14/tomli-2.4.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:504aa796fe0569bb43171066009ead363de03675276d2d121ac1a4572397870f", size = 283144, upload-time = "2026-03-25T20:21:59.089Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/be/605a6261cac79fba2ec0c9827e986e00323a1945700969b8ee0b30d85453/tomli-2.4.1-cp314-cp314t-win32.whl", hash = "sha256:b1d22e6e9387bf4739fbe23bfa80e93f6b0373a7f1b96c6227c32bef95a4d7a8", size = 108683, upload-time = "2026-03-25T20:22:00.214Z" },
+    { url = "https://files.pythonhosted.org/packages/12/64/da524626d3b9cc40c168a13da8335fe1c51be12c0a63685cc6db7308daae/tomli-2.4.1-cp314-cp314t-win_amd64.whl", hash = "sha256:2c1c351919aca02858f740c6d33adea0c5deea37f9ecca1cc1ef9e884a619d26", size = 121196, upload-time = "2026-03-25T20:22:01.169Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/cd/e80b62269fc78fc36c9af5a6b89c835baa8af28ff5ad28c7028d60860320/tomli-2.4.1-cp314-cp314t-win_arm64.whl", hash = "sha256:eab21f45c7f66c13f2a9e0e1535309cee140182a9cdae1e041d02e47291e8396", size = 100393, upload-time = "2026-03-25T20:22:02.137Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/61/cceae43728b7de99d9b847560c262873a1f6c98202171fd5ed62640b494b/tomli-2.4.1-py3-none-any.whl", hash = "sha256:0d85819802132122da43cb86656f8d1f8c6587d54ae7dcaf30e90533028b49fe", size = 14583, upload-time = "2026-03-25T20:22:03.012Z" },
 ]
 
 [[package]]
