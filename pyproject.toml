@@ -24,6 +24,7 @@ dev = [
     "forgerypy==0.1",
     "pytest>=9.0.3",
     "pytest-flask>=1.3.0",
+    "pytest-xdist>=3.8.0",
     "ruff>=0.15.12",
     "ty>=0.0.32",
 ]
@@ -38,6 +39,7 @@ forgerypy = "forgery_py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = ["-n", "auto"]
 
 [tool.ty.src]
 include = ["app", "config.py", "todolist.py"]

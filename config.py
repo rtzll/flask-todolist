@@ -27,7 +27,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SECRET_KEY = os.environ.get("SECRET_KEY") or "testing-secret-key"
-    SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todolist-test.db")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False
     import logging
 
