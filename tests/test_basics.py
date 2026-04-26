@@ -3,7 +3,6 @@ from flask import current_app
 from app import db
 from app.models import Todo, TodoList, User
 
-
 USERNAME_ADAM = "adam"
 SHOPPING_LIST_TITLE = "shopping list"
 READ_TODO_DESCRIPTION = "Read a book about TDD"

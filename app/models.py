@@ -51,7 +51,7 @@ class BaseModel:
         return cls(**dict(model_dict)).save()
 
 
-class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+class User(UserMixin, db.Model, BaseModel):  # type: ignore
     __tablename__ = "user"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     _username: Mapped[str | None] = mapped_column("username", String(64), unique=True)
@@ -91,7 +91,7 @@ class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibl
             raise ValueError(f"{username} is not a valid username")
         self._username = username
 
-    username = synonym("_username", descriptor=username)  # pyright: ignore[reportAssignmentType]
+    username = synonym("_username", descriptor=username)  # type: ignore
 
     @property
     def email(self) -> str:
@@ -106,7 +106,7 @@ class User(UserMixin, db.Model, BaseModel):  # pyright: ignore[reportIncompatibl
             raise ValueError(f"{email} is not a valid email address")
         self._email = email
 
-    email = synonym("_email", descriptor=email)  # pyright: ignore[reportAssignmentType]
+    email = synonym("_email", descriptor=email)  # type: ignore
 
     @property
     def password(self) -> str:
@@ -153,7 +153,7 @@ def load_user(user_id: str) -> User | None:
     return db.session.get(User, int(user_id))
 
 
-class TodoList(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+class TodoList(db.Model, BaseModel):  # type: ignore
     __tablename__ = "todolist"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     _title: Mapped[str | None] = mapped_column("title", String(128))
@@ -191,7 +191,7 @@ class TodoList(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariab
             raise ValueError(f"{title} is not a valid title")
         self._title = title
 
-    title = synonym("_title", descriptor=title)  # pyright: ignore[reportAssignmentType]
+    title = synonym("_title", descriptor=title)  # type: ignore
 
     @property
     def todos_url(self) -> str:
@@ -228,7 +228,7 @@ class TodoList(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariab
         return int(self.todos.filter_by(is_finished=False).count())
 
 
-class Todo(db.Model, BaseModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+class Todo(db.Model, BaseModel):  # type: ignore
     __tablename__ = "todo"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     description: Mapped[str | None] = mapped_column(String(128))

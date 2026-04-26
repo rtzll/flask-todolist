@@ -3,7 +3,6 @@ import json
 from app import db
 from app.models import Todo, TodoList, User
 
-
 USERNAME_ALICE = "alice"
 PASSWORD = "correcthorsebatterystaple"
 

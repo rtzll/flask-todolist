@@ -1,6 +1,5 @@
 from app.models import User
 
-
 USERNAME_ALICE = "alice"
 PASSWORD = "correcthorsebatterystaple"
 

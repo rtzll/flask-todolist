@@ -1,5 +1,3 @@
-# pyright: reportImportCycles=false
-
 from flask import Blueprint
 
 main = Blueprint("main", __name__)

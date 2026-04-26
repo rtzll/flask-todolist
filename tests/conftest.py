@@ -1,9 +1,11 @@
 from contextlib import contextmanager
 
 import pytest
-from flask import template_rendered, url_for as flask_url_for
+from flask import template_rendered
+from flask import url_for as flask_url_for
 
-from app import create_app, db as _db
+from app import create_app
+from app import db as _db
 
 
 @pytest.fixture

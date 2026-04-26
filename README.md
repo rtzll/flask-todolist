@@ -45,7 +45,7 @@ To run the test suite:
 
 To run type checks:
 
-    uv run basedpyright --level error
+    uv run ty check
 
 To run the test suite using Docker:
 
