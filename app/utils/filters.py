@@ -18,7 +18,7 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
         dt = dt.replace(tzinfo=None)
     else:
         dt = dt.astimezone(UTC).replace(tzinfo=None)
-    now = datetime.utcnow()
+    now = datetime.now(UTC).replace(tzinfo=None)
     if now > dt:
         diff = now - dt
         dt_is_past = True
@@ -38,11 +38,9 @@ def humanize_time(dt, past_="ago", future_="from now", default="just now"):
 
     for period, singular, plural in periods:
         if period:
-            return "%d %s %s" % (
-                period,
-                singular if period == 1 else plural,
-                past_ if dt_is_past else future_,
-            )
+            unit = singular if period == 1 else plural
+            suffix = past_ if dt_is_past else future_
+            return f"{period} {unit} {suffix}"
 
     return default
 
